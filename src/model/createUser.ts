@@ -2,6 +2,7 @@ import { validateCpf } from "./validateData/validadeteCpf.js";
 import { Candidate } from "./class/candidate.js";
 import { validateAge } from "./validateData/validateAge.js";
 import * as DB from "../server/data/connect.js";
+import { insertIntoCandidate } from "./insertDB/queryTools.js";
 export let createCanditado = (user: {
   name: string;
   email: string;
@@ -37,10 +38,7 @@ export let createCanditado = (user: {
       if (!passwordIsValid)
         throw new Error("Senhas não coincidem ou inválidas");
 
-      DB.pool.query(
-        `INSERT INTO tb_candidato (name, email, senha, telefone, cpf, data_nascimento) VALUES ($1, $2, $3, $4, $5, $6)`,
-        [newUser.name, newUser.email, newUser.telefone, newUser.cpf, newUser.data_nascimento]
-      )
+      insertIntoCandidate(newUser);
       return true;
     } catch (error) {
       return false;
