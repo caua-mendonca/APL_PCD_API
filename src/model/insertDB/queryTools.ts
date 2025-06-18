@@ -9,17 +9,8 @@ export let insertIntoCandidate = async (user: {
   cpf: string;
   data_nascimento: Date;
 }) => {
-
-
-  await DB.pool.query(
-    "INSERT INTO tb_candidato (nome, email, senha, telefone, cpf, data_nascimento) VALUES ($1, $2, $3, $4, $5, $6) ",
-    [
-      user.name,
-      user.email,
-      user.senha,
-      user.telefone,
-      user.cpf,
-      user.data_nascimento,
-    ]
+  DB.pool.query(
+    `INSERT INTO tb_candidato (nome, email, senha, telefone, cpf, data_nascimento) VALUES ($1, $2, $3, $4, $5, $6)`,
+    [user.name, user.email, user.senha , user.telefone, user.cpf, user.data_nascimento]
   );
 };
