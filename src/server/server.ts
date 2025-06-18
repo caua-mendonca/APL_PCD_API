@@ -1,7 +1,7 @@
 import express from "express";
 import * as DB from "./data/connect.js";
 import * as Routes from "./routes/routes.js";
-import * as Controller from "../controller/controllerCandidate.js";
+import { controllerCandadate } from "../controller/controllerCandidate.js";
 import cors from "cors";
 
 const APP = express();
@@ -39,7 +39,7 @@ export let conectServ = (PORT: string) => {
       cpf,
       data_nascimento,
     };
-    let result = Controller.createCanditado(user);
+    let result = controllerCandadate(user);
     if(result){
       res.status(200).send(result);
     }else{
