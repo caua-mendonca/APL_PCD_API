@@ -1,4 +1,4 @@
-import {createCanditado} from "../model/createUser";
+import { createCanditado } from "../model/createUser.js";
 
 export let controllerCandadate = (body:{
     name: string,
@@ -11,5 +11,7 @@ export let controllerCandadate = (body:{
     data_nascimento: Date
 }) => {
 
-    return createCanditado(body);
+    let response = createCanditado(body);
+
+    return response
 };
