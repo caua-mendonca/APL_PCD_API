@@ -1,4 +1,4 @@
-import { createCanditado } from "../model/createUser.js";
+import { createCanditado } from "../model/createUser/createUser.js";
 
 export let controllerCandadate = (body:{
     name: string,
