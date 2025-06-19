@@ -2,6 +2,7 @@ import express from "express";
 import * as DB from "./data/connect.js";
 import * as Routes from "./routes/routes.js";
 import { controllerCandadate } from "../controller/controllerCandidate.js";
+import { controllerContratante } from "../controller/controllerContratante.js";
 import cors from "cors";
 
 const APP = express();
@@ -14,7 +15,6 @@ export let conectServ = (PORT: string) => {
   // ! Iniciando Servidor HTTP
   APP.listen(HTTP_PORT, () => {
     console.log(`Server is running on port ${HTTP_PORT}`);
-
   });
 
   APP.post(Routes.createCanditado, (req, res) => {
@@ -40,10 +40,39 @@ export let conectServ = (PORT: string) => {
       data_nascimento,
     };
     let result = controllerCandadate(user);
-    if(result){
+    if (result) {
       res.status(200).send(result);
-    }else{
-      res.status(400).send({message: "Erro ao criar candidato!"});
+    } else {
+      res.status(400).send({ message: "Erro ao criar candidato!" });
+    }
+  });
+
+  APP.post(Routes.createContratante, (req, res) => {
+    let {
+      nome_fantasia,
+      razao_social,
+      email,
+      confirme_email,
+      senha,
+      confirme_senha,
+      cnpj,
+      telefone,
+    } = req.body;
+    let user = {
+      nome_fantasia,
+      razao_social,
+      email,
+      confirme_email,
+      senha,
+      confirme_senha,
+      cnpj,
+      telefone,
+    };
+    let result = controllerContratante(user);
+    if (result) {
+      res.status(200).send(result);
+    } else {
+      res.status(400).send({ message: "Erro ao criar candidato!" });
     }
   });
 };
