@@ -27,6 +27,14 @@ export let conectServ = (PORT: string) => {
       telefone,
       cpf,
       data_nascimento,
+      def_visual,
+      def_fisica,
+      def_auditiva,
+      def_intelectual,
+      outra_def,
+      descricao_def,
+      acessibilidade_trab,
+      descricao_acessibilidade,
     } = req.body;
 
     let user = {
@@ -38,6 +46,14 @@ export let conectServ = (PORT: string) => {
       telefone,
       cpf,
       data_nascimento,
+      def_visual,
+      def_fisica, 
+      def_auditiva,
+      def_intelectual,
+      outra_def,
+      descricao_def,
+      acessibilidade_trab,
+      descricao_acessibilidade,
     };
     let result = controllerCandadate(user);
     if (result) {
