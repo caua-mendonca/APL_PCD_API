@@ -6,14 +6,22 @@ import {validateCNPJ} from '../validateData/validateCNPJ.js'
 import * as DB from "../../server/data/connect.js";
 import * as query from "../insertDB/queryTools.js";
 export let createCanditado = (user: {
-  name: string;
-  email: string;
-  confirme_email: string;
-  senha: number;
-  confirme_senha: number;
-  telefone: string;
-  cpf: string;
-  data_nascimento: Date;
+      name: string,
+      email: string,
+      confirme_email: string,
+      senha: string,
+      confirme_senha: string,
+      telefone: string,
+      cpf: string,
+      data_nascimento: Date,
+      def_visual: boolean,
+      def_fisica: boolean,
+      def_auditiva: boolean,
+      def_intelectual: boolean,
+      outra_def: boolean,
+      descricao_def: string,
+      acessibilidade_trab: boolean,
+      descricao_acessibilidade: string
 }) => {
   let newUser = new Candidate(
     user.name,
@@ -23,7 +31,15 @@ export let createCanditado = (user: {
     user.confirme_senha,
     user.telefone,
     user.cpf,
-    user.data_nascimento
+    user.data_nascimento,
+    user.def_visual,
+    user.def_auditiva,
+    user.def_fisica,
+    user.def_intelectual,    
+    user.outra_def,    
+    user.descricao_def,
+    user.acessibilidade_trab,
+    user.descricao_acessibilidade
   );
 
   if (newUser) {
