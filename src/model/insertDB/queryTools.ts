@@ -1,18 +1,39 @@
 import * as DB from "../../server/data/connect.js";
 export let insertIntoCandidate = async (user: {
-  name: string;
-  email: string;
-  confirme_email: string;
-  senha: number;
-  confirme_senha: number;
-  telefone: string;
-  cpf: string;
-  data_nascimento: Date;
-}) => {
+      name: string,
+      email: string,
+      confirme_email: string,
+      senha: string,
+      confirme_senha: string,
+      telefone: string,
+      cpf: string,
+      data_nascimento: Date,
+      def_visual: boolean,
+      def_auditiva: boolean,
+      def_fisica: boolean,
+      def_intelectual: boolean,
+      outra_def: boolean,
+      descricao_def: string,
+      acessibilidade_trab: boolean,
+      descricao_acessibilidade: string
+}
+) => {
   DB.pool.query(
-    `INSERT INTO tb_candidato (nome, email, senha, telefone, cpf, data_nascimento) VALUES ($1, $2, $3, $4, $5, $6)`,
-    [user.name, user.email, user.senha , user.telefone, user.cpf, user.data_nascimento]
-  );
+  `INSERT INTO tb_candidato (
+    nome, email, senha, telefone, cpf,  data_nascimento,
+    def_visual, def_auditiva, def_fisica, def_intelectual, outra_def,
+    descricao_def, acessibilidade_trab, descricao_acessibilidade
+  ) VALUES (
+    $1, $2, $3, $4, $5, $6, $7, $8,
+    $9, $10, $11, $12, $13, $14
+  )`,
+  [
+    user.name, user.email, user.senha, user.telefone, user.cpf,
+     user.data_nascimento,
+    user.def_visual, user.def_auditiva, user.def_fisica, user.def_intelectual,
+    user.outra_def, user.descricao_def, user.acessibilidade_trab, user.descricao_acessibilidade
+  ]
+);
 };
 
 export let insertIntoContratante = async (user: {
