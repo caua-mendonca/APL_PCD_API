@@ -1,8 +1,9 @@
 import express from "express";
 import * as DB from "./data/connect.js";
 import * as Routes from "./routes/routes.js";
-import { controllerCandadate } from "../controller/controllerCandidate.js";
-import { controllerContratante } from "../controller/controllerContratante.js";
+import { controllerCandadate } from "../controller/controllerUser/controllerCandidate.js";
+import { controllerContratante } from "../controller/controllerUser/controllerContratante.js";
+import { controllerIFBR } from "../controller/IFBR/controllerIFBR.js";
 import cors from "cors";
 
 const APP = express();
@@ -47,7 +48,7 @@ export let conectServ = (PORT: string) => {
       cpf,
       data_nascimento,
       def_visual,
-      def_fisica, 
+      def_fisica,
       def_auditiva,
       def_intelectual,
       outra_def,
@@ -86,6 +87,18 @@ export let conectServ = (PORT: string) => {
     };
     let result = controllerContratante(user);
     if (result) {
+      res.status(200).send(result);
+    } else {
+      res.status(400).send({ message: "Erro ao criar candidato!" });
+    }
+  });
+
+  APP.post(Routes.formIFBR, async (req, res) => {
+    const ID = req.params.id;
+    const form = req.body;
+
+    let result = controllerIFBR(ID, form);
+    if (await result == true) {
       res.status(200).send(result);
     } else {
       res.status(400).send({ message: "Erro ao criar candidato!" });
