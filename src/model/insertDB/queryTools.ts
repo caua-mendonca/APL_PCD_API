@@ -1,25 +1,25 @@
 import * as DB from "../../server/data/connect.js";
+import { IFBR } from "../class/ifbr.js";
 export let insertIntoCandidate = async (user: {
-      name: string,
-      email: string,
-      confirme_email: string,
-      senha: string,
-      confirme_senha: string,
-      telefone: string,
-      cpf: string,
-      data_nascimento: Date,
-      def_visual: boolean,
-      def_auditiva: boolean,
-      def_fisica: boolean,
-      def_intelectual: boolean,
-      outra_def: boolean,
-      descricao_def: string,
-      acessibilidade_trab: boolean,
-      descricao_acessibilidade: string
-}
-) => {
+  name: string;
+  email: string;
+  confirme_email: string;
+  senha: string;
+  confirme_senha: string;
+  telefone: string;
+  cpf: string;
+  data_nascimento: Date;
+  def_visual: boolean;
+  def_auditiva: boolean;
+  def_fisica: boolean;
+  def_intelectual: boolean;
+  outra_def: boolean;
+  descricao_def: string;
+  acessibilidade_trab: boolean;
+  descricao_acessibilidade: string;
+}) => {
   DB.pool.query(
-  `INSERT INTO tb_candidato (
+    `INSERT INTO tb_candidato (
     nome, email, senha, telefone, cpf,  data_nascimento,
     def_visual, def_auditiva, def_fisica, def_intelectual, outra_def,
     descricao_def, acessibilidade_trab, descricao_acessibilidade
@@ -27,13 +27,23 @@ export let insertIntoCandidate = async (user: {
     $1, $2, $3, $4, $5, $6, $7, $8,
     $9, $10, $11, $12, $13, $14
   )`,
-  [
-    user.name, user.email, user.senha, user.telefone, user.cpf,
-     user.data_nascimento,
-    user.def_visual, user.def_auditiva, user.def_fisica, user.def_intelectual,
-    user.outra_def, user.descricao_def, user.acessibilidade_trab, user.descricao_acessibilidade
-  ]
-);
+    [
+      user.name,
+      user.email,
+      user.senha,
+      user.telefone,
+      user.cpf,
+      user.data_nascimento,
+      user.def_visual,
+      user.def_auditiva,
+      user.def_fisica,
+      user.def_intelectual,
+      user.outra_def,
+      user.descricao_def,
+      user.acessibilidade_trab,
+      user.descricao_acessibilidade,
+    ]
+  );
 };
 
 export let insertIntoContratante = async (user: {
@@ -48,6 +58,28 @@ export let insertIntoContratante = async (user: {
 }) => {
   DB.pool.query(
     `INSERT INTO tb_empresa (nome_fantasia, razao_social, email, senha, cnpj, telefone) VALUES ($1, $2, $3, $4, $5, $6)`,
-    [user.nome_fantasia, user.razao_social, user.email, user.senha , user.cnpj, user.telefone]
+    [
+      user.nome_fantasia,
+      user.razao_social,
+      user.email,
+      user.senha,
+      user.cnpj,
+      user.telefone,
+    ]
   );
+};
+
+export const selectIDFrom = async (table: string, cpf: string): Promise<any> => {
+  const query = `SELECT id FROM ${table} WHERE cpf = $1`;
+  return DB.pool.query(query, [cpf]);
+};
+
+
+export let insertIntoIFBR = async (column: string, json: IFBR, ID: number) => {
+  // DB.pool.query(`INSERT INTO tb_candidato (${column}) VALUES ($1)`, [json]);
+
+  await DB.pool.query(`UPDATE tb_candidato SET ${column} = $1 WHERE id = $2;`, [
+    json,
+    ID,
+  ]);
 };
