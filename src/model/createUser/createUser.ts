@@ -54,7 +54,7 @@ export let createCanditado = (user: {
       if (!emailIsValid) throw new Error("Emails não coincidem ou inválidos");
       if (!passwordIsValid)
         throw new Error("Senhas não coincidem ou inválidas");
-
+  
       query.insertIntoCandidate(newUser);
       return true;
     } catch (error) {
