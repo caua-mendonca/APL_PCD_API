@@ -4,6 +4,7 @@ import * as Routes from "./routes/routes.js";
 import { controllerCandadate } from "../controller/controllerUser/controllerCandidate.js";
 import { controllerContratante } from "../controller/controllerUser/controllerContratante.js";
 import { controllerIFBR } from "../controller/IFBR/controllerIFBR.js";
+import { controllerColaborador } from "../controller/colaborador/controllerColaborador.js";
 import cors from "cors";
 
 const APP = express();
@@ -104,4 +105,17 @@ export let conectServ = (PORT: string) => {
       res.status(400).send({ message: "Erro ao criar candidato!" });
     }
   });
+
+  APP.post(Routes.createColaborador, (req,res)=>{
+    let body = req.body
+
+    let result = controllerColaborador(body);
+    if (result) {
+      res.status(200).send(result);
+    } else {
+      res.status(400).send({ message: "Erro ao criar colaborador!" });
+    }
+
+
+  })
 };
