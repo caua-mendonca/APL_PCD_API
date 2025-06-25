@@ -10,7 +10,12 @@ export let controllerIFBR = async (
       if (await ressult === true) {
         return true;
       }else{
-        return false
+        let result = IFBR.createIFBRReduzido(body);
+        if (await result === true) {
+          return true;
+        }else{
+          throw new Error("Erro ao criar IFBR");
+        }
       }
     } else if (ID === "2") {
       return true;
