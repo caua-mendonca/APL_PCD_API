@@ -1,5 +1,7 @@
 import * as DB from "../../server/data/connect.js";
 import { IFBR } from "../class/ifbr.js";
+import { Colaborador } from "../class/colaborador.js";
+
 export let insertIntoCandidate = async (user: {
   name: string;
   email: string;
@@ -69,16 +71,32 @@ export let insertIntoContratante = async (user: {
   );
 };
 
-export const selectIDFrom = async (table: string, cpf: string): Promise<any> => {
-  const query = `SELECT id FROM ${table} WHERE cpf = $1`;
-  return DB.pool.query(query, [cpf]);
+export const selectIDFrom = async (
+  table: string,
+  cpfOrCnpj: string
+): Promise<any> => {
+  if (cpfOrCnpj.length === 11) {
+    const query = `SELECT id FROM ${table} WHERE cpf = $1`;
+    return DB.pool.query(query, [cpfOrCnpj]);
+  } else {
+    const query = `SELECT id FROM ${table} WHERE cnpj = $1`;
+    return DB.pool.query(query, [cpfOrCnpj]);
+  }
 };
 
-
 export let insertIntoIFBR = async (column: string, json: IFBR, ID: number) => {
-  // DB.pool.query(`INSERT INTO tb_candidato (${column}) VALUES ($1)`, [json]);
-
   await DB.pool.query(`UPDATE tb_candidato SET ${column} = $1 WHERE id = $2;`, [
+    json,
+    ID,
+  ]);
+};
+
+export let insertIntoColaborador = async (
+  column: string,
+  json: Colaborador,
+  ID: number
+) => {
+  await DB.pool.query(`UPDATE tb_empresa SET ${column} = $1 WHERE id = $2;`, [
     json,
     ID,
   ]);
