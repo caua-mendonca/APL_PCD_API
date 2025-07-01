@@ -3,22 +3,14 @@ import * as IFBR from "../../model/createIFBR/createIFBR.js";
 export let controllerIFBR = async (
   ID: string,
   body: [{ id: number; name: string; score: number }]
-): Promise<Boolean> => {
+): Promise<any> => {
   try {
     if (ID === "1") {
       let ressult = IFBR.createIFBRCompleto(body);
-      if (await ressult === true) {
-        return true;
-      }else{
-        let result = IFBR.createIFBRReduzido(body);
-        if (await result === true) {
-          return true;
-        }else{
-          throw new Error("Erro ao criar IFBR");
-        }
-      }
+      await ressult === true? true : false;
     } else if (ID === "2") {
-      return true;
+      let ressult = IFBR.createIFBRReduzido(body);
+      await ressult === true? true : false;
     } else {
       throw new Error("ID inválido");
     }
