@@ -6,16 +6,7 @@ export let controllerColaborador = async (user: {
   senha: string;
   setor: string;
 }) => {
-  let response = createColaborador(
-user
-  );
-  try {
-    if (await response) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    return error;
-  }
+  let response = createColaborador(user);
+
+  return response
 };
