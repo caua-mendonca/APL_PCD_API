@@ -20,6 +20,6 @@ export let controllerCandadate = (body:{
 }) => {
 
     let response = createCanditado(body);
-
+    
     return response
 };
