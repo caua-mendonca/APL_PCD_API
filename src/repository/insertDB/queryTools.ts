@@ -1,6 +1,6 @@
-import * as DB from "../../server/data/connect.js";
-import { IFBR } from "../class/ifbr.js";
-import { Colaborador } from "../class/colaborador.js";
+import * as DB from "../../controller/server/data/connect.js";
+import { IFBR } from "../../model/class/ifbr.js";
+import { Colaborador } from "../../model/class/colaborador.js";
 
 export let insertIntoCandidate = async (user: {
   name: string;
@@ -53,8 +53,8 @@ export let insertIntoContratante = async (user: {
   razao_social: string;
   email: string;
   confirme_email: string;
-  senha: number;
-  confirme_senha: number;
+  senha: string;
+  confirme_senha: string;
   cnpj: string;
   telefone: string;
 }) => {
