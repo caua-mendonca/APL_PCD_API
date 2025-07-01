@@ -1,10 +1,12 @@
 import { IFBR } from "../class/ifbr.js";
 import { QuestIFBR } from "../class/questIFBR.js";
-import * as query from "../insertDB/queryTools.js";
+import * as query from "../../repository/insertDB/queryTools.js";
+import { promises } from "dns";
 
 export let createIFBRCompleto = async (
   body: [{ id: number; name: string; score: number }]
-) => {
+): Promise<any> => {
+  let errorLog = [];
   let dominioSensorial = new IFBR(1, "Dominio Sensorial", new Date());
   let dominioComunicacao = new IFBR(2, "Dominio Comunicação", new Date());
   let dominioMobilidade = new IFBR(3, "Dominio Mobilidade", new Date());
@@ -59,7 +61,7 @@ export let createIFBRCompleto = async (
 
   try {
     const result = await query.selectIDFrom("tb_candidato", "44405647801");
-    console.log(result.rows);
+    !result.rows.length ? errorLog.push("Candidato não encontrado") : null;
 
     query.insertIntoIFBR("dom_sensorial", dominioSensorial, result.rows[0].id);
     query.insertIntoIFBR(
@@ -92,16 +94,21 @@ export let createIFBRCompleto = async (
       dominioSocializacaoComunidade,
       result.rows[0].id
     );
+
+    if (errorLog.length > 0) {
+      return errorLog;
+    } else {
+      return true;
+    }
   } catch (e) {
     console.log(e);
   }
-
-  return true;
 };
 
 export let createIFBRReduzido = async (
   body: [{ id: number; name: string; score: number }]
 ) => {
+  let errorLog = [];
   let dominioSensorial = new IFBR(1, "Dominio Sensorial", new Date());
   let dominioComunicacao = new IFBR(2, "Dominio Comunicação", new Date());
   let dominioMobilidade = new IFBR(3, "Dominio Mobilidade", new Date());
@@ -156,7 +163,7 @@ export let createIFBRReduzido = async (
 
   try {
     const result = await query.selectIDFrom("tb_candidato", "44405647801");
-    console.log(result.rows);
+    !result.rows.length ? errorLog.push("Candidato não encontrado") : null;
 
     query.insertIntoIFBR("dom_sensorial", dominioSensorial, result.rows[0].id);
     query.insertIntoIFBR(
@@ -189,6 +196,12 @@ export let createIFBRReduzido = async (
       dominioSocializacaoComunidade,
       result.rows[0].id
     );
+
+    if (errorLog.length > 0) {
+      return errorLog;
+    } else {
+      return "Sucesso ao responder IFBR";
+    }
   } catch (e) {
     console.log(e);
   }
