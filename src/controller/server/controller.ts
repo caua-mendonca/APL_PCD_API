@@ -147,6 +147,19 @@ APP.put(Routes.updateCanditado, async (req, res) => {
       res.status(400).send({ message: result });
     }
   });
+
+  // * UPDATE Contratante
+  APP.put(Routes.updateContratante, async (req, res) => {
+    const id = Number(req.params.id);
+    const body = req.body;
+    console.log("Dados recolhidos e passados para controller");
+    let result = await controllerContratante.controllerUpdateContratante(id, body);
+    if (result) {
+      res.status(200).send(result);
+    } else {
+      res.status(400).send({ message: result });
+    }
+  });
   // ! CRUD IFBR
   // ? POST Formulário IFBR
   APP.post(Routes.formIFBR, async (req, res) => {
