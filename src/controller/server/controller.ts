@@ -19,6 +19,8 @@ export let conectServ = (PORT: string) => {
     console.log(`Server is running on port ${HTTP_PORT}`);
   });
 
+  // ! CRUD Candidato
+    // ? POST Candidato
   APP.post(Routes.createCanditado, (req, res) => {
     let body = req.body;
 
@@ -31,8 +33,11 @@ export let conectServ = (PORT: string) => {
     }
   });
 
+  // ! CRUD Contratante
+    // ? POST Contratante
   APP.post(Routes.createContratante, (req, res) => {
     let body = req.body;
+      console.log("Dados recolhidos e passados para controller")
     let result = controllerContratante(body);
     if (result) {
       res.status(200).send(result);
