@@ -136,6 +136,17 @@ APP.put(Routes.updateCanditado, async (req, res) => {
     }
   })
 
+  // * DELETE Contratante
+  APP.delete(Routes.deleteContratante, async (req, res) => {
+    const id = Number(req.params.id);
+    console.log("Dados recolhidos e passados para controller");
+    let result = await controllerContratante.controllerDeleteContratante(id);
+    if (result) {
+      res.status(200).send(result);
+    } else {
+      res.status(400).send({ message: result });
+    }
+  });
   // ! CRUD IFBR
   // ? POST Formulário IFBR
   APP.post(Routes.formIFBR, async (req, res) => {
