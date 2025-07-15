@@ -1,5 +1,5 @@
 import { createCanditado } from "../../model/createUser/createUser.js";
-import { getUser } from "../../model/getUser/getUser.js";
+import * as getUser from "../../model/getUser/getUser.js";
 
 export let controllerPostCandadate = (body: {
   name: string;
@@ -28,7 +28,7 @@ export let controllerPostCandadate = (body: {
 export let controllerGetCandidato = async () => {
   console.log("Passando ao controllerGetCandidato()");
 
-  let result = await getUser("Tb_candidato");
+  let result = await getUser.getUser("Tb_candidato");
 
   let users = [];
   console.log("Validando Dados");
@@ -38,6 +38,20 @@ export let controllerGetCandidato = async () => {
       users.push(result.rows[i]);
     }
     return users;
+  } else {
+    return "Candidato não encontrado";
+  }
+};
+
+export let controllerGetCandidatoById = async (id: number) => {
+  console.log("Passando ao controllerGetCandidatoById()");
+
+  let result = await getUser.getUserByID("Tb_candidato", id);
+  console.log("Validando Dados");
+  console.log(`Foram encontrados ${result.rows.length} candidatos`);
+
+  if (result.rows.length > 0) {
+    return result.rows[0];
   } else {
     return "Candidato não encontrado";
   }
