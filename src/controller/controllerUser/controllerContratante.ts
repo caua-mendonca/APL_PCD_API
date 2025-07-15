@@ -1,7 +1,7 @@
 import { createContratante } from "../../model/createUser/createUser.js";
 import * as DB from "../../repository/insertDB/queryTools.js";
-import { getUser } from "../../model/getUser/getUser.js";
-import { get } from "http";
+import * as getUser  from "../../model/getUser/getUser.js";
+
 
 export let controllerContratante = (user:{
          nome_fantasia: string, razao_social: string, email: string, confirme_email: string, senha: string, confirme_senha: string, cnpj: string, telefone: string
@@ -14,7 +14,7 @@ export let controllerContratante = (user:{
 
 export let controllerGetContratante = async () => {
     console.log("Passando ao controllerGetContratante()")
-    let result = await getUser("contratante");
+    let result = await getUser.getUser("contratante");
     // if (result.rows.length > 0) {
     //     return result;
     // } else {
@@ -23,4 +23,14 @@ export let controllerGetContratante = async () => {
 
     console.log("Contratantes encontrados:", result.rows);
     return result.rows;
+}
+
+export let controllerGetContratanteById = async (id: number) => {
+    console.log("Passando ao controllerGetContratanteById()")
+    let result = await getUser.getUserByID("tb_empresa", id);
+    if (result.rows.length > 0) {
+        return result.rows[0];
+    } else {
+        return { message: "Contratante não encontrado." };
+    }
 }
