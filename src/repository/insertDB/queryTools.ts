@@ -105,3 +105,12 @@ export let insertIntoColaborador = async (
     ID,
   ]);
 };
+
+
+
+export let selectFromTable = async(table: string): Promise<any> => {
+  console.log("Conectando ao banco");
+  const query = `SELECT * FROM ${table};`;
+  return DB.pool.query(query);
+
+}
