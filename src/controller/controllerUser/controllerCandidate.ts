@@ -19,6 +19,7 @@ export let controllerCandadate = (body:{
       descricao_acessibilidade: string
 }) => {
 
+    console.log("Passando ao createCandidato()")
     let response = createCanditado(body);
     
     return response
