@@ -83,6 +83,7 @@ export let createContratante = (user: {
   try {
     let errorLog = [];
 
+    console.log("Criando Contratante pela classe")
     let newContratante = new Contratante(
       user.nome_fantasia,
       user.razao_social,
@@ -93,7 +94,7 @@ export let createContratante = (user: {
       user.cnpj,
       user.telefone
     );
-
+ console.log("Validando Dados")
     let emailIsValid: boolean = newContratante.email === newContratante.confirme_email;
     let passwordIsValid: boolean = newContratante.senha === newContratante.confirme_senha;
     let cnpjIsValid: boolean = validateCNPJ(newContratante.cnpj);
@@ -103,8 +104,10 @@ export let createContratante = (user: {
     !passwordIsValid ? errorLog.push("Senhas não coincidem ou inválidas") : null;
 
     if (errorLog.length > 0) {
+           console.log("Dados Invalidos")
       return errorLog;
     } else {
+           console.log("Dados Validos")
       query.insertIntoContratante(newContratante);
       return "Sucesso ao criar contratante";
     }
