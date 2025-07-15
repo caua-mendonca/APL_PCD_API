@@ -2,7 +2,7 @@ import express from "express";
 import * as DB from "./data/connect.js";
 import * as Routes from "./routes/routes.js";
 import * as controllerCandidate from "../controllerUser/controllerCandidate.js";
-import { controllerContratante } from "../controllerUser/controllerContratante.js";
+import * as controllerContratante from "../controllerUser/controllerContratante.js";
 import { controllerIFBR } from "../IFBR/controllerIFBR.js";
 import { controllerColaborador } from "../colaborador/controllerColaborador.js";
 import cors from "cors";
@@ -101,19 +101,29 @@ APP.put(Routes.updateCanditado, async (req, res) => {
   }
 });
 
-
   // ! CRUD Contratante
-  // ? POST Contratante
+  // * POST Contratante
   APP.post(Routes.createContratante, (req, res) => {
     let body = req.body;
     console.log("Dados recolhidos e passados para controller");
-    let result = controllerContratante(body);
+    let result = controllerContratante.controllerContratante(body);
     if (result) {
       res.status(200).send(result);
     } else {
       res.status(400).send({ message: result });
     }
   });
+
+  // * GET Contratante
+  APP.get(Routes.getContratante, async (req, res) => {
+    console.log("Dados recolhidos e passados para controller");
+    let result = await controllerContratante.controllerGetContratante();
+    if (result) {
+      res.status(200).send(result);
+    } else {
+      res.status(400).send({ message: result });
+    }
+  })
 
   // ! CRUD IFBR
   // ? POST Formulário IFBR
