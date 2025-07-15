@@ -5,6 +5,7 @@ export let deleteCanditado:string = "/deleteCanditado/:id";
 export let updateCanditado:string = "/updateCanditado/:id";
 
 export let createContratante:string = "/createContratante";
+export let getContratante:string = "/getContratante";
 
 export let formIFBR:string = "/formIFBR/:id"
 
