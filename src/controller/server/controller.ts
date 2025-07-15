@@ -19,9 +19,8 @@ export let conectServ = (PORT: string) => {
     console.log(`Server is running on port ${HTTP_PORT}`);
   });
 
-
   // ! CRUD Candidato
-  // ? POST Candidato
+  // * POST Candidato
   APP.post(Routes.createCanditado, (req, res) => {
     let body = req.body;
 
@@ -34,13 +33,31 @@ export let conectServ = (PORT: string) => {
     }
   });
 
-APP.get(Routes.getCanditado, async (req, res) => {
+  // * GET Candidato
+  APP.get(Routes.getCanditado, async (req, res) => {
+    console.log("Dados recolhidos e passados para controller");
+
+    try {
+      let result = await controllerCandidate.controllerGetCandidato();
+
+      if (Array.isArray(result)) {
+        res.status(200).send(result);
+      } else {
+        res.status(404).send({ message: result });
+      }
+    } catch (error) {
+      console.error("Erro ao buscar candidatos:", error);
+      res.status(500).send({ message: "Erro interno no servidor" });
+    }
+  });
+  APP.get(Routes.getCanditadoById, async (req, res) => {
+  const id = Number(req.params.id);
   console.log("Dados recolhidos e passados para controller");
 
   try {
-    let result = await controllerCandidate.controllerGetCandidato();
+    let result = await controllerCandidate.controllerGetCandidatoById(id);
 
-    if (Array.isArray(result)) {
+    if (result && typeof result === 'object') {
       res.status(200).send(result);
     } else {
       res.status(404).send({ message: result });
@@ -50,6 +67,7 @@ APP.get(Routes.getCanditado, async (req, res) => {
     res.status(500).send({ message: "Erro interno no servidor" });
   }
 });
+
 
   // ! CRUD Contratante
   // ? POST Contratante
