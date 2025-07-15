@@ -8,6 +8,7 @@ export let createContratante:string = "/createContratante";
 export let getContratante:string = "/getContratante";
 export let getContratanteById:string = "/getContratanteById/:id";
 export let deleteContratante:string = "/deleteContratante/:id";
+export let updateContratante:string = "/updateContratante/:id";
 
 export let formIFBR:string = "/formIFBR/:id"
 
