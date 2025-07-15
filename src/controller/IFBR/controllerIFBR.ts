@@ -6,15 +6,15 @@ export let controllerIFBR = async (
 ): Promise<any> => {
   try {
     if (ID === "1") {
-          console.log("Passando ao createIFBR()")
+      console.log("Passando ao createIFBR()");
       let ressult = IFBR.createIFBRCompleto(body);
-      if(await ressult === true){
+      if ((await ressult) === true) {
         return true;
       }
     } else if (ID === "2") {
-          console.log("Passando ao createIFBR()")
+      console.log("Passando ao createIFBR()");
       let ressult = IFBR.createIFBRReduzido(body);
-       if(await ressult === true){
+      if ((await ressult) === true) {
         return true;
       }
     } else {
