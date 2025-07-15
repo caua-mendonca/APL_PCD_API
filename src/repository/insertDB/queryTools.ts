@@ -47,8 +47,7 @@ export let insertIntoCandidate = async (user: {
     ]
   );
 
-  
-  console.log("Usuario registrado no Banco")
+  console.log("Usuario registrado no Banco");
 };
 
 export let insertIntoContratante = async (user: {
@@ -72,7 +71,7 @@ export let insertIntoContratante = async (user: {
       user.telefone,
     ]
   );
-  console.log("Usuario registrado no Banco")
+  console.log("Usuario registrado no Banco");
 };
 
 export const selectIDFrom = async (
@@ -106,11 +105,19 @@ export let insertIntoColaborador = async (
   ]);
 };
 
-
-
-export let selectFromTable = async(table: string): Promise<any> => {
+export let selectFromTable = async (table: string): Promise<any> => {
   console.log("Conectando ao banco");
   const query = `SELECT * FROM ${table};`;
   return DB.pool.query(query);
+};
 
-}
+export let selectFromIdWhere = async (
+  table: string,
+  id: number
+): Promise<any> => {
+  console.log("Conectando ao banco");
+
+  const query = `SELECT * FROM ${table} WHERE id = $1`;
+  return DB.pool.query(query, [id]);
+};
+
