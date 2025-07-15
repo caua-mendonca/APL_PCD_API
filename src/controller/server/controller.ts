@@ -51,42 +51,56 @@ export let conectServ = (PORT: string) => {
     }
   });
   APP.get(Routes.getCanditadoById, async (req, res) => {
+    const id = Number(req.params.id);
+    console.log("Dados recolhidos e passados para controller");
+
+    try {
+      let result = await controllerCandidate.controllerGetCandidatoById(id);
+
+      if (result && typeof result === "object") {
+        res.status(200).send(result);
+      } else {
+        res.status(404).send({ message: result });
+      }
+    } catch (error) {
+      console.error("Erro ao buscar candidatos:", error);
+      res.status(500).send({ message: "Erro interno no servidor" });
+    }
+  });
+
+  // * DELETE Candidato
+  APP.delete(Routes.deleteCanditado, async (req, res) => {
+    const id = Number(req.params.id);
+    console.log("Dados recolhidos e passados para controller");
+
+    try {
+      let result = await controllerCandidate.controllerDeleteCandidato(id);
+
+      if (result) {
+        res.status(200).send({ message: "Candidato deletado com sucesso!" });
+      } else {
+        res.status(404).send({ message: "Candidato não encontrado!" });
+      }
+    } catch (error) {
+      console.error("Erro ao deletar candidato:", error);
+      res.status(500).send({ message: "Erro interno no servidor" });
+    }
+  });
+  // * UPDATE Candidato
+APP.put(Routes.updateCanditado, async (req, res) => {
   const id = Number(req.params.id);
+  const body = req.body;
   console.log("Dados recolhidos e passados para controller");
 
   try {
-    let result = await controllerCandidate.controllerGetCandidatoById(id);
-
-    if (result && typeof result === 'object') {
-      res.status(200).send(result);
-    } else {
-      res.status(404).send({ message: result });
-    }
+    const result = await controllerCandidate.controllerUpdateCandidato(id, body);
+    res.status(200).json({ status: "sucesso", result });
   } catch (error) {
-    console.error("Erro ao buscar candidatos:", error);
-    res.status(500).send({ message: "Erro interno no servidor" });
+    console.error("Erro na rota PUT:", error);
+    res.status(500).json({ error: "Erro ao atualizar candidato." });
   }
 });
 
-// * DELETE Candidato
-  APP.delete(Routes.deleteCanditado, async (req, res) => {
-  const id = Number(req.params.id);
-  console.log("Dados recolhidos e passados para controller");
-
-  try {
-    let result = await controllerCandidate.controllerDeleteCandidato(id);
-
-    if (result) {
-      res.status(200).send({ message: "Candidato deletado com sucesso!" });
-    } else {
-      res.status(404).send({ message: "Candidato não encontrado!" });
-    }
-  }catch (error) {
-    console.error("Erro ao deletar candidato:", error);
-    res.status(500).send({ message: "Erro interno no servidor" });
-  }    
-
-  })
 
   // ! CRUD Contratante
   // ? POST Contratante
