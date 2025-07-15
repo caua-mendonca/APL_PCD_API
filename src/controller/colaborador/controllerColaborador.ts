@@ -6,6 +6,7 @@ export let controllerColaborador = async (user: {
   senha: string;
   setor: string;
 }) => {
+  console.log("Passando ao createColaborador()")
   let response = createColaborador(user);
 
   return response
