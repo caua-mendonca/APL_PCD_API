@@ -6,6 +6,7 @@ export let updateCanditado:string = "/updateCanditado/:id";
 
 export let createContratante:string = "/createContratante";
 export let getContratante:string = "/getContratante";
+export let getContratanteById:string = "/getContratanteById/:id";
 
 export let formIFBR:string = "/formIFBR/:id"
 
