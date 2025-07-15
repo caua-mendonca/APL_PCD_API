@@ -72,6 +72,7 @@ export let insertIntoContratante = async (user: {
       user.telefone,
     ]
   );
+  console.log("Usuario registrado no Banco")
 };
 
 export const selectIDFrom = async (
