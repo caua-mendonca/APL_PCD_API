@@ -1,6 +1,7 @@
 import { createCanditado } from "../../model/createUser/createUser.js";
 import * as getUser from "../../model/getUser/getUser.js";
 import {deleteUser}from "../../model/deleteUser/deleteUser.js"
+import { updateUser } from "../../model/updateUser/updateUser.js";
 
 export let controllerPostCandadate = (body: {
   name: string;
@@ -70,3 +71,7 @@ export let controllerDeleteCandidato = async (id: number) => {
     return false;
   }
 }
+export let controllerUpdateCandidato = async (id: number, body: object) => {
+  console.log("Passando ao controllerUpdateCandidato()");
+  return await updateUser("tb_candidato", id, body);
+};
