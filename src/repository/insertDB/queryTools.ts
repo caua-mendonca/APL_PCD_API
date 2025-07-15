@@ -129,3 +129,17 @@ export let deleteFromTable = async (table: string, id: number): Promise<any> => 
   ]);
   return result
 };
+
+export let updateUserColumn = async (
+  table: string,
+  id: number,
+  sets: string,
+  values: any[]
+): Promise<any> => {
+  console.log("Conectando ao banco");
+
+  const query = `UPDATE ${table} SET ${sets} WHERE id = $${values.length + 1}`;
+  values.push(id); // adiciona o id ao final do array
+
+  return await DB.pool.query(query, values);
+};
