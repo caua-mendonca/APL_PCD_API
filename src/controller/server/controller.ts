@@ -20,11 +20,11 @@ export let conectServ = (PORT: string) => {
   });
 
   // ! CRUD Candidato
-    // ? POST Candidato
+  // ? POST Candidato
   APP.post(Routes.createCanditado, (req, res) => {
     let body = req.body;
 
-    console.log("Dados recolhidos e passados para controller")
+    console.log("Dados recolhidos e passados para controller");
     let result = controllerCandadate(body);
     if (result == true) {
       res.status(200).send("Sucesso ao criar o candidato");
@@ -34,10 +34,10 @@ export let conectServ = (PORT: string) => {
   });
 
   // ! CRUD Contratante
-    // ? POST Contratante
+  // ? POST Contratante
   APP.post(Routes.createContratante, (req, res) => {
     let body = req.body;
-      console.log("Dados recolhidos e passados para controller")
+    console.log("Dados recolhidos e passados para controller");
     let result = controllerContratante(body);
     if (result) {
       res.status(200).send(result);
@@ -46,20 +46,23 @@ export let conectServ = (PORT: string) => {
     }
   });
 
+  // ! CRUD IFBR
+  // ? POST Formulário IFBR
   APP.post(Routes.formIFBR, async (req, res) => {
     const ID = req.params.id;
     const form = req.body;
 
+    console.log("Dados recolhidos e passados para controller");
     let result = controllerIFBR(ID, form);
-    if (await result == true) {
+    if ((await result) == true) {
       res.status(200).send(result);
     } else {
       res.status(400).send({ message: "Erro ao criar candidato!" });
     }
   });
 
-  APP.post(Routes.createColaborador, (req,res)=>{
-    let body = req.body
+  APP.post(Routes.createColaborador, (req, res) => {
+    let body = req.body;
 
     let result = controllerColaborador(body);
     if (result) {
@@ -67,7 +70,5 @@ export let conectServ = (PORT: string) => {
     } else {
       res.status(400).send({ message: "Erro ao criar colaborador!" });
     }
-
-
-  })
+  });
 };
