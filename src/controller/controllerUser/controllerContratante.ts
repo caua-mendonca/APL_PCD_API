@@ -2,6 +2,7 @@ import { createContratante } from "../../model/createUser/createUser.js";
 import * as DB from "../../repository/insertDB/queryTools.js";
 import * as getUser  from "../../model/getUser/getUser.js";
 import {deleteUser} from "../../model/deleteUser/deleteUser.js";
+import { updateUser } from "../../model/updateUser/updateUser.js";
 
 
 export let controllerContratante = (user:{
@@ -45,3 +46,13 @@ export let controllerDeleteContratante = async (id: number) => {
         return false;
     }
 }
+
+export let controllerUpdateContratante = async (id: number, body: object) => {
+    console.log("Passando ao controllerUpdateContratante()")
+    let result = await updateUser("tb_empresa", id, body);
+    if (result) {
+        return result;
+    } else {
+        return false;
+    }
+}   
