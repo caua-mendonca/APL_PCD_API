@@ -23,6 +23,8 @@ export let createCanditado = (user: {
   descricao_acessibilidade: string;
 }): any => {
   try {
+    
+    console.log("Criando Candidato pela classe")
     let errorLog = [];
     let newUser = new Candidate(
       user.name,
@@ -42,7 +44,7 @@ export let createCanditado = (user: {
       user.acessibilidade_trab,
       user.descricao_acessibilidade
     );
-
+    console.log("Validando Dados")
     let cpfIsValid: boolean = validateCpf(newUser.cpf);
     let dateIsValid: boolean = validateAge(newUser.data_nascimento);
     let emailIsValid: boolean = newUser.email === newUser.confirme_email;
@@ -56,10 +58,12 @@ export let createCanditado = (user: {
       : null;
 
     if (errorLog.length > 0) {
+      console.log("Dados Invalidos")
       return errorLog;
     } else {
+      console.log("Dados validos")
       query.insertIntoCandidate(newUser);
-      return "Sucesso ao criar o candidato";
+      return true;
     }
   } catch (error) {
     return error;
