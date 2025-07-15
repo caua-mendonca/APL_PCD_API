@@ -1,7 +1,7 @@
 import express from "express";
 import * as DB from "./data/connect.js";
 import * as Routes from "./routes/routes.js";
-import { controllerCandadate } from "../controllerUser/controllerCandidate.js";
+import * as controllerCandidate from "../controllerUser/controllerCandidate.js";
 import { controllerContratante } from "../controllerUser/controllerContratante.js";
 import { controllerIFBR } from "../IFBR/controllerIFBR.js";
 import { controllerColaborador } from "../colaborador/controllerColaborador.js";
@@ -19,19 +19,37 @@ export let conectServ = (PORT: string) => {
     console.log(`Server is running on port ${HTTP_PORT}`);
   });
 
+
   // ! CRUD Candidato
   // ? POST Candidato
   APP.post(Routes.createCanditado, (req, res) => {
     let body = req.body;
 
     console.log("Dados recolhidos e passados para controller");
-    let result = controllerCandadate(body);
+    let result = controllerCandidate.controllerPostCandadate(body);
     if (result == true) {
       res.status(200).send("Sucesso ao criar o candidato");
     } else {
       res.status(400).send({ message: result });
     }
   });
+
+APP.get(Routes.getCanditado, async (req, res) => {
+  console.log("Dados recolhidos e passados para controller");
+
+  try {
+    let result = await controllerCandidate.controllerGetCandidato();
+
+    if (Array.isArray(result)) {
+      res.status(200).send(result);
+    } else {
+      res.status(404).send({ message: result });
+    }
+  } catch (error) {
+    console.error("Erro ao buscar candidatos:", error);
+    res.status(500).send({ message: "Erro interno no servidor" });
+  }
+});
 
   // ! CRUD Contratante
   // ? POST Contratante
