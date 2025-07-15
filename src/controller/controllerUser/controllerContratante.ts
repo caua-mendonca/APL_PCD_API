@@ -1,6 +1,7 @@
 import { createContratante } from "../../model/createUser/createUser.js";
 import * as DB from "../../repository/insertDB/queryTools.js";
 import * as getUser  from "../../model/getUser/getUser.js";
+import {deleteUser} from "../../model/deleteUser/deleteUser.js";
 
 
 export let controllerContratante = (user:{
@@ -32,5 +33,15 @@ export let controllerGetContratanteById = async (id: number) => {
         return result.rows[0];
     } else {
         return { message: "Contratante não encontrado." };
+    }
+}
+
+export let controllerDeleteContratante = async (id: number) => {
+    console.log("Passando ao controllerDeleteContratante()")
+    let result = await deleteUser("tb_empresa", id);
+    if (result) {
+        return true;
+    } else {
+        return false;
     }
 }
