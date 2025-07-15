@@ -121,3 +121,11 @@ export let selectFromIdWhere = async (
   return DB.pool.query(query, [id]);
 };
 
+export let deleteFromTable = async (table: string, id: number): Promise<any> => {
+  console.log("Conectando ao banco");
+  let result = await DB.pool.query(`UPDATE ${table} SET status = $1 WHERE id = $2;`, [
+    false,
+    id,
+  ]);
+  return result
+};
