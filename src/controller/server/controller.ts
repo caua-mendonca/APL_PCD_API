@@ -68,6 +68,25 @@ export let conectServ = (PORT: string) => {
   }
 });
 
+// * DELETE Candidato
+  APP.delete(Routes.deleteCanditado, async (req, res) => {
+  const id = Number(req.params.id);
+  console.log("Dados recolhidos e passados para controller");
+
+  try {
+    let result = await controllerCandidate.controllerDeleteCandidato(id);
+
+    if (result) {
+      res.status(200).send({ message: "Candidato deletado com sucesso!" });
+    } else {
+      res.status(404).send({ message: "Candidato não encontrado!" });
+    }
+  }catch (error) {
+    console.error("Erro ao deletar candidato:", error);
+    res.status(500).send({ message: "Erro interno no servidor" });
+  }    
+
+  })
 
   // ! CRUD Contratante
   // ? POST Contratante
