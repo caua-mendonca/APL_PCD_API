@@ -6,3 +6,11 @@ export let getUser = async (table: string): Promise<any> => {
 
   return result;
 };
+
+export let getUserByID = async (table: string, id: number): Promise<any> => {
+  let result = await DB.selectFromIdWhere(table, id);
+
+  console.log("Dados recolhidos do banco de dados");
+
+  return result;
+};
