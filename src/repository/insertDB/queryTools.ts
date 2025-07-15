@@ -46,6 +46,9 @@ export let insertIntoCandidate = async (user: {
       user.descricao_acessibilidade,
     ]
   );
+
+  
+  console.log("Usuario registrado no Banco")
 };
 
 export let insertIntoContratante = async (user: {

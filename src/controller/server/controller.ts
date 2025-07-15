@@ -22,6 +22,7 @@ export let conectServ = (PORT: string) => {
   APP.post(Routes.createCanditado, (req, res) => {
     let body = req.body;
 
+    console.log("Dados recolhidos e passados para controller")
     let result = controllerCandadate(body);
     if (result == true) {
       res.status(200).send("Sucesso ao criar o candidato");

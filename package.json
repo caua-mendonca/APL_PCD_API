@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "tsc &&cross-env DB_USER=DBA_TIC DB_HOST=localhost DB_DATABASE=postgres DB_PASSWORD=Db_Tic_2025 DB_PORT=5432 node --watch build/index.js"
+    "start": "tsc &&cross-env DB_USER=postgres DB_HOST=localhost DB_DATABASE=postgres DB_PASSWORD=557782 DB_PORT=5432 node --watch build/index.js"
   },
   "repository": {
     "type": "git",
@@ -18,16 +18,16 @@
     "url": "https://github.com/cMendoncaaa/APL-WEB-PCD/issues"
   },
   "homepage": "https://github.com/cMendoncaaa/APL-WEB-PCD#readme",
-  "dependencies": {
+  "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
-    "@types/node": "^24.0.3",
+    "@types/node": "^24.0.13",
     "@types/pg": "^8.15.4",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.2.0",
     "express": "^5.1.0",
-    "pg": "^8.16.0",
+    "pg": "^8.16.3",
     "prompt-sync": "^4.2.0",
     "typescript": "^5.8.3"
   }
