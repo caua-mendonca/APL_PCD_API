@@ -6,6 +6,7 @@ import { promises } from "dns";
 export let createIFBRCompleto = async (
   body: [{ id: number; name: string; score: number }]
 ): Promise<any> => {
+  console.log("Criando variaveis no ambiente De Desenvolvimento");
   let errorLog = [];
   let dominioSensorial = new IFBR(1, "Dominio Sensorial", new Date());
   let dominioComunicacao = new IFBR(2, "Dominio Comunicação", new Date());
@@ -26,7 +27,7 @@ export let createIFBRCompleto = async (
     "Dominio Socialização e Comunidade",
     new Date()
   );
-
+  console.log("Validando dados do IFBR");
   body.forEach((Element) => {
     if (Element.id > 1 && Element.id < 2) {
       dominioSensorial.push(
@@ -96,8 +97,10 @@ export let createIFBRCompleto = async (
     );
 
     if (errorLog.length > 0) {
+      console.log("Dados Invalidos");
       return errorLog;
     } else {
+      console.log("Dados Validados");
       return true;
     }
   } catch (e) {
@@ -109,6 +112,7 @@ export let createIFBRReduzido = async (
   body: [{ id: number; name: string; score: number }]
 ) => {
   let errorLog = [];
+  console.log("Criando variaveis no ambiente De Desenvolvimento");
   let dominioSensorial = new IFBR(1, "Dominio Sensorial", new Date());
   let dominioComunicacao = new IFBR(2, "Dominio Comunicação", new Date());
   let dominioMobilidade = new IFBR(3, "Dominio Mobilidade", new Date());
@@ -129,6 +133,7 @@ export let createIFBRReduzido = async (
     new Date()
   );
 
+  console.log("Validando dados do IFBR");
   body.forEach((Element) => {
     if (Element.id > 1 && Element.id < 2) {
       dominioSensorial.push(
@@ -198,8 +203,10 @@ export let createIFBRReduzido = async (
     );
 
     if (errorLog.length > 0) {
+      console.log("Dados Invalidos");
       return errorLog;
     } else {
+      console.log("Dados Validados");
       return "Sucesso ao responder IFBR";
     }
   } catch (e) {
