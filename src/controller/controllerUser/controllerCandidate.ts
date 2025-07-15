@@ -1,5 +1,6 @@
 import { createCanditado } from "../../model/createUser/createUser.js";
 import * as getUser from "../../model/getUser/getUser.js";
+import {deleteUser}from "../../model/deleteUser/deleteUser.js"
 
 export let controllerPostCandadate = (body: {
   name: string;
@@ -56,3 +57,16 @@ export let controllerGetCandidatoById = async (id: number) => {
     return "Candidato não encontrado";
   }
 };
+
+export let controllerDeleteCandidato = async (id: number) => {
+  console.log("Passando ao controllerDeleteCandidato()");
+
+  let result = await deleteUser("tb_candidato", id);
+  console.log("Validando Dados");
+
+  if (result.rowCount > 0) {
+    return result;
+  } else {
+    return false;
+  }
+}
