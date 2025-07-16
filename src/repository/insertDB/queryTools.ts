@@ -121,6 +121,15 @@ export let selectFromIdWhere = async (
   return DB.pool.query(query, [id]);
 };
 
+export let selectWhereColaborador = async (
+  table: string,
+  id: number,
+): Promise<any> => {
+  console.log("Conectando ao banco");
+  const query = `SELECT colaborador FROM ${table} WHERE id = $1`;
+  return DB.pool.query(query, [id]);
+};
+
 export let deleteFromTable = async (table: string, id: number): Promise<any> => {
   console.log("Conectando ao banco");
   let result = await DB.pool.query(`UPDATE ${table} SET status = $1 WHERE id = $2;`, [
