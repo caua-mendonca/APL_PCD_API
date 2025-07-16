@@ -4,7 +4,7 @@ import * as Routes from "./routes/routes.js";
 import * as controllerCandidate from "../controllerUser/controllerCandidate.js";
 import * as controllerContratante from "../controllerUser/controllerContratante.js";
 import { controllerIFBR } from "../IFBR/controllerIFBR.js";
-import { controllerColaborador } from "../colaborador/controllerColaborador.js";
+import * as controllerColaborador from "../colaborador/controllerColaborador.js";
 import cors from "cors";
 
 const APP = express();
@@ -87,19 +87,22 @@ export let conectServ = (PORT: string) => {
     }
   });
   // * UPDATE Candidato
-APP.put(Routes.updateCanditado, async (req, res) => {
-  const id = Number(req.params.id);
-  const body = req.body;
-  console.log("Dados recolhidos e passados para controller");
+  APP.put(Routes.updateCanditado, async (req, res) => {
+    const id = Number(req.params.id);
+    const body = req.body;
+    console.log("Dados recolhidos e passados para controller");
 
-  try {
-    const result = await controllerCandidate.controllerUpdateCandidato(id, body);
-    res.status(200).json({ status: "sucesso", result });
-  } catch (error) {
-    console.error("Erro na rota PUT:", error);
-    res.status(500).json({ error: "Erro ao atualizar candidato." });
-  }
-});
+    try {
+      const result = await controllerCandidate.controllerUpdateCandidato(
+        id,
+        body
+      );
+      res.status(200).json({ status: "sucesso", result });
+    } catch (error) {
+      console.error("Erro na rota PUT:", error);
+      res.status(500).json({ error: "Erro ao atualizar candidato." });
+    }
+  });
 
   // ! CRUD Contratante
   // * POST Contratante
@@ -123,7 +126,7 @@ APP.put(Routes.updateCanditado, async (req, res) => {
     } else {
       res.status(400).send({ message: result });
     }
-  })
+  });
 
   APP.get(Routes.getContratanteById, async (req, res) => {
     const id = Number(req.params.id);
@@ -134,7 +137,7 @@ APP.put(Routes.updateCanditado, async (req, res) => {
     } else {
       res.status(400).send({ message: result });
     }
-  })
+  });
 
   // * DELETE Contratante
   APP.delete(Routes.deleteContratante, async (req, res) => {
@@ -153,7 +156,10 @@ APP.put(Routes.updateCanditado, async (req, res) => {
     const id = Number(req.params.id);
     const body = req.body;
     console.log("Dados recolhidos e passados para controller");
-    let result = await controllerContratante.controllerUpdateContratante(id, body);
+    let result = await controllerContratante.controllerUpdateContratante(
+      id,
+      body
+    );
     if (result) {
       res.status(200).send(result);
     } else {
@@ -161,7 +167,7 @@ APP.put(Routes.updateCanditado, async (req, res) => {
     }
   });
   // ! CRUD IFBR
-  // ? POST Formulário IFBR
+  // * POST Formulário IFBR
   APP.post(Routes.formIFBR, async (req, res) => {
     const ID = req.params.id;
     const form = req.body;
@@ -176,16 +182,33 @@ APP.put(Routes.updateCanditado, async (req, res) => {
   });
 
   // ! CRUD Colaborador
-  // ? POST Colaborador
+  // * POST Colaborador
   APP.post(Routes.createColaborador, (req, res) => {
     let body = req.body;
 
     console.log("Dados recolhidos e passados para controller");
-    let result = controllerColaborador(body);
+    let result = controllerColaborador.controllerColaborador(body);
     if (result) {
       res.status(200).send(result);
     } else {
       res.status(400).send({ message: "Erro ao criar colaborador!" });
+    }
+  });
+
+  // * GET Colaborador
+  APP.get(Routes.getColaborador, async (req, res) => {
+    const id = Number(req.params.id);
+    console.log(id, typeof id);
+
+    console.log("Dados recolhidos e passados para controller");
+    let result = await controllerColaborador.controllerGetColaborador(
+      "tb_empresa",
+      id
+    );
+    if (result) {
+      res.status(200).send(result);
+    } else {
+      res.status(400).send({ message: "Erro ao buscar colaboradores!" });
     }
   });
 };
