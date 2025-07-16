@@ -13,3 +13,4 @@ export let updateContratante:string = "/updateContratante/:id";
 export let formIFBR:string = "/formIFBR/:id"
 
 export let createColaborador:string = "/createColaborador";
+export let getColaborador:string = "/getColaborador/:id";
