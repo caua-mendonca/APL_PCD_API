@@ -1,5 +1,6 @@
 // server/data/connect.ts (ou .js)
 import { Pool } from "pg";
+import "dotenv/config";
 
 export const pool = new Pool({
   user: process.env.DB_USER,
