@@ -8,9 +8,17 @@ export let getUser = async (table: string): Promise<any> => {
 };
 
 export let getUserByID = async (table: string, id: number): Promise<any> => {
-  let result = await DB.selectFromIdWhere(table, id);
+  let result = await DB.selectWhereColaborador(table, id);
 
   console.log("Dados recolhidos do banco de dados");
 
   return result;
 };
+
+export let getColaborador = async (table: string, id: number): Promise<any> => {
+  let result = await DB.selectWhereColaborador(table, id);
+  console.log("Dados recolhidos do banco de dados");
+
+  return result;
+};
+
