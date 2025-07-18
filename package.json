@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "tsc && node --watch build/index.js"
+    "start": "tsc && cross-env DB_USER=postgres DB_HOST=localhost DB_DATABASE=postgres DB_PASSWORD=557782 DB_PORT=5432 node --watch build/index.js"
   },
   "repository": {
     "type": "git",
