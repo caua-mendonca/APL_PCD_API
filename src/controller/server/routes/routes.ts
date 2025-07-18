@@ -14,3 +14,5 @@ export let formIFBR:string = "/formIFBR/:id"
 
 export let createColaborador:string = "/createColaborador/:id";
 export let getColaborador:string = "/getColaborador/:id";
+
+export let createVaga:string = "/createVaga/:id";
