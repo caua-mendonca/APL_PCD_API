@@ -44,6 +44,7 @@ export let createCanditado = (user: {
       user.acessibilidade_trab,
       user.descricao_acessibilidade
     );
+    newUser.setId();
     console.log("Validando Dados")
     let cpfIsValid: boolean = validateCpf(newUser.cpf);
     let dateIsValid: boolean = validateAge(newUser.data_nascimento);
