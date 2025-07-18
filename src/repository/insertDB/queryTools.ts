@@ -91,6 +91,18 @@ export const selectIDFrom = async (
   }
 };
 
+export const selectId = async (
+  table: string,
+  id: string
+): Promise<boolean> => {
+  const query = `SELECT id FROM ${table} WHERE id = $1`;
+  const result = await DB.pool.query(query, [id]);
+
+  // Retorna true se encontrou algum ID igual
+  return (result.rowCount ?? 0) > 0;
+};
+
+
 export let insertIntoIFBR = async (column: string, json: IFBR, ID: number) => {
   await DB.pool.query(`UPDATE tb_candidato SET ${column} = $1 WHERE id = $2;`, [
     json,
