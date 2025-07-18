@@ -6,7 +6,7 @@ export let createColaborador = async (user: {
   email: string;
   senha: string;
   setor: string;
-}) => {
+}, id_empresa: string) => {
   let errorLog = [];
   console.log("Criando Colaborador pela classe");
   let colaborador = new Colaborador(
@@ -16,10 +16,14 @@ export let createColaborador = async (user: {
     user.setor
   );
   try {
-    let resut = await DB.selectIDFrom("tb_empresa", "06990590000123");
+    colaborador.setId();
+    while (colaborador.id == "") {
+      await colaborador.setId();
+    }
 
-    DB.insertIntoColaborador("colaborador", colaborador, resut.rows[0].id);
-    console.log("Dados Validos");
+    DB.insertIntoColaborador(colaborador.id, colaborador.name, colaborador.email, colaborador.senha, colaborador.setor);
+    DB.updateColaboradorEmpresa(colaborador.id, id_empresa);
+    DB.insertEmpresaColaborador(colaborador.id, id_empresa);
     return true;
   } catch (error) {
     console.log("Dados Invalidos");
