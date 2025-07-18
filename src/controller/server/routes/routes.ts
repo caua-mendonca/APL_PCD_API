@@ -16,3 +16,4 @@ export let createColaborador:string = "/createColaborador/:id";
 export let getColaborador:string = "/getColaborador/:id";
 
 export let createVaga:string = "/createVaga/:id";
+export let candidatarVaga:string = "/registerVaga/:id";
