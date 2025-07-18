@@ -55,6 +55,7 @@ export let insertIntoCandidate = async (user: {
 };
 
 export let insertIntoContratante = async (user: {
+  id: string;
   nome_fantasia: string;
   razao_social: string;
   email: string;
@@ -63,16 +64,21 @@ export let insertIntoContratante = async (user: {
   confirme_senha: string;
   cnpj: string;
   telefone: string;
+  acessibilidade: string;
+  status: boolean;
 }) => {
   DB.pool.query(
-    `INSERT INTO tb_empresa (nome_fantasia, razao_social, email, senha, cnpj, telefone) VALUES ($1, $2, $3, $4, $5, $6)`,
+    `INSERT INTO tb_empresa (id, nome_fantasia, razao_social, email, senha, cnpj, telefone, status_empresa, acessibilidade) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
     [
+      user.id,
       user.nome_fantasia,
       user.razao_social,
       user.email,
       user.senha,
       user.cnpj,
       user.telefone,
+      user.status,
+      user.acessibilidade
     ]
   );
   console.log("Usuario registrado no Banco");
