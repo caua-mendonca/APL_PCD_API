@@ -1,7 +1,7 @@
 import { get } from "http";
 import { createColaborador } from "../../model/colaborador/createColaborador.js";
 import * as getUser from "../../model/getUser/getUser.js";
-import { createVaga } from "../../model/postVaga/postVaga.js";
+import { createVaga } from "../../model/vaga/postVaga.js";
 
 export let controllerColaborador = async (
   user: {
