@@ -4,6 +4,7 @@ import { Contratante } from "../class/contratante.js";
 import { validateAge } from "../validateData/validateAge.js";
 import { validateCNPJ } from "../validateData/validateCNPJ.js";
 import * as query from "../../repository/insertDB/queryTools.js";
+import { validateId } from "../validateId/validateId.js";
 export let createCanditado = (user: {
   name: string;
   email: string;
@@ -23,8 +24,7 @@ export let createCanditado = (user: {
   descricao_acessibilidade: string;
 }): any => {
   try {
-    
-    console.log("Criando Candidato pela classe")
+    console.log("Criando Candidato pela classe");
     let errorLog = [];
     let newUser = new Candidate(
       user.name,
@@ -44,13 +44,18 @@ export let createCanditado = (user: {
       user.acessibilidade_trab,
       user.descricao_acessibilidade
     );
+
     newUser.setId();
-    console.log("Validando Dados")
+    console.log("Validando Dados");
+    let idIsValid: any = validateId(newUser.id);
     let cpfIsValid: boolean = validateCpf(newUser.cpf);
     let dateIsValid: boolean = validateAge(newUser.data_nascimento);
     let emailIsValid: boolean = newUser.email === newUser.confirme_email;
     let passwordIsValid: boolean = newUser.senha === newUser.confirme_senha;
 
+    while (idIsValid == "") {
+      newUser.setId();
+    }
     !cpfIsValid ? errorLog.push("CPF inválido") : null;
     !dateIsValid ? errorLog.push("Data de nascimento inválida") : null;
     !emailIsValid ? errorLog.push("Emails não coincidem ou inválidos") : null;
@@ -59,10 +64,10 @@ export let createCanditado = (user: {
       : null;
 
     if (errorLog.length > 0) {
-      console.log("Dados Invalidos")
+      console.log("Dados Invalidos");
       return errorLog;
     } else {
-      console.log("Dados validos")
+      console.log("Dados validos");
       query.insertIntoCandidate(newUser);
       return true;
     }
@@ -84,7 +89,7 @@ export let createContratante = (user: {
   try {
     let errorLog = [];
 
-    console.log("Criando Contratante pela classe")
+    console.log("Criando Contratante pela classe");
     let newContratante = new Contratante(
       user.nome_fantasia,
       user.razao_social,
@@ -95,20 +100,24 @@ export let createContratante = (user: {
       user.cnpj,
       user.telefone
     );
- console.log("Validando Dados")
-    let emailIsValid: boolean = newContratante.email === newContratante.confirme_email;
-    let passwordIsValid: boolean = newContratante.senha === newContratante.confirme_senha;
+    console.log("Validando Dados");
+    let emailIsValid: boolean =
+      newContratante.email === newContratante.confirme_email;
+    let passwordIsValid: boolean =
+      newContratante.senha === newContratante.confirme_senha;
     let cnpjIsValid: boolean = validateCNPJ(newContratante.cnpj);
 
     !cnpjIsValid ? errorLog.push("CNPJ inválido") : null;
     !emailIsValid ? errorLog.push("Emails não coincidem ou inválidos") : null;
-    !passwordIsValid ? errorLog.push("Senhas não coincidem ou inválidas") : null;
+    !passwordIsValid
+      ? errorLog.push("Senhas não coincidem ou inválidas")
+      : null;
 
     if (errorLog.length > 0) {
-           console.log("Dados Invalidos")
+      console.log("Dados Invalidos");
       return errorLog;
     } else {
-           console.log("Dados Validos")
+      console.log("Dados Validos");
       query.insertIntoContratante(newContratante);
       return "Sucesso ao criar contratante";
     }
@@ -116,4 +125,3 @@ export let createContratante = (user: {
     return error;
   }
 };
-
