@@ -6,6 +6,11 @@ import * as controllerContratante from "../controllerUser/controllerContratante.
 import { controllerIFBR } from "../IFBR/controllerIFBR.js";
 import * as controllerColaborador from "../colaborador/controllerColaborador.js";
 import cors from "cors";
+import { Request, Response, NextFunction } from "express";
+import {
+  validateId,
+  validateIdContratante,
+} from "../../model/validateId/validateId.js";
 
 const APP = express();
 APP.use(express.json());
@@ -210,6 +215,38 @@ export let conectServ = (PORT: string) => {
       res.status(200).send(result);
     } else {
       res.status(400).send({ message: "Erro ao buscar colaboradores!" });
+    }
+  });
+
+  // ! MIDLEWARE
+  let idIsValid = async (req: Request, res: Response, next: NextFunction) => {
+    const id = String(req.params.id);
+
+    let isValid: any = validateIdContratante(id);
+
+    console.log(isValid);
+    if (isValid === false) {
+      res
+        .status(400)
+        .send({ message: "ID inválido, Apenas Empresas podem criar vagas!" });
+    } else {
+      console.log("ID validado, prosseguindo...");
+      next();
+    }
+  };
+
+  // ! CRUD Vaga
+  // * POST Vaga
+  APP.post(Routes.createVaga, idIsValid, (req, res) => {
+    let body = req.body;
+    let id = req.params.id;
+    console.log("Dados recolhidos e passados para controller");
+    let result = controllerColaborador.postVaga(body, id);
+
+    if (result) {
+      res.status(200).send(result);
+    } else {
+      res.status(400).send({ message: "Erro ao criar vaga!" });
     }
   });
 };
