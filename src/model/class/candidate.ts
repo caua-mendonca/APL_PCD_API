@@ -1,3 +1,5 @@
+import * as DB from "../../repository/insertDB/queryTools.js";
+
 export class Candidate {
   public id: string;
   public name: string;
@@ -54,9 +56,21 @@ export class Candidate {
     this.descricao_acessibilidade = descricao_acessibilidade;
   }
 
-  public setId(): void {
+  public async setId(): Promise<void> {
     let prefix = "CAND-";
     let suffix = Math.floor(Math.random() * 1000000);
-    this.id = prefix + suffix;
+      this.id = prefix + suffix;
+
+
+    // let existingId = await DB.selectId("tb_candidato", prefix + suffix);
+
+    // console.log(existingId);
+
+    // if (existingId === true) {
+    //   await this.setId();
+    // } else {
+    //   this.id = prefix + suffix;
+    //   console.log("ID definido:", this.id);
+    // }
   }
 }
