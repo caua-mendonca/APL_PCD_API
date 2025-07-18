@@ -3,7 +3,7 @@ import * as DB from "../../repository/insertDB/queryTools.js";
 import * as getUser  from "../../model/getUser/getUser.js";
 import {deleteUser} from "../../model/deleteUser/deleteUser.js";
 import { updateUser } from "../../model/updateUser/updateUser.js";
-import {createVaga} from "../../model/postVaga/postVaga.js";
+import {createVaga} from "../../model/vaga/postVaga.js";
 
 
 export let controllerContratante = (user:{
