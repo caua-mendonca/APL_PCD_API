@@ -3,6 +3,7 @@ import { IFBR } from "../../model/class/ifbr.js";
 import { Colaborador } from "../../model/class/colaborador.js";
 
 export let insertIntoCandidate = async (user: {
+  id:string;
   name: string;
   email: string;
   confirme_email: string;
@@ -19,17 +20,19 @@ export let insertIntoCandidate = async (user: {
   descricao_def: string;
   acessibilidade_trab: boolean;
   descricao_acessibilidade: string;
+  status: boolean;
 }) => {
   DB.pool.query(
     `INSERT INTO tb_candidato (
-    nome, email, senha, telefone, cpf,  data_nascimento,
+    id, nome, email, senha, telefone, cpf,  data_nascimento,
     def_visual, def_auditiva, def_fisica, def_intelectual, outra_def,
-    descricao_def, acessibilidade_trab, descricao_acessibilidade
+    desc_def, acess_trab, desc_acess, status_usuario
   ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8,
-    $9, $10, $11, $12, $13, $14
+    $9, $10, $11, $12, $13, $14, $15, $16
   )`,
     [
+      user.id,
       user.name,
       user.email,
       user.senha,
@@ -44,6 +47,7 @@ export let insertIntoCandidate = async (user: {
       user.descricao_def,
       user.acessibilidade_trab,
       user.descricao_acessibilidade,
+      user.status
     ]
   );
 
