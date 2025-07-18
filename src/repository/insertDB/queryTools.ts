@@ -224,7 +224,7 @@ export let selectFromTable = async (table: string): Promise<any> => {
 
 export let selectFromIdWhere = async (
   table: string,
-  id: number
+  id: string
 ): Promise<any> => {
   console.log("Conectando ao banco");
 
@@ -265,4 +265,49 @@ export let updateUserColumn = async (
   values.push(id);
 
   return await DB.pool.query(query, values);
+};
+
+
+export const insertVaga = async (
+  id: string,
+  data_inicio: Date,
+  data_fim: Date,
+  status_vaga: boolean,
+  titulo: string,
+  descricao: string,
+  salario: number,
+  localidade: string,
+  acess: string,
+  id_creator: string
+): Promise<boolean> => {
+  const query = `
+    INSERT INTO tb_vaga (
+      id,
+      data_inicio,
+      data_fim,
+      status_vaga,
+      titulo,
+      descricao,
+      salario,
+      localidade,
+      acess,
+      id_creator
+    ) VALUES (
+      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+    )
+  `;
+
+  await DB.pool.query(query, [
+    id,
+    data_inicio,
+    data_fim,
+    status_vaga,
+    titulo,
+    descricao,
+    salario,
+    localidade,
+    acess,
+    id_creator,
+  ]);
+  return true;
 };
