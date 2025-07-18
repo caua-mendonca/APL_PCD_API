@@ -104,16 +104,56 @@ export const selectId = async (
   const query = `SELECT id FROM ${table} WHERE id = $1`;
   const result = await DB.pool.query(query, [id]);
 
-  // Retorna true se encontrou algum ID igual
   return (result.rowCount ?? 0) > 0;
 };
 
 
-export let insertIntoIFBR = async (column: string, json: IFBR, ID: number) => {
-  await DB.pool.query(`UPDATE tb_candidato SET ${column} = $1 WHERE id = $2;`, [
-    json,
-    ID,
+export let insertIntoIFBR = async (id: number, name: string, data: Date, score: number, id_tupla: string) => {
+  await DB.pool.query(`INSERT INTO tb_ifbr (id_dominio, nome, data_resposta, score, id_ifbr) VALUES ($1, $2, $3, $4, $5);`, [
+    id,
+    name,
+    data,
+    score,
+    id_tupla
   ]);
+};
+
+export let updateIfbrCandidato = async (
+  id: string, id_ifbr: string) => {
+  await DB.pool.query(`UPDATE tb_candidato SET id_ifbr = $1 WHERE id = $2;`, [
+    id_ifbr,
+    id
+  ]);
+};
+
+export const insertCandidatoIFBRData = async () => {
+  const sql = `
+    INSERT INTO tb_candidato_ifbr (
+      tb_candidato_cpf,
+      tb_candidato_id,
+      tb_ifbr_id_dominio,
+      tb_ifbr_score,
+      tb_ifbr_id_ifbr
+    )
+    SELECT 
+      c.cpf,
+      c.id,
+      i.id_dominio,
+      i.score,
+      c.id_ifbr
+    FROM tb_candidato c
+    JOIN tb_ifbr i
+      ON c.id_ifbr = i.id_ifbr
+    ON CONFLICT DO NOTHING;
+  `;
+
+  try {
+    await DB.pool.query(sql);
+    console.log("✅ Inserção na tb_candidato_ifbr realizada com sucesso!");
+  } catch (error) {
+    console.error("❌ Erro ao inserir dados em tb_candidato_ifbr:", error);
+    throw error;
+  }
 };
 
 export let insertIntoColaborador = async (
@@ -170,7 +210,7 @@ export let updateUserColumn = async (
   console.log("Conectando ao banco");
 
   const query = `UPDATE ${table} SET ${sets} WHERE id = $${values.length + 1}`;
-  values.push(id); // adiciona o id ao final do array
+  values.push(id);
 
   return await DB.pool.query(query, values);
 };
