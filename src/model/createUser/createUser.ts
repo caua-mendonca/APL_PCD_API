@@ -85,6 +85,7 @@ export let createContratante = (user: {
   confirme_senha: string;
   cnpj: string;
   telefone: string;
+  acessibilidade: string;
 }): any => {
   try {
     let errorLog = [];
@@ -98,9 +99,14 @@ export let createContratante = (user: {
       user.senha,
       user.confirme_senha,
       user.cnpj,
-      user.telefone
+      user.telefone,
+      user.acessibilidade
     );
     console.log("Validando Dados");
+    newContratante.setId();
+    while (newContratante.id == "") {
+      newContratante.setId();
+    }
     let emailIsValid: boolean =
       newContratante.email === newContratante.confirme_email;
     let passwordIsValid: boolean =
