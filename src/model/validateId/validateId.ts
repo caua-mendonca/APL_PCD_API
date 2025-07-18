@@ -9,3 +9,9 @@ export let validateIdContratante = async (id: string):Promise<boolean> => {
    let arr: string[] = id.toUpperCase().split("-");
    return arr[0] == "EMP" || arr[0] == "COLAB" ? true :false;
 }
+
+
+export let validateIdCandidato = async (id: string): Promise<boolean> => {
+   let arr: string[] = id.toUpperCase().split("-");
+   return arr[0] == "CAND" ? true : false;
+}
