@@ -311,3 +311,22 @@ export const insertVaga = async (
   ]);
   return true;
 };
+
+
+export const insertCandidateVaga = async (
+  id_vaga: string,
+  id_candidate: string
+): Promise<boolean> => {
+  try {
+      let query = `INSERT INTO tb_candidato_vaga (tb_vaga_id,tb_candidato_id) VALUES ($1, $2);`;
+  await DB.pool.query(query, [id_vaga, id_candidate]);
+  return true;
+  } catch (error) {
+    console.log("Erro ao inserir candidato na vaga:", error);
+    return false;
+  }
+
+}
+
+
+
