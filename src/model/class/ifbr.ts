@@ -1,21 +1,17 @@
-import {QuestIFBR} from "./questIFBR";
+import { QuestIFBR } from "./questIFBR";
 
 export class IFBR {
+  public idTable: string;
   public id: number;
   public name: string;
-  public quest: QuestIFBR[];
+  public score: number;
   public date: Date;
 
-  constructor(id: number, name: string, date: Date) {
+  constructor(id: number, name: string, date: Date, score: number) {
+    this.idTable = "";
     this.id = id;
     this.name = name;
-    this.quest = [];
     this.date = date;
+    this.score = score
   }
-
-  public push(quest: QuestIFBR) {
-    this.quest.push(quest);
-  }
-
-
 }
