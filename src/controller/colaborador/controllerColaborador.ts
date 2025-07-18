@@ -7,9 +7,9 @@ export let controllerColaborador = async (user: {
   email: string;
   senha: string;
   setor: string;
-}) => {
+}, id_empresa: string) => {
   console.log("Passando ao createColaborador()")
-  let response = createColaborador(user);
+  let response = createColaborador(user, id_empresa);
 
   return response
 };
