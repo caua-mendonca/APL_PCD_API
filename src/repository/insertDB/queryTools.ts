@@ -3,7 +3,7 @@ import { IFBR } from "../../model/class/ifbr.js";
 import { Colaborador } from "../../model/class/colaborador.js";
 
 export let insertIntoCandidate = async (user: {
-  id:string;
+  id: string;
   name: string;
   email: string;
   confirme_email: string;
@@ -47,7 +47,7 @@ export let insertIntoCandidate = async (user: {
       user.descricao_def,
       user.acessibilidade_trab,
       user.descricao_acessibilidade,
-      user.status
+      user.status,
     ]
   );
 
@@ -78,7 +78,7 @@ export let insertIntoContratante = async (user: {
       user.cnpj,
       user.telefone,
       user.status,
-      user.acessibilidade
+      user.acessibilidade,
     ]
   );
   console.log("Usuario registrado no Banco");
@@ -97,32 +97,30 @@ export const selectIDFrom = async (
   }
 };
 
-export const selectId = async (
-  table: string,
-  id: string
-): Promise<boolean> => {
+export const selectId = async (table: string, id: string): Promise<boolean> => {
   const query = `SELECT id FROM ${table} WHERE id = $1`;
   const result = await DB.pool.query(query, [id]);
 
   return (result.rowCount ?? 0) > 0;
 };
 
-
-export let insertIntoIFBR = async (id: number, name: string, data: Date, score: number, id_tupla: string) => {
-  await DB.pool.query(`INSERT INTO tb_ifbr (id_dominio, nome, data_resposta, score, id_ifbr) VALUES ($1, $2, $3, $4, $5);`, [
-    id,
-    name,
-    data,
-    score,
-    id_tupla
-  ]);
+export let insertIntoIFBR = async (
+  id: number,
+  name: string,
+  data: Date,
+  score: number,
+  id_tupla: string
+) => {
+  await DB.pool.query(
+    `INSERT INTO tb_ifbr (id_dominio, nome, data_resposta, score, id_ifbr) VALUES ($1, $2, $3, $4, $5);`,
+    [id, name, data, score, id_tupla]
+  );
 };
 
-export let updateIfbrCandidato = async (
-  id: string, id_ifbr: string) => {
+export let updateIfbrCandidato = async (id: string, id_ifbr: string) => {
   await DB.pool.query(`UPDATE tb_candidato SET id_ifbr = $1 WHERE id = $2;`, [
     id_ifbr,
-    id
+    id,
   ]);
 };
 
@@ -157,14 +155,65 @@ export const insertCandidatoIFBRData = async () => {
 };
 
 export let insertIntoColaborador = async (
-  column: string,
-  json: Colaborador,
-  ID: number
+  id: string,
+  name: string,
+  email: string,
+  senha: string,
+  setor: string
 ) => {
-  await DB.pool.query(`UPDATE tb_empresa SET ${column} = $1 WHERE id = $2;`, [
-    json,
-    ID,
-  ]);
+  await DB.pool.query(
+    `INSERT INTO tb_colaborador (
+    id_colaborador, nome, setor, email, senha
+  ) VALUES (
+    $1, $2, $3, $4, $5
+  )`,
+    [id, name, setor, email, senha]
+  );
+};
+
+export let insertEmpresaColaborador = async (
+  id_colaborador: string,
+  id_empresa: string
+) => {
+  try {
+    const empresa = await DB.pool.query(
+      `SELECT cnpj, razao_social FROM tb_empresa WHERE id = $1`,
+      [id_empresa]
+    );
+
+    if (empresa.rowCount === 0) {
+      throw new Error("Empresa não encontrada");
+    }
+
+    const { cnpj, razao_social } = empresa.rows[0];
+
+    const sql = `
+      INSERT INTO tb_empresa_colaborador (
+        tb_empresa_id,
+        tb_colaborador_id_colaborador
+      )
+      VALUES ($1, $2)
+      ON CONFLICT DO NOTHING;
+    `;
+
+    await DB.pool.query(sql, [id_empresa, id_colaborador]);
+    console.log("✅ Inserção na tb_empresa_colaborador realizada com sucesso!");
+  } catch (error) {
+    console.error("❌ Erro ao inserir dados em tb_empresa_colaborador:", error);
+    throw error;
+  }
+};
+
+
+
+export let updateColaboradorEmpresa = async (
+  id: string,
+  id_empresa: string
+) => {
+  await DB.pool.query(
+    `UPDATE tb_empresa SET id_colaborador = $1 WHERE id = $2;`,
+    [id, id_empresa]
+  );
 };
 
 export let selectFromTable = async (table: string): Promise<any> => {
@@ -185,20 +234,23 @@ export let selectFromIdWhere = async (
 
 export let selectWhereColaborador = async (
   table: string,
-  id: number,
+  id: number
 ): Promise<any> => {
   console.log("Conectando ao banco");
   const query = `SELECT colaborador FROM ${table} WHERE id = $1`;
   return DB.pool.query(query, [id]);
 };
 
-export let deleteFromTable = async (table: string, id: number): Promise<any> => {
+export let deleteFromTable = async (
+  table: string,
+  id: number
+): Promise<any> => {
   console.log("Conectando ao banco");
-  let result = await DB.pool.query(`UPDATE ${table} SET status = $1 WHERE id = $2;`, [
-    false,
-    id,
-  ]);
-  return result
+  let result = await DB.pool.query(
+    `UPDATE ${table} SET status = $1 WHERE id = $2;`,
+    [false, id]
+  );
+  return result;
 };
 
 export let updateUserColumn = async (
