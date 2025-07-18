@@ -9,6 +9,7 @@ import cors from "cors";
 import { Request, Response, NextFunction } from "express";
 import {
   validateId,
+  validateIdCandidato,
   validateIdContratante,
 } from "../../model/validateId/validateId.js";
 
@@ -234,9 +235,25 @@ export let conectServ = (PORT: string) => {
       next();
     }
   };
+  let idIsValidVaga = async (req: Request, res: Response, next: NextFunction) => {
+    const id = String(req.params.id);
+
+    let isValid: any = validateIdCandidato(id);
+
+    console.log(isValid);
+    if (isValid === false) {
+      res
+        .status(400)
+        .send({ message: "ID inválido, Apenas Candidatos podem se inscrever à vagas!" });
+    } else {
+      console.log("ID validado, prosseguindo...");
+      next();
+    }
+    
+  }
 
   // ! CRUD Vaga
-  // * POST Vaga
+  // * POST Criar Vaga
   APP.post(Routes.createVaga, idIsValid, (req, res) => {
     let body = req.body;
     let id = req.params.id;
@@ -247,6 +264,19 @@ export let conectServ = (PORT: string) => {
       res.status(200).send(result);
     } else {
       res.status(400).send({ message: "Erro ao criar vaga!" });
+    }
+  });
+  // * POST Candidatar a vaga
+  APP.post(Routes.candidatarVaga,idIsValidVaga, (req, res) => {
+    let id_vaga= String(Object.values(req.body));
+    console.log(id_vaga, typeof id_vaga);
+    let id_candidate = req.params.id;
+    console.log("Dados recolhidos e passados para controller");
+    let result = controllerCandidate.candidatarVaga(id_candidate, id_vaga);
+    if (result) {
+      res.status(200).send(result);
+    } else {
+      res.status(400).send({ message: "Erro ao candidatar a vaga!" });
     }
   });
 };
