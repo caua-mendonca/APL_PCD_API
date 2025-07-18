@@ -185,9 +185,10 @@ export let conectServ = (PORT: string) => {
   // * POST Colaborador
   APP.post(Routes.createColaborador, (req, res) => {
     let body = req.body;
+    let id = req.params.id;
 
     console.log("Dados recolhidos e passados para controller");
-    let result = controllerColaborador.controllerColaborador(body);
+    let result = controllerColaborador.controllerColaborador(body, id);
     if (result) {
       res.status(200).send(result);
     } else {
