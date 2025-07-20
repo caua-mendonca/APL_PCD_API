@@ -204,8 +204,6 @@ export let insertEmpresaColaborador = async (
   }
 };
 
-
-
 export let updateColaboradorEmpresa = async (
   id: string,
   id_empresa: string
@@ -267,7 +265,6 @@ export let updateUserColumn = async (
   return await DB.pool.query(query, values);
 };
 
-
 export const insertVaga = async (
   id: string,
   data_inicio: Date,
@@ -312,21 +309,48 @@ export const insertVaga = async (
   return true;
 };
 
+export let insertEmpVaga = async (
+  vaga: {
+    id: string
+    data_inicio: Date
+    data_fim: Date
+    status: boolean
+    titulo: string
+    descricao: string
+    salario: number
+    localidade: string
+    acessibilidade: string
+  },
+  id_empresa: string
+) => {
+  let { id, data_inicio, data_fim, status } = vaga;
+  let query = `INSERT INTO tb_empresa_vaga (tb_empresa_id, tb_vaga_id, tb_vaga_status_vaga, tb_vaga_data_fim, tb_vaga_data_inicio) VALUES ($1, $2, $3, $4, $5);`;
+  await DB.pool.query(query, [
+    id_empresa,
+    id,
+    status,
+    data_fim,
+    data_inicio,
+  ]);
+};
+
+export let getEmpByColab= async (id_colaborador: string) => {
+  let query = `SELECT tb_empresa_id FROM tb_empresa_colaborador WHERE tb_colaborador_id_colaborador = $1;`;
+  let result = await DB.pool.query(query, [id_colaborador]);
+  let emp = result.rows[0].tb_empresa_id;
+  return emp;
+};
 
 export const insertCandidateVaga = async (
   id_vaga: string,
   id_candidate: string
 ): Promise<boolean> => {
   try {
-      let query = `INSERT INTO tb_candidato_vaga (tb_vaga_id,tb_candidato_id) VALUES ($1, $2);`;
-  await DB.pool.query(query, [id_vaga, id_candidate]);
-  return true;
+    let query = `INSERT INTO tb_candidato_vaga (tb_vaga_id,tb_candidato_id) VALUES ($1, $2);`;
+    await DB.pool.query(query, [id_vaga, id_candidate]);
+    return true;
   } catch (error) {
     console.log("Erro ao inserir candidato na vaga:", error);
     return false;
   }
-
-}
-
-
-
+};
