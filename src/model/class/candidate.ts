@@ -1,5 +1,9 @@
 import * as DB from "../../repository/insertDB/queryTools.js";
 
+/**
+ * Classe que representa um Candidato no sistema,
+ * encapsulando seus dados pessoais e funcionalidades relacionadas.
+ */
 export class Candidate {
   public id: string;
   public name: string;
@@ -19,6 +23,26 @@ export class Candidate {
   public acessibilidade_trab: boolean;
   public descricao_acessibilidade: string;
   public status: boolean = true;
+
+  /**
+   * Inicializa uma nova instância da classe Candidate com os dados fornecidos.
+   * @param name - Nome completo do candidato
+   * @param email - Email do candidato
+   * @param confirme_email - Confirmação do email
+   * @param senha - Senha de acesso
+   * @param confirme_senha - Confirmação da senha
+   * @param telefone - Telefone de contato
+   * @param cpf - CPF do candidato
+   * @param data_nascimento - Data de nascimento
+   * @param def_visual - Deficiência visual (booleano)
+   * @param def_auditiva - Deficiência auditiva (booleano)
+   * @param def_fisica - Deficiência física (booleano)
+   * @param def_intelectual - Deficiência intelectual (booleano)
+   * @param outra_def - Outra deficiência (booleano)
+   * @param descricao_def - Descrição da outra deficiência
+   * @param acessibilidade_trab - Necessidade de acessibilidade no trabalho (booleano)
+   * @param descricao_acessibilidade - Descrição da acessibilidade necessária
+   */
   constructor(
     name: string,
     email: string,
@@ -37,7 +61,7 @@ export class Candidate {
     acessibilidade_trab: boolean,
     descricao_acessibilidade: string
   ) {
-    this.id = "";
+    this.id = ""; // ID será gerado posteriormente
     this.name = name;
     this.email = email;
     this.confirme_email = confirme_email;
@@ -56,9 +80,13 @@ export class Candidate {
     this.descricao_acessibilidade = descricao_acessibilidade;
   }
 
+  /**
+   * Gera e atribui um ID único para o candidato,
+   * com prefixo "CAND-" seguido de número aleatório de 6 dígitos.
+   */
   public async setId(): Promise<void> {
     let prefix = "CAND-";
     let suffix = Math.floor(Math.random() * 1000000);
-      this.id = prefix + suffix;
+    this.id = prefix + suffix;
   }
 }
