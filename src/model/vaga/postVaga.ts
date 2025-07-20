@@ -1,5 +1,5 @@
 import { Vaga } from "../class/Vaga.js";
-import {validateDate} from "../validateData/validateDataVaga.js";
+import { validateDate } from "../validateData/validateDataVaga.js";
 import * as DB from "../../repository/insertDB/queryTools.js";
 export let createVaga = async (
   vaga: {
@@ -14,7 +14,7 @@ export let createVaga = async (
 ) => {
   try {
     let newVaga = new Vaga(
-      new Date("2005/09/20"),
+      new Date(vaga.data_fim),
       vaga.titulo,
       vaga.descricao,
       vaga.salario,
@@ -25,7 +25,9 @@ export let createVaga = async (
     while (newVaga.id === "") {
       newVaga.setId(id_empresa);
     }
-    let dateIsValid = validateDate(newVaga.data_fim)? true :new Error("Data de fim inválida");
+    let dateIsValid = validateDate(newVaga.data_fim)
+      ? true
+      : new Error("Data de fim inválida");
 
     DB.insertVaga(
       newVaga.id,
@@ -39,9 +41,15 @@ export let createVaga = async (
       newVaga.acessibilidade,
       id_empresa
     );
+    if (id_empresa.toUpperCase().split("-")[0] === "COLAB") {
+      let result: string = await DB.getEmpByColab(id_empresa);
+      console.log(result);
+      DB.insertEmpVaga(newVaga, result);
+    } else {
+      DB.insertEmpVaga(newVaga, id_empresa);
+    }
 
-    return true
-
+    return true;
   } catch (error) {
     console.error("Erro ao criar vaga:", error);
     return false;
