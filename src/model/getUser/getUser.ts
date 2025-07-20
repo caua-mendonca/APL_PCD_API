@@ -1,24 +1,43 @@
 import * as DB from "../../repository/insertDB/queryTools.js";
 
 export let getUser = async (table: string): Promise<any> => {
-  let result = await DB.selectFromTable(table);
-  console.log("Dados recolhidos do banco de dados");
+  const logPrefix = `[getUser][Table: ${table}]`;
 
-  return result;
+  try {
+    console.info(`${logPrefix} - Iniciando consulta de todos os registros`);
+    let result = await DB.selectFromTable(table);
+    console.info(`${logPrefix} - Consulta finalizada com sucesso, registros encontrados: ${result.rows.length}`);
+    return result;
+  } catch (error) {
+    console.error(`${logPrefix} - ERRO ao consultar dados:`, error);
+    throw error;
+  }
 };
 
 export let getUserByID = async (table: string, id: number): Promise<any> => {
-  let result = await DB.selectWhereColaborador(table, id);
+  const logPrefix = `[getUserByID][Table: ${table}][ID: ${id}]`;
 
-  console.log("Dados recolhidos do banco de dados");
-
-  return result;
+  try {
+    console.info(`${logPrefix} - Iniciando consulta por ID`);
+    let result = await DB.selectWhereColaborador(table, id);
+    console.info(`${logPrefix} - Consulta finalizada, registros encontrados: ${result.rows.length}`);
+    return result;
+  } catch (error) {
+    console.error(`${logPrefix} - ERRO ao consultar dados por ID:`, error);
+    throw error;
+  }
 };
 
 export let getColaborador = async (table: string, id: number): Promise<any> => {
-  let result = await DB.selectWhereColaborador(table, id);
-  console.log("Dados recolhidos do banco de dados");
+  const logPrefix = `[getColaborador][Table: ${table}][ID: ${id}]`;
 
-  return result;
+  try {
+    console.info(`${logPrefix} - Iniciando consulta do colaborador`);
+    let result = await DB.selectWhereColaborador(table, id);
+    console.info(`${logPrefix} - Consulta finalizada, registros encontrados: ${result.rows.length}`);
+    return result;
+  } catch (error) {
+    console.error(`${logPrefix} - ERRO ao consultar colaborador:`, error);
+    throw error;
+  }
 };
-
