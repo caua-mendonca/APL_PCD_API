@@ -68,7 +68,7 @@ export let conectServ = (PORT: string) => {
   });
 
   APP.get(Routes.getCanditadoById, async (req, res) => {
-    const id = Number(req.params.id);
+    const id = String(req.params.id);
     console.log(`🚀 [GET /candidato/${id}] Requisição recebida`);
 
     try {
@@ -154,7 +154,7 @@ export let conectServ = (PORT: string) => {
   });
 
   APP.get(Routes.getContratanteById, async (req, res) => {
-    const id = Number(req.params.id);
+    const id = String(req.params.id);
     console.log(`🚀 [GET /contratante/${id}] Requisição recebida`);
 
     let result = await controllerContratante.controllerGetContratanteById(id);
@@ -238,7 +238,7 @@ export let conectServ = (PORT: string) => {
   });
 
   APP.get(Routes.getColaborador, async (req, res) => {
-    const id = Number(req.params.id);
+    const id = String(req.params.id);
     console.log(`🚀 [GET /colaborador/${id}] Requisição recebida`);
 
     console.log(`Tipo do ID recebido: ${typeof id}`);
