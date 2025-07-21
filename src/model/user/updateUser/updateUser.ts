@@ -1,6 +1,6 @@
 import * as DB from "../../../repositories/queryTools.js"
-import { validateCpf } from "../../validateData/validadeteCpf.js";
-import { validateAge } from "../../validateData/validateAge.js";
+import { validateCpf } from "../../../validation/validateData/validadeteCpf.js";
+import { validateAge } from "../../../validation/validateData/validateAge.js";
 
 export let updateUser = async (table: string, id: number, body: object) => {
   const logPrefix = `[updateUser][Table: ${table}][ID: ${id}]`;

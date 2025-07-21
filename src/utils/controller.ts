@@ -10,7 +10,7 @@ import {
   validateId,
   validateIdCandidato,
   validateIdContratante,
-} from "../model/validateId/validateId.js";
+} from "../validation/validateId/validateId.js";
 
 const APP = express();
 APP.use(express.json());

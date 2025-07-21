@@ -1,5 +1,5 @@
 import { Vaga } from "../entities/class/Vaga.js";
-import { validateDate } from "../validateData/validateDataVaga.js";
+import { validateDate } from "../../validation/validateData/validateDataVaga.js";
 import * as DB from "../../repositories/queryTools.js";
 
 /**
