@@ -3,7 +3,7 @@ import { Candidate } from "../class/candidate.js";
 import { Contratante } from "../class/contratante.js";
 import { validateAge } from "../validateData/validateAge.js";
 import { validateCNPJ } from "../validateData/validateCNPJ.js";
-import * as query from "../../repository/insertDB/queryTools.js";
+import * as query from "../../repositories/queryTools.js";
 import { validateId } from "../validateId/validateId.js";
 
 /**

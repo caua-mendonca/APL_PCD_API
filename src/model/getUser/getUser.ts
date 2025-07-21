@@ -1,4 +1,4 @@
-import * as DB from "../../repository/insertDB/queryTools.js";
+import * as DB from "../../repositories/queryTools.js";
 
 export let getUser = async (table: string): Promise<any> => {
   const logPrefix = `[getUser][Table: ${table}]`;

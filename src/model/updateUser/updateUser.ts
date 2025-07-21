@@ -1,4 +1,4 @@
-import * as DB from "../../repository/insertDB/queryTools.js"
+import * as DB from "../../repositories/queryTools.js"
 import { validateCpf } from "../validateData/validadeteCpf.js";
 import { validateAge } from "../validateData/validateAge.js";
 
