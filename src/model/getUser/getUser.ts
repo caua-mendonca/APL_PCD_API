@@ -14,12 +14,12 @@ export let getUser = async (table: string): Promise<any> => {
   }
 };
 
-export let getUserByID = async (table: string, id: number): Promise<any> => {
+export let getUserByID = async (table: string, id: string): Promise<any> => {
   const logPrefix = `[getUserByID][Table: ${table}][ID: ${id}]`;
 
   try {
     console.info(`${logPrefix} - Iniciando consulta por ID`);
-    let result = await DB.selectWhereColaborador(table, id);
+    let result = await DB.selectFromIdWhere(table, id);
     console.info(`${logPrefix} - Consulta finalizada, registros encontrados: ${result.rows.length}`);
     return result;
   } catch (error) {
@@ -28,12 +28,12 @@ export let getUserByID = async (table: string, id: number): Promise<any> => {
   }
 };
 
-export let getColaborador = async (table: string, id: number): Promise<any> => {
+export let getColaborador = async (table: string, id: string): Promise<any> => {
   const logPrefix = `[getColaborador][Table: ${table}][ID: ${id}]`;
 
   try {
     console.info(`${logPrefix} - Iniciando consulta do colaborador`);
-    let result = await DB.selectWhereColaborador(table, id);
+    let result = await DB.selectFromIdWhere(table, id);
     console.info(`${logPrefix} - Consulta finalizada, registros encontrados: ${result.rows.length}`);
     return result;
   } catch (error) {
