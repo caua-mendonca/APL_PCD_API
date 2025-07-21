@@ -326,11 +326,16 @@ export let insertEmpresaColaborador = async (
   }
 };
 
+<<<<<<< HEAD
 /**
  * Atualiza o ID do colaborador na tabela tb_empresa.
  * @param id ID do colaborador.
  * @param id_empresa ID da empresa.
  */
+=======
+
+
+>>>>>>> parent of 271efd2 (feat(repository): implementa inserção da vaga com relacionamento à empresa via SQL)
 export let updateColaboradorEmpresa = async (
   id: string,
   id_empresa: string
@@ -474,6 +479,7 @@ export let updateUserColumn = async (
   }
 };
 
+<<<<<<< HEAD
 /**
  * Insere uma vaga na tabela tb_vaga.
  * @param id ID da vaga.
@@ -500,6 +506,9 @@ export let updateUserColumn = async (
  * @param id_creator ID da empresa ou colaborador que criou a vaga.
  * @returns Promise<boolean> indicando sucesso ou falha na inserção.
  */
+=======
+
+>>>>>>> parent of 271efd2 (feat(repository): implementa inserção da vaga com relacionamento à empresa via SQL)
 export const insertVaga = async (
   id: string,
   data_inicio: Date,
@@ -553,6 +562,7 @@ export const insertVaga = async (
   }
 };
 
+<<<<<<< HEAD
 /**
  * Insere relação entre empresa e vaga na tabela tb_empresa_vaga.
  * @param vaga Objeto contendo os dados da vaga.
@@ -620,6 +630,8 @@ export let getEmpByColab = async (id_colaborador: string) => {
     throw error;
   }
 };
+=======
+>>>>>>> parent of 271efd2 (feat(repository): implementa inserção da vaga com relacionamento à empresa via SQL)
 
 /**
  * Insere um candidato em uma vaga na tabela tb_candidato_vaga.
@@ -632,6 +644,7 @@ export const insertCandidateVaga = async (
   id_candidate: string
 ): Promise<boolean> => {
   try {
+<<<<<<< HEAD
     console.log(`[insertCandidateVaga] Inserindo candidato ${id_candidate} na vaga ${id_vaga}`);
 
     const query = `INSERT INTO tb_candidato_vaga (tb_vaga_id, tb_candidato_id) VALUES ($1, $2);`;
@@ -639,8 +652,17 @@ export const insertCandidateVaga = async (
 
     console.log(`[insertCandidateVaga] Candidato ${id_candidate} inserido na vaga ${id_vaga} com sucesso`);
     return true;
+=======
+      let query = `INSERT INTO tb_candidato_vaga (tb_vaga_id,tb_candidato_id) VALUES ($1, $2);`;
+  await DB.pool.query(query, [id_vaga, id_candidate]);
+  return true;
+>>>>>>> parent of 271efd2 (feat(repository): implementa inserção da vaga com relacionamento à empresa via SQL)
   } catch (error) {
     console.error(`[insertCandidateVaga] ERRO ao inserir candidato ${id_candidate} na vaga ${id_vaga}:`, error);
     return false;
   }
-};
+
+}
+
+
+
