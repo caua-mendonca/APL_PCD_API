@@ -21,7 +21,8 @@ export let validateIdContratante = async (id: string): Promise<boolean> => {
   let arr: string[] = id.toUpperCase().split("-");
   let isValid = arr[0] === "EMP" || arr[0] === "COLAB";
   console.log(`✔️ Resultado da validação: ${isValid}`);
-  return isValid;
+  isValid ===false? false:true
+  return false;
 };
 
 /**
