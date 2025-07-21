@@ -1,4 +1,4 @@
-import * as DB from "../controller/server/data/connect.js";
+import * as DB from "../config/connect.js";
 
 /**
  * Insere um novo candidato na tabela tb_candidato.
