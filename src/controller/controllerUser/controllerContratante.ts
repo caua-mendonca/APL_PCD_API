@@ -43,7 +43,7 @@ export let controllerGetContratante = async () => {
  * @param id - ID do contratante
  * @returns objeto contratante ou mensagem de não encontrado
  */
-export let controllerGetContratanteById = async (id: number) => {
+export let controllerGetContratanteById = async (id: string) => {
   console.log("🚀 Passando ao controllerGetContratanteById()");
   let result = await getUser.getUserByID("tb_empresa", id);
 
