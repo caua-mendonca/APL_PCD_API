@@ -31,7 +31,7 @@ export let controllerColaborador = async (
  * @param id - ID associado para filtro
  * @returns lista de colaboradores encontrados
  */
-export let controllerGetColaborador = async (table: string, id: number) => {
+export let controllerGetColaborador = async (table: string, id: string) => {
   console.log("🚀 Passando ao getColaborador()");
   let response = await getUser.getColaborador(table, id);
   console.log(`✔️ Colaboradores encontrados: ${response.length || response.rows?.length || 0}`);
