@@ -64,7 +64,7 @@ export let controllerGetCandidato = async () => {
  * @param id - ID do candidato
  * @returns objeto candidato ou mensagem de erro
  */
-export let controllerGetCandidatoById = async (id: number) => {
+export let controllerGetCandidatoById = async (id: string) => {
   console.log(`🚀 Iniciando controllerGetCandidatoById para ID: ${id}`);
 
   let result = await getUser.getUserByID("Tb_candidato", id);
