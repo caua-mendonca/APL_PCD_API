@@ -1,17 +1,17 @@
 import express from "express";
-import * as DB from "./data/connect.js";
-import * as Routes from "./routes/routes.js";
-import * as controllerCandidate from "../controllerUser/controllerCandidate.js";
-import * as controllerContratante from "../controllerUser/controllerContratante.js";
-import { controllerIFBR } from "../IFBR/controllerIFBR.js";
-import * as controllerColaborador from "../colaborador/controllerColaborador.js";
+import * as DB from "../controller/server/data/connect.js";
+import * as Routes from "../routes/routes.js";
+import * as controllerCandidate from "../controller/user/controllerCandidate.js";
+import * as controllerContratante from "../controller/user/controllerContratante.js";
+import { controllerIFBR } from "../controller/IFBR/controllerIFBR.js";
+import * as controllerColaborador from "../controller/colaborador/controllerColaborador.js";
 import cors from "cors";
 import { Request, Response, NextFunction } from "express";
 import {
   validateId,
   validateIdCandidato,
   validateIdContratante,
-} from "../../model/validateId/validateId.js";
+} from "../validators/validateId/validateId.js";
 
 const APP = express();
 APP.use(express.json());

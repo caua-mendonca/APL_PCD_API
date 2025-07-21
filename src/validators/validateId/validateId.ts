@@ -1,4 +1,4 @@
-import * as Db from "../../repository/insertDB/queryTools.js";
+import * as Db from "../../repository/queryTools.js";
 
 /**
  * Valida a existência do ID na tabela tb_candidato.
