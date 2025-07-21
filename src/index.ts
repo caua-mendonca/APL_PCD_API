@@ -1,4 +1,4 @@
-import * as Server from "./utils/controller.js";
+import * as Server from "./controller/server/controller.js";
 
 let PORT = process.env.PORT || "3000";
 

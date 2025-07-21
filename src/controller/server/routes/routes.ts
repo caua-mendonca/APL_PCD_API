@@ -27,4 +27,3 @@ export let getColaborador: string = "/getColaborador/:id";
 // Rotas para o recurso Vaga, com ID como parâmetro
 export let createVaga: string = "/createVaga/:id";
 export let candidatarVaga: string = "/registerVaga/:id";
-export let getVagas: string = "/registerVaga/:id";

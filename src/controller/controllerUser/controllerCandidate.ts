@@ -1,7 +1,7 @@
-import { createCanditado } from "../../model/users/createUser/createUser.js";
-import * as getUser from "../../model/user/getUser/getUser.js";
-import { deleteUser } from "../../model/user/deleteUser/deleteUser.js";
-import { updateUser } from "../../model/user/updateUser/updateUser.js";
+import { createCanditado } from "../../model/createUser/createUser.js";
+import * as getUser from "../../model/getUser/getUser.js";
+import { deleteUser } from "../../model/deleteUser/deleteUser.js";
+import { updateUser } from "../../model/updateUser/updateUser.js";
 import { registerCandidateToVaga } from "../../model/vaga/postVaga.js";
 
 /**

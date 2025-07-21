@@ -1,6 +1,6 @@
 import { Vaga } from "../class/Vaga.js";
-import { validateDate } from "../../validators/validateData/validateDataVaga.js";
-import * as DB from "../../repository/queryTools.js";
+import { validateDate } from "../validateData/validateDataVaga.js";
+import * as DB from "../../repository/insertDB/queryTools.js";
 
 /**
  * Cria uma nova vaga vinculada a uma empresa ou colaborador.
