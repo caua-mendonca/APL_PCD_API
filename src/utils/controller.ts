@@ -264,15 +264,16 @@ export let conectServ = (PORT: string) => {
 
     console.log(`🔍 Validando ID contratante: ${id}`);
 
-    let isValid: any = validateIdContratante(id);
+    let isValid: boolean = await validateIdContratante(id);
     console.log(`Resultado validação: ${isValid}`);
 
     if (isValid === false) {
-      console.warn("❌ ID inválido - apenas empresas podem criar vagas.");
+      console.warn("❌ ID inválido - apenas empresas ou colaboradores podem criar vagas.");
       res
         .status(400)
         .send({ message: "ID inválido, Apenas Empresas podem criar vagas!" });
-    } else {
+    }
+     else {
       console.log("✔️ ID validado, prosseguindo...");
       next();
     }
