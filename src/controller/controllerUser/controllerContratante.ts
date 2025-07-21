@@ -1,7 +1,7 @@
-import { createContratante } from "../../model/createUser/createUser.js";
-import * as getUser  from "../../model/getUser/getUser.js";
-import { deleteUser } from "../../model/deleteUser/deleteUser.js";
-import { updateUser } from "../../model/updateUser/updateUser.js";
+import { createContratante } from "../../model/user/createUser/createUser.js";
+import * as getUser  from "../../model/user/getUser/getUser.js";
+import { deleteUser } from "../../model/user/deleteUser/deleteUser.js";
+import { updateUser } from "../../model/user/updateUser/updateUser.js";
 import { createVaga } from "../../model/vaga/postVaga.js";
 
 /**

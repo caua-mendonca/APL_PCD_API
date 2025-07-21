@@ -1,5 +1,5 @@
-import { Colaborador } from "../class/colaborador.js";
-import * as DB from "../../repositories/queryTools.js";
+import { Colaborador } from "../../entities/class/colaborador.js";
+import * as DB from "../../../repositories/queryTools.js";
 
 /**
  * Função para criar um colaborador e associá-lo a uma empresa no banco.

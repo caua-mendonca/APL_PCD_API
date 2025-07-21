@@ -1,10 +1,10 @@
-import { validateCpf } from "../validateData/validadeteCpf.js";
-import { Candidate } from "../class/candidate.js";
-import { Contratante } from "../class/contratante.js";
-import { validateAge } from "../validateData/validateAge.js";
-import { validateCNPJ } from "../validateData/validateCNPJ.js";
-import * as query from "../../repositories/queryTools.js";
-import { validateId } from "../validateId/validateId.js";
+import { validateCpf } from "../../validateData/validadeteCpf.js";
+import { Candidate } from "../../entities/class/candidate.js";
+import { Contratante } from "../../entities/class/contratante.js";
+import { validateAge } from "../../validateData/validateAge.js";
+import { validateCNPJ } from "../../validateData/validateCNPJ.js";
+import * as query from "../../../repositories/queryTools.js";
+import { validateId } from "../../validateId/validateId.js";
 
 /**
  * Cria um novo candidato a partir dos dados fornecidos.

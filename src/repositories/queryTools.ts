@@ -1,6 +1,4 @@
-import * as DB from "../../controller/server/data/connect.js";
-import { IFBR } from "../../model/class/ifbr.js";
-import { Colaborador } from "../../model/class/colaborador.js";
+import * as DB from "../controller/server/data/connect.js";
 
 /**
  * Insere um novo candidato na tabela tb_candidato.

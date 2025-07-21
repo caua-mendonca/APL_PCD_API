@@ -1,4 +1,4 @@
-import { IFBR } from "../class/ifbr.js";
+import { IFBR } from "../entities/class/ifbr.js";
 import * as DB from "../../repositories/queryTools.js";
 
 /**
