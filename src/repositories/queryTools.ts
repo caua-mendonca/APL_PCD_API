@@ -115,29 +115,6 @@ export let insertIntoContratante = async (user: {
  * @param cpfOrCnpj CPF ou CNPJ para busca.
  * @returns Resultado da query.
  */
-export const selectIDFrom = async (
-  table: string,
-  cpfOrCnpj: string
-): Promise<any> => {
-  try {
-    console.log(`[selectIDFrom] Consultando ID em ${table} para CPF/CNPJ: ${cpfOrCnpj}`);
-
-    let query: string;
-    if (cpfOrCnpj.length === 11) {
-      query = `SELECT id FROM ${table} WHERE cpf = $1`;
-    } else {
-      query = `SELECT id FROM ${table} WHERE cnpj = $1`;
-    }
-
-    const result = await DB.pool.query(query, [cpfOrCnpj]);
-
-    console.log(`[selectIDFrom] Consulta realizada, linhas retornadas: ${result.rowCount}`);
-    return result;
-  } catch (error) {
-    console.error(`[selectIDFrom] ERRO na consulta de ID em ${table}:`, error);
-    throw error;
-  }
-};
 
 /**
  * Verifica se um determinado ID existe na tabela.
@@ -397,23 +374,7 @@ export let selectFromIdWhere = async (
  * @param id ID do registro.
  * @returns Resultado da consulta.
  */
-export let selectWhereColaborador = async (
-  table: string,
-  id: string
-): Promise<any> => {
-  try {
-    console.log(`[selectWhereColaborador] Consultando colaborador no registro ID ${id} da tabela ${table}`);
 
-    const query = `SELECT id_colaborador FROM ${table} WHERE id_colaborador = $1`;
-    const result = await DB.pool.query(query, [id]);
-
-    console.log(`[selectWhereColaborador] Consulta concluída. Linhas retornadas: ${result.rowCount}`);
-    return result;
-  } catch (error) {
-    console.error(`[selectWhereColaborador] ERRO na consulta colaborador ID ${id} na tabela ${table}:`, error);
-    throw error;
-  }
-};
 
 /**
  * Realiza "delete" lógico, atualizando status para false.
