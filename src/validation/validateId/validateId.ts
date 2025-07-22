@@ -19,10 +19,10 @@ export let validateId = async (id: string) => {
 export let validateIdContratante = async (id: string): Promise<boolean> => {
   console.log(`🚀 Validando se ID é Contratante ou Colaborador: ${id}`);
   let arr: string[] = id.toUpperCase().split("-");
-  let isValid = arr[0] === "EMP" || arr[0] === "COLAB";
+  let isValid: boolean;
+  arr[0] === "EMP" || arr[0] === "COLAB" ? (isValid = true) : (isValid = false);
   console.log(`✔️ Resultado da validação: ${isValid}`);
-  isValid ===false? false:true
-  return false;
+  return isValid;
 };
 
 /**
