@@ -1,9 +1,9 @@
 import express from "express";
 import * as Routes from "../routes/routes.js";
-import * as controllerCandidate from "../controller/controllerUser/controllerCandidate.js";
-import * as controllerContratante from "../controller/controllerUser/controllerContratante.js";
+import * as controllerCandidate from "../controller/user/controllerCandidate.js";
+import * as controllerContratante from "../controller/user/controllerContratante.js";
 import { controllerIFBR } from "../controller/IFBR/controllerIFBR.js";
-import * as controllerColaborador from "../controller/colaborador/controllerColaborador.js";
+import * as controllerColaborador from "../controller/user/controllerColaborador.js";
 import cors from "cors";
 import { Request, Response, NextFunction } from "express";
 import {
