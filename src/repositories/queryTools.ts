@@ -604,4 +604,15 @@ export const insertCandidateVaga = async (
 }
 
 
+export let validateData = async (value: string, data:string): Promise<any> => {
+  try{
+    let result = await DB.pool.query(`SELECT ${data} FROM tb_candidato WHERE ${data} = $1`, [value]);
+    console.log(result.rows.length)
+    return result.rows.length
+  } catch (error) {
+    console.error(`[insertCandidateVaga] ERRO ao buscar candidatos`, error);
+    return false;
+  }
+}
+
 
