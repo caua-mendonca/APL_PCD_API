@@ -32,13 +32,13 @@ export let conectServ = (PORT: string) => {
   // Rotas CRUD Candidato
   // -----------------------------------
 
-  APP.post(Routes.createCanditado, (req, res) => {
+  APP.post(Routes.createCanditado, async (req, res) => {
     let body = req.body;
     console.log("🚀 [POST /candidato] Requisição recebida, corpo:", body);
 
     let result = controllerCandidate.controllerPostCandadate(body);
 
-    if (result == true) {
+    if (await result == true) {
       console.log("✔️ [POST /candidato] Candidato criado com sucesso.");
       res.status(200).send("Sucesso ao criar o candidato");
     } else {
