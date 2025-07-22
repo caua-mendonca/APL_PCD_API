@@ -1,9 +1,11 @@
+import * as DB from "../../repositories/queryTools.js";
+
 export let validateCpf = (cpf: string): boolean => {
-  cpf = cpf.replace(/[^\d]/g, '');
+  cpf = cpf.replace(/[^\d]/g, "");
 
   if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
 
-  let validate: number[] = cpf.split('').map(Number);
+  let validate: number[] = cpf.split("").map(Number);
   let validateChar1 = 0;
   let validateChar2 = 0;
 
@@ -19,4 +21,14 @@ export let validateCpf = (cpf: string): boolean => {
   if (validateChar2 === 10) validateChar2 = 0;
 
   return validate[9] === validateChar1 && validate[10] === validateChar2;
+};
+
+
+export let validateCpfToDB = async (value: string, data:string): Promise<any> => {
+  let result: any = Number(await DB.validateData(value, data));
+  result > 0 ? result = false :result =  true;
+
+  console.log("RESULTADO DA FUNÇÃO validateCpfToDB:", result);
+
+  return result;
 };
