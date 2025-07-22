@@ -1,18 +1,18 @@
-import { validateCpf } from "../../../validation/validateData/validadeteCpf.js";
+import { validateCpf,validateCpfToDB } from "../../../validation/validateData/validadeteCpf.js";
 import { Candidate } from "../../entities/class/candidate.js";
 import { Contratante } from "../../entities/class/contratante.js";
 import { validateAge } from "../../../validation/validateData/validateAge.js";
 import { validateCNPJ } from "../../../validation/validateData/validateCNPJ.js";
 import * as query from "../../../repositories/queryTools.js";
 import { validateId } from "../../../validation/validateId/validateId.js";
-
+import {validateEmailToDB} from "../../../validation/validateData/validateEmail.js";
 /**
  * Cria um novo candidato a partir dos dados fornecidos.
  * Valida os dados, gera ID único, e insere no banco se válido.
  * @param user - Objeto contendo os dados do candidato
  * @returns true se sucesso, array de erros caso dados inválidos, ou erro capturado
  */
-export let createCanditado = (user: {
+export let createCanditado = async (user: {
   name: string;
   email: string;
   confirme_email: string;
@@ -29,7 +29,7 @@ export let createCanditado = (user: {
   descricao_def: string;
   acessibilidade_trab: boolean;
   descricao_acessibilidade: string;
-}): any => {
+}): Promise<any> => {
   try {
     console.log("🚀 Iniciando createCanditado - criando instância da classe Candidate");
     let errorLog = [];
@@ -59,8 +59,30 @@ export let createCanditado = (user: {
 
     let idIsValid: any = validateId(newUser.id);
     let cpfIsValid: boolean = validateCpf(newUser.cpf);
+    if(cpfIsValid === true) {
+      console.log("validando cpf no banco")
+      cpfIsValid = await validateCpfToDB(newUser.cpf, "cpf");
+      console.log("✔️ cpfIsValid:", cpfIsValid)
+      if(cpfIsValid === true) {
+        console.log("✔️ CPF validado:", newUser.cpf);
+      }else{
+        console.log("❌ CPF inválido:", newUser.cpf);
+        errorLog.push(errorLog.push("CPF inválido"))
+      }
+    }
     let dateIsValid: boolean = validateAge(newUser.data_nascimento);
     let emailIsValid: boolean = newUser.email === newUser.confirme_email;
+    if(emailIsValid === true) {
+      console.log("validando email no banco")
+      emailIsValid = await validateEmailToDB(newUser.email, "email");
+      console.log("✔️ emailIsValid:", emailIsValid)
+      if(emailIsValid === true) {
+        console.log("✔️ Email validado:", newUser.email);
+      }else{
+        console.log("❌ Email inválido:", newUser.email);
+        errorLog.push(errorLog.push("Email inválido"))
+      }
+    }
     let passwordIsValid: boolean = newUser.senha === newUser.confirme_senha;
 
     // Caso ID inválido, tenta gerar novamente até válido
