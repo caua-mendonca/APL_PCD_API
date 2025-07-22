@@ -10,7 +10,7 @@ import { registerCandidateToVaga } from "../../model/vaga/postVaga.js";
  * @param body - Dados do candidato
  * @returns resultado da criação do candidato (boolean ou erro)
  */
-export let controllerPostCandadate = (body: {
+export let controllerPostCandadate = async (body: {
   name: string;
   email: string;
   confirme_email: string;
@@ -27,10 +27,10 @@ export let controllerPostCandadate = (body: {
   descricao_def: string;
   acessibilidade_trab: boolean;
   descricao_acessibilidade: string;
-}) => {
+}):Promise<any> => {
   console.log("🚀 Iniciando controllerPostCandadate - enviando dados para createCanditado");
-  let response = createCanditado(body);
-  console.log("✔️ createCanditado executado, resultado:", response);
+  let response = await createCanditado(body);
+   console.log("✔️ createCanditado executado, resultado:", response);
   return response;
 };
 
