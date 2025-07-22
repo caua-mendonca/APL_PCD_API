@@ -1,4 +1,3 @@
-import { get } from "http";
 import { createColaborador } from "../../model/user/createUser/createColaborador.js";
 import * as getUser from "../../model/user/getUser/getUser.js";
 import { createVaga } from "../../model/vaga/postVaga.js";
