@@ -384,13 +384,13 @@ export let selectFromIdWhere = async (
  */
 export let deleteFromTable = async (
   table: string,
-  id: number
+  id: string
 ): Promise<any> => {
   try {
     console.log(`[deleteFromTable] Atualizando status para false no registro ID ${id} da tabela ${table}`);
 
     let result = await DB.pool.query(
-      `UPDATE ${table} SET status = $1 WHERE id = $2;`,
+      `UPDATE ${table} SET status_usuario = $1 WHERE id = $2;`,
       [false, id]
     );
 
