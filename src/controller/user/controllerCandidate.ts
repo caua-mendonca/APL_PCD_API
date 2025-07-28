@@ -107,7 +107,7 @@ export let controllerDeleteCandidato = async (id: string) => {
  * @param body - Dados para atualização
  * @returns resultado da atualização
  */
-export let controllerUpdateCandidato = async (id: number, body: object) => {
+export let controllerUpdateCandidato = async (id: string, body: object) => {
   console.log(`🚀 Iniciando controllerUpdateCandidato para ID: ${id} com dados:`, body);
   let result = await updateUser("tb_candidato", id, body);
   console.log("✔️ Atualização concluída, resultado:", result);
