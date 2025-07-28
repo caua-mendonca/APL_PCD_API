@@ -19,3 +19,12 @@ export let getVagaById = async (id: string) => {
     console.error(`[getVagaById] ERRO ao consultar dados:`, error);
   }
 };
+
+export let deleteVaga = async (id: string) => {
+  try {
+    let result = await DB.deleteFromTable("tb_vaga", id);
+    return result.rows;
+  } catch (error) {
+    console.error(`[deleteVaga] ERRO ao consultar dados:`, error);
+  }
+};
