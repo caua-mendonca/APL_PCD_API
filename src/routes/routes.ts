@@ -28,3 +28,4 @@ export let getColaborador: string = "/getColaborador/:id";
 export let createVaga: string = "/createVaga/:id";
 export let candidatarVaga: string = "/registerVaga/:id";
 export let getVagas: string = "/getVagas";
+export let getVagasById: string = "/getVagasById/:id";
