@@ -9,3 +9,13 @@ export let getVagaModel = async () => {
     console.error(`[getVagaModel] ERRO ao consultar dados:`, error);
   }
 };
+
+export let getVagaById = async (id: string) => {
+  try {
+    let result = await DB.selectFromIdWhere("tb_vaga", id);
+
+    if (result.rows.length > 0) return result.rows;
+  } catch (error) {
+    console.error(`[getVagaById] ERRO ao consultar dados:`, error);
+  }
+};
