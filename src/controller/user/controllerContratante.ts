@@ -79,7 +79,7 @@ export let controllerDeleteContratante = async (id: string) => {
  * @param body - Objeto com os dados a serem atualizados
  * @returns resultado da atualização ou false em caso de falha
  */
-export let controllerUpdateContratante = async (id: number, body: object) => {
+export let controllerUpdateContratante = async (id: string, body: object) => {
   console.log("🚀 Passando ao controllerUpdateContratante()");
   let result = await updateUser("tb_empresa", id, body);
 
