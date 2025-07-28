@@ -1,7 +1,7 @@
 import { createColaborador } from "../../model/user/createUser/createColaborador.js";
 import * as getUser from "../../model/user/getUser/getUser.js";
 import { createVaga } from "../../model/vaga/postVaga.js";
-import { getVagaModel } from "../../model/vaga/getVaga.js";
+import * as modelVaga from "../../model/vaga/getVaga.js";
 import { get } from "http";
 
 /**
@@ -69,7 +69,20 @@ export let postVaga = async (
 export let getVaga = async () => {
   try {
     console.log("🚀 Passando ao getVaga()");
-    let response = await getVagaModel();
+    let response = await modelVaga.getVagaModel();
+    console.log(
+      `✔️ Vagas encontradas: ${response.length || response.rows?.length || 0}`
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export let getVagaById = async (id: string) => {
+  try {
+    console.log("🚀 Passando ao getVaga()");
+    let response = await modelVaga.getVagaById(id);
     console.log(
       `✔️ Vagas encontradas: ${response.length || response.rows?.length || 0}`
     );
