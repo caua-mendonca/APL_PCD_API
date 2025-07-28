@@ -1,7 +1,5 @@
-import { createColaborador } from "../../model/user/createUser/createColaborador.js";
-import * as getUser from "../../model/user/getUser/getUser.js";
-import { createVaga } from "../../model/vaga/postVaga.js";
-import * as modelVaga from "../../model/vaga/getVaga.js";
+import * as Model from "../../model/user/modelUser.js";
+import * as modelVaga from "../../model/vaga/modelVaga.js";
 
 /**
  * Controller para criação de um novo colaborador.
@@ -20,7 +18,7 @@ export let controllerColaborador = async (
   id_empresa: string
 ) => {
   console.log("🚀 Passando ao createColaborador()");
-  let response = createColaborador(user, id_empresa);
+  let response = Model.createColaborador(user, id_empresa);
   console.log("✔️ Resposta da criação do colaborador recebida");
   return response;
 };
@@ -33,7 +31,7 @@ export let controllerColaborador = async (
  */
 export let controllerGetColaborador = async (table: string, id: string) => {
   console.log("🚀 Passando ao getColaborador()");
-  let response = await getUser.getColaborador(table, id);
+  let response = await Model.getColaborador(table, id);
   console.log(
     `✔️ Colaboradores encontrados: ${
       response.length || response.rows?.length || 0
@@ -60,7 +58,7 @@ export let postVaga = async (
   id_empresa: string
 ) => {
   console.log("🚀 Passando ao createVaga()");
-  let result = createVaga(vaga, id_empresa);
+  let result = await modelVaga.createVaga(vaga, id_empresa);
   console.log("✔️ Resposta da criação da vaga recebida");
   return result;
 };
