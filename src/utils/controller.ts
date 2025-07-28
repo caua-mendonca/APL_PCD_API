@@ -106,7 +106,7 @@ export let conectServ = (PORT: string) => {
   });
 
   APP.put(Routes.updateCanditado, async (req, res) => {
-    const id = Number(req.params.id);
+    const id = String(req.params.id);
     const body = req.body;
     console.log(`🚀 [PUT /candidato/${id}] Requisição recebida com dados:`, body);
 
@@ -182,7 +182,7 @@ export let conectServ = (PORT: string) => {
   });
 
   APP.put(Routes.updateContratante, async (req, res) => {
-    const id = Number(req.params.id);
+    const id = String(req.params.id);
     const body = req.body;
     console.log(`🚀 [PUT /contratante/${id}] Requisição recebida com dados:`, body);
 
