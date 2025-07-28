@@ -1,9 +1,5 @@
-import { createCanditado } from "../../model/user/createUser/createUser.js";
-import * as getUser from "../../model/user/getUser/getUser.js";
-import { deleteUser } from "../../model/user/deleteUser/deleteUser.js";
-import { updateUser } from "../../model/user/updateUser/updateUser.js";
-import { registerCandidateToVaga } from "../../model/vaga/postVaga.js";
-
+import * as Model from "../../model/user/modelUser.js";
+import { registerCandidateToVaga } from "../../model/vaga/modelVaga.js";
 /**
  * Controlador para criação de candidato.
  * Recebe os dados do corpo da requisição e passa para o modelo responsável pela criação.
@@ -29,7 +25,7 @@ export let controllerPostCandadate = async (body: {
   descricao_acessibilidade: string;
 }):Promise<any> => {
   console.log("🚀 Iniciando controllerPostCandadate - enviando dados para createCanditado");
-  let response = await createCanditado(body);
+  let response = await Model.createCanditado(body);
    console.log("✔️ createCanditado executado, resultado:", response);
   return response;
 };
@@ -42,7 +38,7 @@ export let controllerPostCandadate = async (body: {
 export let controllerGetCandidato = async () => {
   console.log("🚀 Iniciando controllerGetCandidato");
 
-  let result = await getUser.getUser("Tb_candidato");
+  let result = await Model.getUser("Tb_candidato");
   console.log(`✔️ Dados recebidos, total de candidatos: ${result.rows.length}`);
 
   let users = [];
@@ -67,7 +63,7 @@ export let controllerGetCandidato = async () => {
 export let controllerGetCandidatoById = async (id: string) => {
   console.log(`🚀 Iniciando controllerGetCandidatoById para ID: ${id}`);
 
-  let result = await getUser.getUserByID("Tb_candidato", id);
+  let result = await Model.getUserByID("Tb_candidato", id);
   console.log(`✔️ Resultado da consulta, quantidade: ${result.rows.length}`);
 
   if (result.rows.length > 0) {
@@ -88,7 +84,7 @@ export let controllerGetCandidatoById = async (id: string) => {
 export let controllerDeleteCandidato = async (id: string) => {
   console.log(`🚀 Iniciando controllerDeleteCandidato para ID: ${id}`);
 
-  let result = await deleteUser("tb_candidato", id);
+  let result = await Model.deleteUser("tb_candidato", id);
   console.log(`✔️ Delete executado, linhas afetadas: ${result.rowCount}`);
 
   if (result.rowCount > 0) {
@@ -109,7 +105,7 @@ export let controllerDeleteCandidato = async (id: string) => {
  */
 export let controllerUpdateCandidato = async (id: string, body: object) => {
   console.log(`🚀 Iniciando controllerUpdateCandidato para ID: ${id} com dados:`, body);
-  let result = await updateUser("tb_candidato", id, body);
+  let result = await Model.updateUser("tb_candidato", id, body);
   console.log("✔️ Atualização concluída, resultado:", result);
   return result;
 };
