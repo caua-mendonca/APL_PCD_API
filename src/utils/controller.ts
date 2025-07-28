@@ -11,6 +11,7 @@ import {
   validateIdCandidato,
   validateIdContratante,
 } from "../validation/validateId/validateId.js";
+import {getVaga} from "../controller/user/controllerColaborador.js";
 
 const APP = express();
 APP.use(express.json());
@@ -38,7 +39,7 @@ export let conectServ = (PORT: string) => {
 
     let result = controllerCandidate.controllerPostCandadate(body);
 
-    if (await result == true) {
+    if ((await result) == true) {
       console.log("✔️ [POST /candidato] Candidato criado com sucesso.");
       res.status(200).send("Sucesso ao criar o candidato");
     } else {
@@ -57,7 +58,10 @@ export let conectServ = (PORT: string) => {
       if (Array.isArray(result)) {
         res.status(200).send(result);
       } else {
-        console.warn("⚠️ [GET /candidato] Nenhum candidato encontrado:", result);
+        console.warn(
+          "⚠️ [GET /candidato] Nenhum candidato encontrado:",
+          result
+        );
         res.status(404).send({ message: result });
       }
     } catch (error) {
@@ -77,11 +81,17 @@ export let conectServ = (PORT: string) => {
       if (result && typeof result === "object") {
         res.status(200).send(result);
       } else {
-        console.warn(`⚠️ [GET /candidato/${id}] Candidato não encontrado:`, result);
+        console.warn(
+          `⚠️ [GET /candidato/${id}] Candidato não encontrado:`,
+          result
+        );
         res.status(404).send({ message: result });
       }
     } catch (error) {
-      console.error(`❌ [GET /candidato/${id}] Erro ao buscar candidato:`, error);
+      console.error(
+        `❌ [GET /candidato/${id}] Erro ao buscar candidato:`,
+        error
+      );
       res.status(500).send({ message: "Erro interno no servidor" });
     }
   });
@@ -93,14 +103,19 @@ export let conectServ = (PORT: string) => {
     try {
       let result = await controllerCandidate.controllerDeleteCandidato(id);
       if (result) {
-        console.log(`✔️ [DELETE /candidato/${id}] Candidato deletado com sucesso.`);
+        console.log(
+          `✔️ [DELETE /candidato/${id}] Candidato deletado com sucesso.`
+        );
         res.status(200).send({ message: "Candidato deletado com sucesso!" });
       } else {
         console.warn(`⚠️ [DELETE /candidato/${id}] Candidato não encontrado.`);
         res.status(404).send({ message: "Candidato não encontrado!" });
       }
     } catch (error) {
-      console.error(`❌ [DELETE /candidato/${id}] Erro ao deletar candidato:`, error);
+      console.error(
+        `❌ [DELETE /candidato/${id}] Erro ao deletar candidato:`,
+        error
+      );
       res.status(500).send({ message: "Erro interno no servidor" });
     }
   });
@@ -108,10 +123,16 @@ export let conectServ = (PORT: string) => {
   APP.put(Routes.updateCanditado, async (req, res) => {
     const id = String(req.params.id);
     const body = req.body;
-    console.log(`🚀 [PUT /candidato/${id}] Requisição recebida com dados:`, body);
+    console.log(
+      `🚀 [PUT /candidato/${id}] Requisição recebida com dados:`,
+      body
+    );
 
     try {
-      const result = await controllerCandidate.controllerUpdateCandidato(id, body);
+      const result = await controllerCandidate.controllerUpdateCandidato(
+        id,
+        body
+      );
       console.log(`✔️ [PUT /candidato/${id}] Atualização concluída:`, result);
       res.status(200).json({ status: "sucesso", result });
     } catch (error) {
@@ -133,7 +154,10 @@ export let conectServ = (PORT: string) => {
       console.log("✔️ [POST /contratante] Contratante criado com sucesso.");
       res.status(200).send(result);
     } else {
-      console.warn("❌ [POST /contratante] Falha ao criar contratante:", result);
+      console.warn(
+        "❌ [POST /contratante] Falha ao criar contratante:",
+        result
+      );
       res.status(400).send({ message: result });
     }
   });
@@ -173,10 +197,14 @@ export let conectServ = (PORT: string) => {
 
     let result = await controllerContratante.controllerDeleteContratante(id);
     if (result) {
-      console.log(`✔️ [DELETE /contratante/${id}] Contratante deletado com sucesso.`);
+      console.log(
+        `✔️ [DELETE /contratante/${id}] Contratante deletado com sucesso.`
+      );
       res.status(200).send(result);
     } else {
-      console.warn(`⚠️ [DELETE /contratante/${id}] Contratante não encontrado.`);
+      console.warn(
+        `⚠️ [DELETE /contratante/${id}] Contratante não encontrado.`
+      );
       res.status(400).send({ message: result });
     }
   });
@@ -184,9 +212,15 @@ export let conectServ = (PORT: string) => {
   APP.put(Routes.updateContratante, async (req, res) => {
     const id = String(req.params.id);
     const body = req.body;
-    console.log(`🚀 [PUT /contratante/${id}] Requisição recebida com dados:`, body);
+    console.log(
+      `🚀 [PUT /contratante/${id}] Requisição recebida com dados:`,
+      body
+    );
 
-    let result = await controllerContratante.controllerUpdateContratante(id, body);
+    let result = await controllerContratante.controllerUpdateContratante(
+      id,
+      body
+    );
     if (result) {
       console.log(`✔️ [PUT /contratante/${id}] Atualização concluída.`);
       res.status(200).send(result);
@@ -204,11 +238,16 @@ export let conectServ = (PORT: string) => {
     const ID = req.params.id;
     const form = req.body;
 
-    console.log(`🚀 [POST /formIFBR/${ID}] Requisição recebida, formulário:`, form);
+    console.log(
+      `🚀 [POST /formIFBR/${ID}] Requisição recebida, formulário:`,
+      form
+    );
 
     let result = controllerIFBR(ID, form);
     if ((await result) == true) {
-      console.log(`✔️ [POST /formIFBR/${ID}] Formulário processado com sucesso.`);
+      console.log(
+        `✔️ [POST /formIFBR/${ID}] Formulário processado com sucesso.`
+      );
       res.status(200).send(result);
     } else {
       console.warn(`❌ [POST /formIFBR/${ID}] Erro ao processar formulário.`);
@@ -224,11 +263,16 @@ export let conectServ = (PORT: string) => {
     let body = req.body;
     let id = req.params.id;
 
-    console.log(`🚀 [POST /colaborador/${id}] Requisição recebida, corpo:`, body);
+    console.log(
+      `🚀 [POST /colaborador/${id}] Requisição recebida, corpo:`,
+      body
+    );
 
     let result = controllerColaborador.controllerColaborador(body, id);
     if (result) {
-      console.log(`✔️ [POST /colaborador/${id}] Colaborador criado com sucesso.`);
+      console.log(
+        `✔️ [POST /colaborador/${id}] Colaborador criado com sucesso.`
+      );
       res.status(200).send(result);
     } else {
       console.warn(`❌ [POST /colaborador/${id}] Falha ao criar colaborador.`);
@@ -268,18 +312,23 @@ export let conectServ = (PORT: string) => {
     console.log(`Resultado validação: ${isValid}`);
 
     if (isValid === false) {
-      console.warn("❌ ID inválido - apenas empresas ou colaboradores podem criar vagas.");
+      console.warn(
+        "❌ ID inválido - apenas empresas ou colaboradores podem criar vagas."
+      );
       res
         .status(400)
         .send({ message: "ID inválido, Apenas Empresas podem criar vagas!" });
-    }
-     else {
+    } else {
       console.log("✔️ ID validado, prosseguindo...");
       next();
     }
   };
 
-  let idIsValidVaga = async (req: Request, res: Response, next: NextFunction) => {
+  let idIsValidVaga = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     const id = String(req.params.id);
 
     console.log(`🔍 Validando ID candidato: ${id}`);
@@ -291,7 +340,9 @@ export let conectServ = (PORT: string) => {
       console.warn("❌ ID inválido - apenas candidatos podem se inscrever.");
       res
         .status(400)
-        .send({ message: "ID inválido, Apenas Candidatos podem se inscrever à vagas!" });
+        .send({
+          message: "ID inválido, Apenas Candidatos podem se inscrever à vagas!",
+        });
     } else {
       console.log("✔️ ID validado, prosseguindo...");
       next();
@@ -319,19 +370,39 @@ export let conectServ = (PORT: string) => {
     }
   });
 
-  APP.post(Routes.candidatarVaga,idIsValidVaga, (req, res) => {
-    let id_vaga= String(Object.values(req.body));
+  APP.post(Routes.candidatarVaga, idIsValidVaga, (req, res) => {
+    let id_vaga = String(Object.values(req.body));
     let id_candidate = req.params.id;
 
-    console.log(`🚀 [POST /vaga/candidatar/${id_candidate}] Requisição recebida para vaga: ${id_vaga}`);
+    console.log(
+      `🚀 [POST /vaga/candidatar/${id_candidate}] Requisição recebida para vaga: ${id_vaga}`
+    );
 
     let result = controllerCandidate.candidatarVaga(id_candidate, id_vaga);
     if (result) {
-      console.log(`✔️ [POST /vaga/candidatar/${id_candidate}] Candidatura realizada com sucesso.`);
+      console.log(
+        `✔️ [POST /vaga/candidatar/${id_candidate}] Candidatura realizada com sucesso.`
+      );
       res.status(200).send(result);
     } else {
-      console.warn(`❌ [POST /vaga/candidatar/${id_candidate}] Falha ao candidatar.`);
+      console.warn(
+        `❌ [POST /vaga/candidatar/${id_candidate}] Falha ao candidatar.`
+      );
       res.status(400).send({ message: "Erro ao candidatar a vaga!" });
+    }
+  });
+
+  APP.get(Routes.getVagas, async (req, res) => {
+    console.log(`🚀 [POST /vagas] Requisição recebida`);
+
+    let result = await getVaga();
+
+    if (result) {
+      console.log(`✔️ [POST /vagas] Vagas encontradas: ${result.length}`);
+      res.status(200).send(result);
+    } else {
+      console.warn(`❌ [POST /vagas] Erro ao buscar vagas.`);
+      res.status(400).send({ message: "Erro ao buscar vagas!" });
     }
   });
 };
