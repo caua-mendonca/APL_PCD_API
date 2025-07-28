@@ -2,7 +2,6 @@ import { createColaborador } from "../../model/user/createUser/createColaborador
 import * as getUser from "../../model/user/getUser/getUser.js";
 import { createVaga } from "../../model/vaga/postVaga.js";
 import * as modelVaga from "../../model/vaga/getVaga.js";
-import { get } from "http";
 
 /**
  * Controller para criação de um novo colaborador.
@@ -91,3 +90,16 @@ export let getVagaById = async (id: string) => {
     console.log(error);
   }
 };
+
+export let deleteVaga = async(id: string) => {
+  try {
+    console.log("🚀 Passando ao deleteVaga()");
+    let response = await modelVaga.deleteVaga(id);
+    console.log(
+      `✔️ Vagas encontradas: ${response.length || response.rows?.length || 0}`
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
