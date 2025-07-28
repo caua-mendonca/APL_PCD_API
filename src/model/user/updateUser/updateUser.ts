@@ -2,7 +2,7 @@ import * as DB from "../../../repositories/queryTools.js"
 import { validateCpf } from "../../../validation/validateData/validadeteCpf.js";
 import { validateAge } from "../../../validation/validateData/validateAge.js";
 
-export let updateUser = async (table: string, id: number, body: object) => {
+export let updateUser = async (table: string, id: string, body: object) => {
   const logPrefix = `[updateUser][Table: ${table}][ID: ${id}]`;
   console.log(`${logPrefix} - Iniciando atualização do usuário`);
 
