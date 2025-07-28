@@ -412,7 +412,7 @@ export let deleteFromTable = async (
  */
 export let updateUserColumn = async (
   table: string,
-  id: number,
+  id: String,
   sets: string,
   values: any[]
 ): Promise<any> => {
