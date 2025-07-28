@@ -1,6 +1,8 @@
 import { createColaborador } from "../../model/user/createUser/createColaborador.js";
 import * as getUser from "../../model/user/getUser/getUser.js";
 import { createVaga } from "../../model/vaga/postVaga.js";
+import { getVagaModel } from "../../model/vaga/getVaga.js";
+import { get } from "http";
 
 /**
  * Controller para criação de um novo colaborador.
@@ -33,7 +35,11 @@ export let controllerColaborador = async (
 export let controllerGetColaborador = async (table: string, id: string) => {
   console.log("🚀 Passando ao getColaborador()");
   let response = await getUser.getColaborador(table, id);
-  console.log(`✔️ Colaboradores encontrados: ${response.length || response.rows?.length || 0}`);
+  console.log(
+    `✔️ Colaboradores encontrados: ${
+      response.length || response.rows?.length || 0
+    }`
+  );
   return response;
 };
 
@@ -58,4 +64,17 @@ export let postVaga = async (
   let result = createVaga(vaga, id_empresa);
   console.log("✔️ Resposta da criação da vaga recebida");
   return result;
+};
+
+export let getVaga = async () => {
+  try {
+    console.log("🚀 Passando ao getVaga()");
+    let response = await getVagaModel();
+    console.log(
+      `✔️ Vagas encontradas: ${response.length || response.rows?.length || 0}`
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
 };
