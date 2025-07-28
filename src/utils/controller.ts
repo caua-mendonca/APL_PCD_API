@@ -7,11 +7,9 @@ import * as controllerColaborador from "../controller/user/controllerColaborador
 import cors from "cors";
 import { Request, Response, NextFunction } from "express";
 import {
-  validateId,
   validateIdCandidato,
   validateIdContratante,
 } from "../validation/validateId/validateId.js";
-import {getVaga} from "../controller/user/controllerColaborador.js";
 
 const APP = express();
 APP.use(express.json());
@@ -395,7 +393,7 @@ export let conectServ = (PORT: string) => {
   APP.get(Routes.getVagas, async (req, res) => {
     console.log(`🚀 [POST /vagas] Requisição recebida`);
 
-    let result = await getVaga();
+    let result = await controllerColaborador.getVaga();
 
     if (result) {
       console.log(`✔️ [POST /vagas] Vagas encontradas: ${result.length}`);
@@ -403,6 +401,22 @@ export let conectServ = (PORT: string) => {
     } else {
       console.warn(`❌ [POST /vagas] Erro ao buscar vagas.`);
       res.status(400).send({ message: "Erro ao buscar vagas!" });
+    }
+  });
+
+  APP.get(Routes.getVagasById, async (req, res) => {
+    let id = String(req.params.id);
+
+    console.log(`🚀 [GET /vaga/${id}] Requisição recebida`);
+
+    let result = await controllerColaborador.getVagaById(id);
+
+    if (result) {
+      console.log(`✔️ [GET /vaga/${id}] Vaga encontrada: ${result.length}`);
+      res.status(200).send(result);
+    } else {
+      console.warn(`❌ [GET /vaga/${id}] Erro ao buscar vaga.`);
+      res.status(400).send({ message: "Erro ao buscar vaga!" });
     }
   });
 };
