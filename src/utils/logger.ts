@@ -419,4 +419,21 @@ export let conectServ = (PORT: string) => {
       res.status(400).send({ message: "Erro ao buscar vaga!" });
     }
   });
+
+  APP.delete(Routes.deleteVaga, async (req, res) => {
+    let id = String(req.params.id);
+
+    console.log(`🚀 [DELETE /vaga/${id}] Requisição recebida`);
+
+    let result = await controllerColaborador.deleteVaga(id);
+
+    if(result) {
+      console.log(`✔️ [DELETE /vaga/${id}] Vaga deletada com sucesso.`);
+      res.status(200).send(result);
+    } else {
+      console.warn(`❌ [DELETE /vaga/${id}] Erro ao deletar vaga.`);
+      res.status(400).send({ message: "Erro ao deletar vaga!" });
+    }
+  }
+  );
 };
