@@ -31,7 +31,7 @@ export let insertIntoCandidate = async (user: {
       `INSERT INTO tb_candidato (
         id, nome, email, senha, telefone, cpf, data_nascimento,
         def_visual, def_auditiva, def_fisica, def_intelectual, outra_def,
-        desc_def, acess_trab, desc_acess, status_usuario
+        desc_def, acess_trab, desc_acess, status
       ) VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8,
         $9, $10, $11, $12, $13, $14, $15, $16
@@ -85,7 +85,7 @@ export let insertIntoContratante = async (user: {
 
     await DB.pool.query(
       `INSERT INTO tb_empresa (
-        id, nome_fantasia, razao_social, email, senha, cnpj, telefone, status_empresa, acessibilidade
+        id, nome_fantasia, razao_social, email, senha, cnpj, telefone, status, acessibilidade
       ) VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8, $9
       )`,
@@ -477,7 +477,7 @@ export const insertVaga = async (
         id,
         data_inicio,
         data_fim,
-        status_vaga,
+        status,
         titulo,
         descricao,
         salario,
@@ -537,7 +537,7 @@ export let insertEmpVaga = async (
       INSERT INTO tb_empresa_vaga (
         tb_empresa_id,
         tb_vaga_id,
-        tb_vaga_status_vaga,
+        tb_vaga_status,
         tb_vaga_data_fim,
         tb_vaga_data_inicio
       ) VALUES ($1, $2, $3, $4, $5);
