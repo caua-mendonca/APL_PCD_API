@@ -92,7 +92,7 @@ export let createCanditado = async (user: {
     console.log("✔️ ID inicial criado:", newUser.id);
 
     // Validações
-    let idIsValid: any = validateId(newUser.id);
+    let idIsValid: any = validateId(newUser.id, "tb_candidato");
     let cpfIsValid: boolean = validateCpf(newUser.cpf);
     if (cpfIsValid === true) {
       console.log("validando cpf no banco");
@@ -121,7 +121,7 @@ export let createCanditado = async (user: {
     // Regenera ID se inválido
     while (idIsValid == "") {
       newUser.setId();
-      idIsValid = validateId(newUser.id);
+      idIsValid = validateId(newUser.id, "tb_candidato");
       console.log("🔄 Gerando novo ID, tentando validar:", newUser.id);
     }
     console.log("✔️ ID validado:", newUser.id);
