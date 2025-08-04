@@ -453,4 +453,18 @@ export let conectServ = (PORT: string) => {
       res.status(400).send({ message: "Erro ao criar evento!" });
     }
   });
+
+  APP.get(Routes.getEvento, async (req, res) => {
+    console.log(`🚀 [GET /evento] Requisição recebida`);
+
+    let result = await controllerColaborador.getEvento();
+    if (result) {
+      console.log(`✔️ [GET /evento] Eventos encontrados: ${result.length}`);
+      res.status(200).send(result);
+    } else {
+      console.warn(`❌ [GET /evento] Erro ao buscar eventos.`);
+      res.status(400).send({ message: "Erro ao buscar eventos!" });
+    }
+  }
+  );
 };
