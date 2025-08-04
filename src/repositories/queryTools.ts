@@ -136,23 +136,15 @@ export let insertIntoContratante = async (user: {
  * @param id ID a ser validado.
  * @returns Booleano indicando existência.
  */
-export const selectId = async (table: string, id: string): Promise<boolean> => {
+export const selectId = async (table: string, id: string) => {
   try {
-    console.log(`[selectId] Validando existência do ID ${id} em ${table}`);
-
-    const query = `SELECT id FROM ${table} WHERE id = $1`;
+    console.log(`[selectId] Validando ID ${id} na tabela ${table}`);
+    const query = `SELECT id FROM ${table} WHERE id = $1;`;
     const result = await DB.pool.query(query, [id]);
-
-    const exists = (result.rowCount ?? 0) > 0;
-    console.log(
-      `[selectId] ID ${id} ${
-        exists ? "encontrado" : "não encontrado"
-      } em ${table}`
-    );
-
-    return exists;
+    console.log(`[selectId] Resultado da validação:`, result.rows);
+    return result.rows.length > 0;
   } catch (error) {
-    console.error(`[selectId] ERRO ao validar ID ${id} em ${table}:`, error);
+    console.error(`[selectId] ERRO ao validar ID ${id} na tabela ${table}:`, error);
     throw error;
   }
 };
@@ -770,13 +762,13 @@ export let insertIntoEventos = async (
       hora_fim,
       id_candidato,
       id_calendario,
-      true
+      true,
     ]);
 
     console.log(
       `[insertEmpVaga] Associação vaga-empresa realizada com sucesso`
     );
-    return query
+    return query;
   } catch (error) {
     console.error(
       `[insertEmpVaga] ERRO ao associar vaga ${evento.id} à empresa ${id_calendario}:`,
