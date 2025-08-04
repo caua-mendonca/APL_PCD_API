@@ -46,6 +46,12 @@ export let controllerGetColaborador = async (table: string, id: string) => {
  * @param id_empresa - ID da empresa que cria a vaga
  * @returns resultado da criação da vaga (sucesso ou erro)
  */
+/**
+ * Insere uma nova vaga vinculada a uma empresa.
+ * @param vaga - Objeto contendo os detalhes da vaga (data de fim, título, descrição, salário, localidade, acessibilidade).
+ * @param id_empresa - Identificador da empresa que está cadastrando a vaga.
+ * @returns Resultado da criação da vaga, conforme resposta do model.
+ */
 export let postVaga = async (
   vaga: {
     data_fim: Date;
@@ -63,6 +69,11 @@ export let postVaga = async (
   return result;
 };
 
+/**
+ * Obtém todas as vagas disponíveis no sistema.
+ * @returns Array com as vagas encontradas.
+ * @throws Erro caso a consulta falhe.
+ */
 export let getVaga = async () => {
   try {
     console.log("🚀 Passando ao getVaga()");
@@ -76,6 +87,12 @@ export let getVaga = async () => {
   }
 };
 
+/**
+ * Busca uma vaga pelo seu identificador único.
+ * @param id - Identificador da vaga a ser buscada.
+ * @returns Vaga correspondente ao ID informado.
+ * @throws Erro caso a consulta falhe.
+ */
 export let getVagaById = async (id: string) => {
   try {
     console.log("🚀 Passando ao getVaga()");
@@ -89,7 +106,13 @@ export let getVagaById = async (id: string) => {
   }
 };
 
-export let deleteVaga = async(id: string) => {
+/**
+ * Remove uma vaga do sistema a partir do seu identificador.
+ * @param id - Identificador da vaga a ser deletada.
+ * @returns Resultado da operação de deleção.
+ * @throws Erro caso a deleção falhe.
+ */
+export let deleteVaga = async (id: string) => {
   try {
     console.log("🚀 Passando ao deleteVaga()");
     let response = await modelVaga.deleteVaga(id);
@@ -100,8 +123,14 @@ export let deleteVaga = async(id: string) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
+/**
+ * Insere um novo evento associado a um calendário e candidato.
+ * @param evento - Objeto contendo detalhes do evento (título, descrição, data, horário de início e fim, id do candidato).
+ * @param id_calendario - Identificador do calendário ao qual o evento será vinculado.
+ * @returns Resultado da criação do evento conforme resposta do model.
+ */
 export let postEvento = async (
   evento: {
     titulo: string;
@@ -119,6 +148,11 @@ export let postEvento = async (
   return result;
 };
 
+/**
+ * Obtém todos os eventos cadastrados no sistema.
+ * @returns Array com os eventos encontrados.
+ * @throws Erro caso a consulta falhe.
+ */
 export let getEvento = async () => {
   try {
     console.log("🚀 Passando ao getEvento()");
@@ -130,8 +164,14 @@ export let getEvento = async () => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
+/**
+ * Remove um evento do sistema a partir do seu identificador.
+ * @param id - Identificador do evento a ser deletado.
+ * @returns Resultado da operação de deleção.
+ * @throws Erro caso a deleção falhe.
+ */
 export let deleteEvento = async (id: string) => {
   try {
     console.log("🚀 Passando ao deleteEvento()");
@@ -143,4 +183,4 @@ export let deleteEvento = async (id: string) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
