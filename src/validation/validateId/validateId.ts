@@ -5,9 +5,9 @@ import * as Db from "../../repositories/queryTools.js";
  * @param id - ID a ser validado
  * @returns void (apenas imprime o resultado no console)
  */
-export let validateId = async (id: string) => {
+export let validateId = async (id: string, table: string) => {
   console.log("🚀 Iniciando validação de ID em tb_candidato");
-  let validId = await Db.selectId("tb_candidato", id);
+  let validId = await Db.selectId(table, id);
   console.log("✔️ Resultado da validação:", validId);
 };
 
