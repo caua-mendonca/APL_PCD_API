@@ -39,16 +39,27 @@ export function validateCNPJ(cnpj: string): boolean {
   return cnpj === base + digito1.toString() + digito2.toString();
 }
 
+/**
+ * Valida a existência de um CNPJ no banco de dados para evitar duplicidade.
+ * 
+ * Consulta a tabela e coluna especificadas para verificar se o valor já está cadastrado.
+ * 
+ * @param values - Valor do CNPJ a ser verificado.
+ * @param data - Nome da coluna onde será feita a verificação.
+ * @param table - Nome da tabela onde será realizada a consulta.
+ * @returns Promise<boolean> - true se o CNPJ NÃO existe (pode cadastrar), false caso contrário.
+ */
 export let validateCNPJToDB = async (
   values: string,
   data: string,
   table: string
-) => {
+): Promise<boolean> => {
   let result = await DB.validateData(values, data, table);
 
+  // Se encontrar registros, retorna false para impedir cadastro duplicado
   result > 0 ? (result = false) : (result = true);
 
-  console.log("RESULTADO DA FUNÇÃO validateCpfToDB:", result);
+  console.log("RESULTADO DA FUNÇÃO validateCNPJToDB:", result);
 
   return result;
 };
