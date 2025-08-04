@@ -25,7 +25,9 @@ export let insertIntoCandidate = async (user: {
   status: boolean;
 }) => {
   try {
-    console.log(`[insertIntoCandidate] Iniciando inserção do candidato ID: ${user.id}`);
+    console.log(
+      `[insertIntoCandidate] Iniciando inserção do candidato ID: ${user.id}`
+    );
 
     await DB.pool.query(
       `INSERT INTO tb_candidato (
@@ -56,9 +58,14 @@ export let insertIntoCandidate = async (user: {
       ]
     );
 
-    console.log(`[insertIntoCandidate] Candidato ${user.id} inserido com sucesso!`);
+    console.log(
+      `[insertIntoCandidate] Candidato ${user.id} inserido com sucesso!`
+    );
   } catch (error) {
-    console.error(`[insertIntoCandidate] ERRO ao inserir candidato ${user.id}:`, error);
+    console.error(
+      `[insertIntoCandidate] ERRO ao inserir candidato ${user.id}:`,
+      error
+    );
     throw error; // Propaga erro para tratamento superior
   }
 };
@@ -81,7 +88,9 @@ export let insertIntoContratante = async (user: {
   status: boolean;
 }) => {
   try {
-    console.log(`[insertIntoContratante] Iniciando inserção do contratante ID: ${user.id}`);
+    console.log(
+      `[insertIntoContratante] Iniciando inserção do contratante ID: ${user.id}`
+    );
 
     await DB.pool.query(
       `INSERT INTO tb_empresa (
@@ -102,9 +111,14 @@ export let insertIntoContratante = async (user: {
       ]
     );
 
-    console.log(`[insertIntoContratante] Contratante ${user.id} inserido com sucesso!`);
+    console.log(
+      `[insertIntoContratante] Contratante ${user.id} inserido com sucesso!`
+    );
   } catch (error) {
-    console.error(`[insertIntoContratante] ERRO ao inserir contratante ${user.id}:`, error);
+    console.error(
+      `[insertIntoContratante] ERRO ao inserir contratante ${user.id}:`,
+      error
+    );
     throw error;
   }
 };
@@ -130,7 +144,11 @@ export const selectId = async (table: string, id: string): Promise<boolean> => {
     const result = await DB.pool.query(query, [id]);
 
     const exists = (result.rowCount ?? 0) > 0;
-    console.log(`[selectId] ID ${id} ${exists ? "encontrado" : "não encontrado"} em ${table}`);
+    console.log(
+      `[selectId] ID ${id} ${
+        exists ? "encontrado" : "não encontrado"
+      } em ${table}`
+    );
 
     return exists;
   } catch (error) {
@@ -155,7 +173,9 @@ export let insertIntoIFBR = async (
   id_tupla: string
 ) => {
   try {
-    console.log(`[insertIntoIFBR] Inserindo domínio IFBR ${name} (${id}) para tupla ${id_tupla}`);
+    console.log(
+      `[insertIntoIFBR] Inserindo domínio IFBR ${name} (${id}) para tupla ${id_tupla}`
+    );
 
     await DB.pool.query(
       `INSERT INTO tb_ifbr (id_dominio, nome, data_resposta, score, id_ifbr) VALUES ($1, $2, $3, $4, $5);`,
@@ -164,7 +184,10 @@ export let insertIntoIFBR = async (
 
     console.log(`[insertIntoIFBR] Domínio IFBR ${name} inserido com sucesso`);
   } catch (error) {
-    console.error(`[insertIntoIFBR] ERRO ao inserir domínio IFBR ${name}:`, error);
+    console.error(
+      `[insertIntoIFBR] ERRO ao inserir domínio IFBR ${name}:`,
+      error
+    );
     throw error;
   }
 };
@@ -176,16 +199,23 @@ export let insertIntoIFBR = async (
  */
 export let updateIfbrCandidato = async (id: string, id_ifbr: string) => {
   try {
-    console.log(`[updateIfbrCandidato] Atualizando id_ifbr do candidato ${id} para ${id_ifbr}`);
+    console.log(
+      `[updateIfbrCandidato] Atualizando id_ifbr do candidato ${id} para ${id_ifbr}`
+    );
 
     await DB.pool.query(`UPDATE tb_candidato SET id_ifbr = $1 WHERE id = $2;`, [
       id_ifbr,
       id,
     ]);
 
-    console.log(`[updateIfbrCandidato] Atualização realizada com sucesso para candidato ${id}`);
+    console.log(
+      `[updateIfbrCandidato] Atualização realizada com sucesso para candidato ${id}`
+    );
   } catch (error) {
-    console.error(`[updateIfbrCandidato] ERRO ao atualizar id_ifbr do candidato ${id}:`, error);
+    console.error(
+      `[updateIfbrCandidato] ERRO ao atualizar id_ifbr do candidato ${id}:`,
+      error
+    );
     throw error;
   }
 };
@@ -216,13 +246,20 @@ export const insertCandidatoIFBRData = async () => {
   `;
 
   try {
-    console.log(`[insertCandidatoIFBRData] Iniciando inserção cruzada na tb_candidato_ifbr`);
+    console.log(
+      `[insertCandidatoIFBRData] Iniciando inserção cruzada na tb_candidato_ifbr`
+    );
 
     await DB.pool.query(sql);
 
-    console.log(`[insertCandidatoIFBRData] Inserção cruzada concluída com sucesso!`);
+    console.log(
+      `[insertCandidatoIFBRData] Inserção cruzada concluída com sucesso!`
+    );
   } catch (error) {
-    console.error(`[insertCandidatoIFBRData] ERRO ao inserir dados na tb_candidato_ifbr:`, error);
+    console.error(
+      `[insertCandidatoIFBRData] ERRO ao inserir dados na tb_candidato_ifbr:`,
+      error
+    );
     throw error;
   }
 };
@@ -254,9 +291,14 @@ export let insertIntoColaborador = async (
       [id, name, setor, email, senha]
     );
 
-    console.log(`[insertIntoColaborador] Colaborador ${id} inserido com sucesso!`);
+    console.log(
+      `[insertIntoColaborador] Colaborador ${id} inserido com sucesso!`
+    );
   } catch (error) {
-    console.error(`[insertIntoColaborador] ERRO ao inserir colaborador ${id}:`, error);
+    console.error(
+      `[insertIntoColaborador] ERRO ao inserir colaborador ${id}:`,
+      error
+    );
     throw error;
   }
 };
@@ -271,7 +313,9 @@ export let insertEmpresaColaborador = async (
   id_empresa: string
 ) => {
   try {
-    console.log(`[insertEmpresaColaborador] Iniciando inserção da relação colaborador ${id_colaborador} - empresa ${id_empresa}`);
+    console.log(
+      `[insertEmpresaColaborador] Iniciando inserção da relação colaborador ${id_colaborador} - empresa ${id_empresa}`
+    );
 
     // Verifica se a empresa existe antes de inserir a relação
     const empresa = await DB.pool.query(
@@ -294,9 +338,14 @@ export let insertEmpresaColaborador = async (
     `;
 
     await DB.pool.query(sql, [id_empresa, id_colaborador]);
-    console.log(`[insertEmpresaColaborador] Relação colaborador-empresa inserida com sucesso!`);
+    console.log(
+      `[insertEmpresaColaborador] Relação colaborador-empresa inserida com sucesso!`
+    );
   } catch (error) {
-    console.error(`[insertEmpresaColaborador] ERRO ao inserir relação colaborador-empresa:`, error);
+    console.error(
+      `[insertEmpresaColaborador] ERRO ao inserir relação colaborador-empresa:`,
+      error
+    );
     throw error;
   }
 };
@@ -310,16 +359,23 @@ export let updateColaboradorEmpresa = async (
   id_empresa: string
 ) => {
   try {
-    console.log(`[updateColaboradorEmpresa] Atualizando colaborador ${id} na empresa ${id_empresa}`);
+    console.log(
+      `[updateColaboradorEmpresa] Atualizando colaborador ${id} na empresa ${id_empresa}`
+    );
 
     await DB.pool.query(
       `UPDATE tb_empresa SET id_colaborador = $1 WHERE id = $2;`,
       [id, id_empresa]
     );
 
-    console.log(`[updateColaboradorEmpresa] Atualização realizada com sucesso!`);
+    console.log(
+      `[updateColaboradorEmpresa] Atualização realizada com sucesso!`
+    );
   } catch (error) {
-    console.error(`[updateColaboradorEmpresa] ERRO ao atualizar colaborador na empresa:`, error);
+    console.error(
+      `[updateColaboradorEmpresa] ERRO ao atualizar colaborador na empresa:`,
+      error
+    );
     throw error;
   }
 };
@@ -331,15 +387,22 @@ export let updateColaboradorEmpresa = async (
  */
 export let selectFromTable = async (table: string): Promise<any> => {
   try {
-    console.log(`[selectFromTable] Consultando todos os dados da tabela ${table}`);
+    console.log(
+      `[selectFromTable] Consultando todos os dados da tabela ${table}`
+    );
 
     const query = `SELECT * FROM ${table};`;
     const result = await DB.pool.query(query);
 
-    console.log(`[selectFromTable] Consulta concluída. Total de linhas: ${result.rowCount}`);
+    console.log(
+      `[selectFromTable] Consulta concluída. Total de linhas: ${result.rowCount}`
+    );
     return result;
   } catch (error) {
-    console.error(`[selectFromTable] ERRO na consulta da tabela ${table}:`, error);
+    console.error(
+      `[selectFromTable] ERRO na consulta da tabela ${table}:`,
+      error
+    );
     throw error;
   }
 };
@@ -355,15 +418,22 @@ export let selectFromIdWhere = async (
   id: string
 ): Promise<any> => {
   try {
-    console.log(`[selectFromIdWhere] Consultando registro ID ${id} na tabela ${table}`);
+    console.log(
+      `[selectFromIdWhere] Consultando registro ID ${id} na tabela ${table}`
+    );
 
     const query = `SELECT * FROM ${table} WHERE id = $1`;
     const result = await DB.pool.query(query, [id]);
 
-    console.log(`[selectFromIdWhere] Consulta concluída. Linhas retornadas: ${result.rowCount}`);
+    console.log(
+      `[selectFromIdWhere] Consulta concluída. Linhas retornadas: ${result.rowCount}`
+    );
     return result;
   } catch (error) {
-    console.error(`[selectFromIdWhere] ERRO na consulta de ID ${id} na tabela ${table}:`, error);
+    console.error(
+      `[selectFromIdWhere] ERRO na consulta de ID ${id} na tabela ${table}:`,
+      error
+    );
     throw error;
   }
 };
@@ -374,7 +444,6 @@ export let selectFromIdWhere = async (
  * @param id ID do registro.
  * @returns Resultado da consulta.
  */
-
 
 /**
  * Realiza "delete" lógico, atualizando status para false.
@@ -387,17 +456,24 @@ export let deleteFromTable = async (
   id: string
 ): Promise<any> => {
   try {
-    console.log(`[deleteFromTable] Atualizando status para false no registro ID ${id} da tabela ${table}`);
+    console.log(
+      `[deleteFromTable] Atualizando status para false no registro ID ${id} da tabela ${table}`
+    );
 
     let result = await DB.pool.query(
       `UPDATE ${table} SET status = $1 WHERE id = $2;`,
       [false, id]
     );
 
-    console.log(`[deleteFromTable] Atualização realizada com sucesso, linhas afetadas: ${result.rowCount}`);
+    console.log(
+      `[deleteFromTable] Atualização realizada com sucesso, linhas afetadas: ${result.rowCount}`
+    );
     return result;
   } catch (error) {
-    console.error(`[deleteFromTable] ERRO ao atualizar status no registro ID ${id} da tabela ${table}:`, error);
+    console.error(
+      `[deleteFromTable] ERRO ao atualizar status no registro ID ${id} da tabela ${table}:`,
+      error
+    );
     throw error;
   }
 };
@@ -417,17 +493,26 @@ export let updateUserColumn = async (
   values: any[]
 ): Promise<any> => {
   try {
-    console.log(`[updateUserColumn] Atualizando registro ID ${id} na tabela ${table} com campos: ${sets}`);
+    console.log(
+      `[updateUserColumn] Atualizando registro ID ${id} na tabela ${table} com campos: ${sets}`
+    );
 
-    const query = `UPDATE ${table} SET ${sets} WHERE id = $${values.length + 1}`;
+    const query = `UPDATE ${table} SET ${sets} WHERE id = $${
+      values.length + 1
+    }`;
     values.push(id);
 
     const result = await DB.pool.query(query, values);
 
-    console.log(`[updateUserColumn] Atualização concluída com sucesso, linhas afetadas: ${result.rowCount}`);
+    console.log(
+      `[updateUserColumn] Atualização concluída com sucesso, linhas afetadas: ${result.rowCount}`
+    );
     return result;
   } catch (error) {
-    console.error(`[updateUserColumn] ERRO ao atualizar registro ID ${id} na tabela ${table}:`, error);
+    console.error(
+      `[updateUserColumn] ERRO ao atualizar registro ID ${id} na tabela ${table}:`,
+      error
+    );
     throw error;
   }
 };
@@ -470,7 +555,9 @@ export const insertVaga = async (
   id_creator: string
 ): Promise<boolean> => {
   try {
-    console.log(`[insertVaga] Iniciando inserção da vaga ID: ${id}, criada por: ${id_creator}`);
+    console.log(
+      `[insertVaga] Iniciando inserção da vaga ID: ${id}, criada por: ${id_creator}`
+    );
 
     const query = `
       INSERT INTO tb_vaga (
@@ -530,7 +617,9 @@ export let insertEmpVaga = async (
   id_empresa: string
 ) => {
   try {
-    console.log(`[insertEmpVaga] Associando vaga ${vaga.id} à empresa ${id_empresa}`);
+    console.log(
+      `[insertEmpVaga] Associando vaga ${vaga.id} à empresa ${id_empresa}`
+    );
 
     const { id, data_inicio, data_fim, status } = vaga;
     const query = `
@@ -545,9 +634,14 @@ export let insertEmpVaga = async (
 
     await DB.pool.query(query, [id_empresa, id, status, data_fim, data_inicio]);
 
-    console.log(`[insertEmpVaga] Associação vaga-empresa realizada com sucesso`);
+    console.log(
+      `[insertEmpVaga] Associação vaga-empresa realizada com sucesso`
+    );
   } catch (error) {
-    console.error(`[insertEmpVaga] ERRO ao associar vaga ${vaga.id} à empresa ${id_empresa}:`, error);
+    console.error(
+      `[insertEmpVaga] ERRO ao associar vaga ${vaga.id} à empresa ${id_empresa}:`,
+      error
+    );
     throw error;
   }
 };
@@ -559,21 +653,30 @@ export let insertEmpVaga = async (
  */
 export let getEmpByColab = async (id_colaborador: string) => {
   try {
-    console.log(`[getEmpByColab] Buscando empresa para colaborador ${id_colaborador}`);
+    console.log(
+      `[getEmpByColab] Buscando empresa para colaborador ${id_colaborador}`
+    );
 
     const query = `SELECT tb_empresa_id FROM tb_empresa_colaborador WHERE tb_colaborador_id_colaborador = $1;`;
     const result = await DB.pool.query(query, [id_colaborador]);
 
     if (result.rowCount === 0) {
-      throw new Error(`Nenhuma empresa encontrada para colaborador ${id_colaborador}`);
+      throw new Error(
+        `Nenhuma empresa encontrada para colaborador ${id_colaborador}`
+      );
     }
 
     const emp = result.rows[0].tb_empresa_id;
-    console.log(`[getEmpByColab] Empresa encontrada para colaborador ${id_colaborador}: ${emp}`);
+    console.log(
+      `[getEmpByColab] Empresa encontrada para colaborador ${id_colaborador}: ${emp}`
+    );
 
     return emp;
   } catch (error) {
-    console.error(`[getEmpByColab] ERRO ao buscar empresa para colaborador ${id_colaborador}:`, error);
+    console.error(
+      `[getEmpByColab] ERRO ao buscar empresa para colaborador ${id_colaborador}:`,
+      error
+    );
     throw error;
   }
 };
@@ -588,31 +691,97 @@ export const insertCandidateVaga = async (
   id_candidate: string
 ): Promise<boolean> => {
   try {
-    console.log(`[insertCandidateVaga] Inserindo candidato ${id_candidate} na vaga ${id_vaga}`);
+    console.log(
+      `[insertCandidateVaga] Inserindo candidato ${id_candidate} na vaga ${id_vaga}`
+    );
 
     const query = `INSERT INTO tb_candidato_vaga (tb_vaga_id, tb_candidato_id) VALUES ($1, $2);`;
     await DB.pool.query(query, [id_vaga, id_candidate]);
 
-    console.log(`[insertCandidateVaga] Candidato ${id_candidate} inserido na vaga ${id_vaga} com sucesso`);
+    console.log(
+      `[insertCandidateVaga] Candidato ${id_candidate} inserido na vaga ${id_vaga} com sucesso`
+    );
     return true;
-
   } catch (error) {
-    console.error(`[insertCandidateVaga] ERRO ao inserir candidato ${id_candidate} na vaga ${id_vaga}:`, error);
+    console.error(
+      `[insertCandidateVaga] ERRO ao inserir candidato ${id_candidate} na vaga ${id_vaga}:`,
+      error
+    );
     return false;
   }
+};
 
-}
-
-
-export let validateData = async (value: string, data:string, table: string): Promise<any> => {
-  try{
-    let result = await DB.pool.query(`SELECT ${data} FROM ${table} WHERE ${data} = $1`, [value]);
-    console.log(result.rows.length)
-    return result.rows.length
+export let validateData = async (
+  value: string,
+  data: string,
+  table: string
+): Promise<any> => {
+  try {
+    let result = await DB.pool.query(
+      `SELECT ${data} FROM ${table} WHERE ${data} = $1`,
+      [value]
+    );
+    console.log(result.rows.length);
+    return result.rows.length;
   } catch (error) {
     console.error(`[insertCandidateVaga] ERRO ao buscar candidatos`, error);
     return false;
   }
-}
+};
 
+export let insertIntoEventos = async (
+  evento: {
+    id: string;
+    titulo: string;
+    descricao: string;
+    data: Date;
+    hora_inicio: string;
+    hora_fim: string;
+    id_candidato: string;
+  },
+  id_calendario: string
+) => {
+  try {
+    console.log(
+      `[insertEmpVaga] Associando vaga ${evento.id} à empresa ${id_calendario}`
+    );
+    const { id, titulo, descricao, data, hora_inicio, hora_fim, id_candidato } =
+      evento;
+    const query = `
+      INSERT INTO tb_evento (
+        id_evento,
+        nome,
+        descricao,
+        data_evento,
+        hora_ini,
+        hora_fim,
+        id_candidato, 
+        id_calendario,
+        status
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+    `;
 
+    await DB.pool.query(query, [
+      id,
+      titulo,
+      descricao,
+      data,
+      hora_inicio,
+      hora_fim,
+      id_candidato,
+      id_calendario,
+      true
+    ]);
+
+    console.log(
+      `[insertEmpVaga] Associação vaga-empresa realizada com sucesso`
+    );
+    return query
+  } catch (error) {
+    console.error(
+      `[insertEmpVaga] ERRO ao associar vaga ${evento.id} à empresa ${id_calendario}:`,
+      error
+    );
+    throw error;
+  }
+};
