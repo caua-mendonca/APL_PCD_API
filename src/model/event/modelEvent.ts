@@ -53,3 +53,18 @@ export let getEvento = async () => {
   console.log(`✔️ Eventos encontrados: ${response.length || response.rows?.length || 0}`);
   return response;
 };
+
+export let deleteEvento = async (id: string) => {
+  console.log("🚀 Passando ao deleteEventoModel()");
+  if (!Validation.validateId(id, "tb_evento")) {
+    throw new Error("ID inválido");
+  }
+  let response = await DB.deleteFromTable("tb_evento", id);
+  if (response) {
+    console.log(`✔️ Evento deletado com sucesso: ${id}`);
+    return response;
+  } else {
+    console.log(`❌ Falha ao deletar evento: ${id}`);
+    throw new Error("Falha ao deletar evento");
+  }
+}
