@@ -336,11 +336,9 @@ export let conectServ = (PORT: string) => {
 
     if (isValid === false) {
       console.warn("❌ ID inválido - apenas candidatos podem se inscrever.");
-      res
-        .status(400)
-        .send({
-          message: "ID inválido, Apenas Candidatos podem se inscrever à vagas!",
-        });
+      res.status(400).send({
+        message: "ID inválido, Apenas Candidatos podem se inscrever à vagas!",
+      });
     } else {
       console.log("✔️ ID validado, prosseguindo...");
       next();
@@ -427,13 +425,32 @@ export let conectServ = (PORT: string) => {
 
     let result = await controllerColaborador.deleteVaga(id);
 
-    if(result) {
+    if (result) {
       console.log(`✔️ [DELETE /vaga/${id}] Vaga deletada com sucesso.`);
       res.status(200).send(result);
     } else {
       console.warn(`❌ [DELETE /vaga/${id}] Erro ao deletar vaga.`);
       res.status(400).send({ message: "Erro ao deletar vaga!" });
     }
-  }
-  );
+  });
+
+  // -----------------------------------
+  // Rotas CRUD Evento
+  // -----------------------------------
+
+  APP.post(Routes.createEvento, (req, res) => {
+    let body = req.body;
+    let id = req.params.id;
+
+    console.log(`🚀 [POST /evento/${id}] Requisição recebida, corpo:`, body);
+
+    let result = controllerColaborador.postEvento(body, id);
+    if (result) {
+      console.log(`✔️ [POST /evento/${id}] Evento criado com sucesso.`);
+      res.status(200).send(result);
+    } else {
+      console.warn(`❌ [POST /evento/${id}] Falha ao criar evento.`);
+      res.status(400).send({ message: "Erro ao criar evento!" });
+    }
+  });
 };
