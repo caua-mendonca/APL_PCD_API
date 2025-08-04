@@ -397,7 +397,7 @@ export let selectFromTable = async (table: string): Promise<any> => {
     console.log(
       `[selectFromTable] Consulta concluída. Total de linhas: ${result.rowCount}`
     );
-    return result;
+    return result.rows;
   } catch (error) {
     console.error(
       `[selectFromTable] ERRO na consulta da tabela ${table}:`,
