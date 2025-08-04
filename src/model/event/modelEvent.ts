@@ -13,12 +13,7 @@ export let createEvento = async (
   },
   id_calendario: string
 ) => {
-  // console.log("🚀 Validando id da calendario'");
-  // let result: any = await Validation.validateId(id_calendario, "tb_calendario");
-  // if (!result) {
-  //   console.log("❌ ID da calendario' inválido");
-  //   throw new Error("ID da calendario' inválido");
-  // }
+
   let newEvent = new Event(
     evento.titulo,
     evento.descricao,
@@ -50,4 +45,11 @@ export let createEvento = async (
     console.log("❌ Falha ao inserir evento");
     throw new Error("Falha ao inserir evento");
   }
+};
+
+export let getEvento = async () => {
+  console.log("🚀 Passando ao getEventoModel()");
+  let response = await DB.selectFromTable("tb_evento");
+  console.log(`✔️ Eventos encontrados: ${response.length || response.rows?.length || 0}`);
+  return response;
 };
