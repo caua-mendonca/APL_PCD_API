@@ -131,3 +131,16 @@ export let getEvento = async () => {
     console.log(error);
   }
 }
+
+export let deleteEvento = async (id: string) => {
+  try {
+    console.log("🚀 Passando ao deleteEvento()");
+    let response = await modelEvento.deleteEvento(id);
+    console.log(
+      `✔️ Evento deletado: ${response.length || response.rows?.length || 0}`
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
