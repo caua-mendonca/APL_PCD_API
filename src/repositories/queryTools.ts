@@ -678,49 +678,81 @@ export let getEmpByColab = async (id_colaborador: string) => {
  * @param id_candidate ID do candidato.
  * @returns Promise<boolean> indicando sucesso ou falha da operação.
  */
+/**
+ * Insere um candidato em uma vaga na tabela tb_candidato_vaga.
+ * 
+ * @param id_vaga - ID da vaga que o candidato está se candidatando.
+ * @param id_candidate - ID do candidato a ser inserido.
+ * @returns Promise<boolean> - Retorna true se a inserção for bem-sucedida, false em caso de falha.
+ */
 export const insertCandidateVaga = async (
   id_vaga: string,
   id_candidate: string
 ): Promise<boolean> => {
   try {
     console.log(
-      `[insertCandidateVaga] Inserindo candidato ${id_candidate} na vaga ${id_vaga}`
+      `[insertCandidateVaga] Iniciando inserção do candidato ${id_candidate} na vaga ${id_vaga}`
     );
 
     const query = `INSERT INTO tb_candidato_vaga (tb_vaga_id, tb_candidato_id) VALUES ($1, $2);`;
     await DB.pool.query(query, [id_vaga, id_candidate]);
 
     console.log(
-      `[insertCandidateVaga] Candidato ${id_candidate} inserido na vaga ${id_vaga} com sucesso`
+      `[insertCandidateVaga] Candidato ${id_candidate} vinculado à vaga ${id_vaga} com sucesso.`
     );
     return true;
   } catch (error) {
     console.error(
-      `[insertCandidateVaga] ERRO ao inserir candidato ${id_candidate} na vaga ${id_vaga}:`,
+      `[insertCandidateVaga] ERRO ao vincular candidato ${id_candidate} à vaga ${id_vaga}:`,
       error
     );
     return false;
   }
 };
 
+/**
+ * Valida a existência de um valor específico em uma tabela.
+ * 
+ * @param value - Valor a ser validado.
+ * @param data - Nome da coluna a ser verificada.
+ * @param table - Nome da tabela onde a validação será feita.
+ * @returns Promise<number | boolean> - Quantidade de registros encontrados ou false em caso de erro.
+ */
 export let validateData = async (
   value: string,
   data: string,
   table: string
 ): Promise<any> => {
   try {
+    console.log(
+      `[validateData] Verificando existência do valor '${value}' na coluna '${data}' da tabela '${table}'.`
+    );
+
     let result = await DB.pool.query(
       `SELECT ${data} FROM ${table} WHERE ${data} = $1`,
       [value]
     );
-    console.log(result.rows.length);
+
+    console.log(
+      `[validateData] Validação concluída. Registros encontrados: ${result.rows.length}`
+    );
     return result.rows.length;
   } catch (error) {
-    console.error(`[insertCandidateVaga] ERRO ao buscar candidatos`, error);
+    console.error(
+      `[validateData] ERRO ao validar dados na tabela ${table}, coluna ${data}:`,
+      error
+    );
     return false;
   }
 };
 
+/**
+ * Insere um novo evento na tabela tb_evento.
+ * 
+ * @param evento - Objeto contendo as informações do evento.
+ * @param id_calendario - ID do calendário ao qual o evento pertence.
+ * @returns Promise<string> - Query utilizada, ou lança erro em caso de falha.
+ */
 export let insertIntoEventos = async (
   evento: {
     id: string;
@@ -735,10 +767,12 @@ export let insertIntoEventos = async (
 ) => {
   try {
     console.log(
-      `[insertEmpVaga] Associando vaga ${evento.id} à empresa ${id_calendario}`
+      `[insertIntoEventos] Iniciando inserção do evento ${evento.id} no calendário ${id_calendario}`
     );
+
     const { id, titulo, descricao, data, hora_inicio, hora_fim, id_candidato } =
       evento;
+
     const query = `
       INSERT INTO tb_evento (
         id_evento,
@@ -766,12 +800,12 @@ export let insertIntoEventos = async (
     ]);
 
     console.log(
-      `[insertEmpVaga] Associação vaga-empresa realizada com sucesso`
+      `[insertIntoEventos] Evento ${id} inserido com sucesso no calendário ${id_calendario}.`
     );
     return query;
   } catch (error) {
     console.error(
-      `[insertEmpVaga] ERRO ao associar vaga ${evento.id} à empresa ${id_calendario}:`,
+      `[insertIntoEventos] ERRO ao inserir evento ${evento.id} no calendário ${id_calendario}:`,
       error
     );
     throw error;
