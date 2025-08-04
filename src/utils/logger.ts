@@ -465,6 +465,19 @@ export let conectServ = (PORT: string) => {
       console.warn(`❌ [GET /evento] Erro ao buscar eventos.`);
       res.status(400).send({ message: "Erro ao buscar eventos!" });
     }
-  }
-  );
+  });
+
+  APP.delete(Routes.deleteEvento, async (req, res) => {
+    let id = String(req.params.id);
+
+    console.log(`🚀 [DELETE /evento/${id}] Requisição recebida`);
+    let result = await controllerColaborador.deleteEvento(id);
+    if (result) {
+      console.log(`✔️ [DELETE /evento/${id}] Evento deletado com sucesso.`);
+      res.status(200).send(result);
+    } else {
+      console.warn(`❌ [DELETE /evento/${id}] Erro ao deletar evento.`);
+      res.status(400).send({ message: "Erro ao deletar evento!" });
+    }
+  });
 };
