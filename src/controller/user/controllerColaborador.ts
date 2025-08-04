@@ -118,3 +118,16 @@ export let postEvento = async (
   console.log("✔️ Resposta da criação do evento recebida");
   return result;
 };
+
+export let getEvento = async () => {
+  try {
+    console.log("🚀 Passando ao getEvento()");
+    let response = await modelEvento.getEvento();
+    console.log(
+      `✔️ Eventos encontrados: ${response.length || response.rows?.length || 0}`
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
