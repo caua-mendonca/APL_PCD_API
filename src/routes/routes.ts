@@ -34,3 +34,4 @@ export let deleteVaga: string = "/deleteVaga/:id";
 // Rotas para o recurso Evento, com ID como parâmetro
 export let createEvento: string = "/createEvento/:id";
 export let getEvento: string = "/getEvento";
+export let deleteEvento: string = "/deleteEvento/:id";
