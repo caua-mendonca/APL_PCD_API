@@ -1,6 +1,7 @@
 import * as Model from "../../model/user/modelUser.js";
 import * as modelVaga from "../../model/vaga/modelVaga.js";
 import * as modelEvento from "../../model/event/modelEvent.js"
+import * as modelCalendar from "../../model/calendar/modelCalendar.js";
 /**
  * Controller para criação de um novo colaborador.
  * Recebe dados do colaborador e o ID da empresa para associação.
@@ -184,3 +185,10 @@ export let deleteEvento = async (id: string) => {
     console.log(error);
   }
 };
+
+export let postCalendario = async (id: string) => {
+  console.log("🚀 Passando ao createCalendario()");
+  let result = await modelCalendar.createCalendario(id);
+  console.log("✔️ Resposta da criação do calendário recebida");
+  return result;
+}
