@@ -35,3 +35,6 @@ export let deleteVaga: string = "/deleteVaga/:id";
 export let createEvento: string = "/createEvento/:id";
 export let getEvento: string = "/getEvento";
 export let deleteEvento: string = "/deleteEvento/:id";
+
+// Rotas para o recurso Calendario, com ID como parâmetro
+export let createCalendario: string = "/createCalendario/:id";
