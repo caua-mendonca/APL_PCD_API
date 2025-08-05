@@ -389,7 +389,7 @@ export let selectFromTable = async (table: string): Promise<any> => {
     console.log(
       `[selectFromTable] Consulta concluída. Total de linhas: ${result.rowCount}`
     );
-    return result.rows;
+    return result;
   } catch (error) {
     console.error(
       `[selectFromTable] ERRO na consulta da tabela ${table}:`,
@@ -618,7 +618,7 @@ export let insertEmpVaga = async (
       INSERT INTO tb_empresa_vaga (
         tb_empresa_id,
         tb_vaga_id,
-        tb_vaga_status,
+        tb_vaga_status_vaga,
         tb_vaga_data_fim,
         tb_vaga_data_inicio
       ) VALUES ($1, $2, $3, $4, $5);
@@ -811,3 +811,25 @@ export let insertIntoEventos = async (
     throw error;
   }
 };
+
+
+export let insertCalendario = async (id_calendar: string, nome: string, id_empresa: string):Promise<any> => {
+  try {
+    console.log(`[insertCalendario] Iniciando inserção do calendário ${id_calendar}`);
+
+    const query = `
+      INSERT INTO tb_calendario (id_calendario, nome_calendario, id_empresa) VALUES ($1, $2, $3);
+    `;
+
+    await DB.pool.query(query, [id_calendar, nome, id_empresa]);
+
+    console.log(`[insertCalendario] Calendário ${id_calendar} inserido com sucesso!`);
+    return true;
+  } catch (error) {
+    console.error(
+      `[insertCalendario] ERRO ao inserir calendário ${id_empresa}:`,
+      error
+    );
+    throw error;
+  }
+}
