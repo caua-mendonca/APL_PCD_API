@@ -480,4 +480,22 @@ export let conectServ = (PORT: string) => {
       res.status(400).send({ message: "Erro ao deletar evento!" });
     }
   });
+
+  // -----------------------------------
+  // Rotas CRUD Calendario
+  // -----------------------------------
+
+  APP.post(Routes.createCalendario, (req, res) => {
+    let id = req.params.id;
+
+    console.log(`🚀 [POST /calendario/${id}] Requisição recebida`);
+    let result = controllerColaborador.postCalendario(id);
+    if (result) {
+      console.log(`✔️ [POST /calendario/${id}] Calendário criado com sucesso.`);
+      res.status(200).send(result);
+    } else {
+      console.warn(`❌ [POST /calendario/${id}] Falha ao criar calendário.`);
+      res.status(400).send({ message: "Erro ao criar calendário!" });
+    }
+  });
 };
