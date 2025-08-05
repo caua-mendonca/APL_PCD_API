@@ -1,11 +1,20 @@
 import { Colaborador } from "../entities/class/colaborador.js";
-import { validateId, validateIdByRelation } from "../../validation/validateId/validateId.js";
+import {
+  validateId,
+  validateIdByRelation,
+} from "../../validation/validateId/validateId.js";
 import * as DB from "../../repositories/queryTools.js";
-import { validateCpf, validateCpfToDB } from "../../validation/validateData/validadeteCpf.js";
+import {
+  validateCpf,
+  validateCpfToDB,
+} from "../../validation/validateData/validadeteCpf.js";
 import { Candidate } from "../entities/class/candidate.js";
 import { Contratante } from "../entities/class/contratante.js";
 import { validateAge } from "../../validation/validateData/validateAge.js";
-import { validateCNPJ, validateCNPJToDB } from "../../validation/validateData/validateCNPJ.js";
+import {
+  validateCNPJ,
+  validateCNPJToDB,
+} from "../../validation/validateData/validateCNPJ.js";
 import { validateEmailToDB } from "../../validation/validateData/validateEmail.js";
 
 /**
@@ -13,13 +22,13 @@ import { validateEmailToDB } from "../../validation/validateData/validateEmail.j
  * - Valida a existência da empresa.
  * - Gera um ID único para o colaborador.
  * - Insere no banco e associa com a empresa.
- * 
+ *
  * @param user Dados do colaborador (nome, email, senha e setor).
  * @param id_empresa ID da empresa à qual o colaborador será vinculado.
  * @returns true em caso de sucesso, ou lança erro em caso de falha.
  */
 export let createColaborador = async (
-  user: { name: string; email: string; senha: string; setor: string; },
+  user: { name: string; email: string; senha: string; setor: string },
   id_empresa: string
 ) => {
   console.log("🚀 Validando id da empresa");
@@ -31,7 +40,12 @@ export let createColaborador = async (
   }
 
   console.log("Iniciando criação do colaborador pela classe Colaborador");
-  let colaborador = new Colaborador(user.name, user.email, user.senha, user.setor);
+  let colaborador = new Colaborador(
+    user.name,
+    user.email,
+    user.senha,
+    user.setor
+  );
 
   try {
     console.log("Definindo ID único para colaborador");
@@ -44,11 +58,21 @@ export let createColaborador = async (
     }
 
     // Inserção no banco de dados
-    console.log(`Inserindo colaborador com ID: ${colaborador.id} no banco de dados`);
-    await DB.insertIntoColaborador(colaborador.id, colaborador.name, colaborador.email, colaborador.senha, colaborador.setor);
+    console.log(
+      `Inserindo colaborador com ID: ${colaborador.id} no banco de dados`
+    );
+    await DB.insertIntoColaborador(
+      colaborador.id,
+      colaborador.name,
+      colaborador.email,
+      colaborador.senha,
+      colaborador.setor
+    );
 
     // Associa colaborador à empresa
-    console.log(`Associando colaborador ID: ${colaborador.id} à empresa ID: ${id_empresa}`);
+    console.log(
+      `Associando colaborador ID: ${colaborador.id} à empresa ID: ${id_empresa}`
+    );
     await DB.updateColaboradorEmpresa(colaborador.id, id_empresa);
     await DB.insertEmpresaColaborador(colaborador.id, id_empresa);
 
@@ -65,25 +89,51 @@ export let createColaborador = async (
  * - Valida CPF, e-mail, data de nascimento e senhas.
  * - Gera um ID único.
  * - Insere no banco de dados.
- * 
+ *
  * @param user Objeto contendo os dados do candidato.
  * @returns true se sucesso, array com erros de validação ou lança erro em caso de falha.
  */
 export let createCanditado = async (user: {
-  name: string; email: string; confirme_email: string; senha: string; confirme_senha: string;
-  telefone: string; cpf: string; data_nascimento: Date; def_visual: boolean; def_fisica: boolean;
-  def_auditiva: boolean; def_intelectual: boolean; outra_def: boolean; descricao_def: string;
-  acessibilidade_trab: boolean; descricao_acessibilidade: string;
+  name: string;
+  email: string;
+  confirme_email: string;
+  senha: string;
+  confirme_senha: string;
+  telefone: string;
+  cpf: string;
+  data_nascimento: Date;
+  def_visual: boolean;
+  def_fisica: boolean;
+  def_auditiva: boolean;
+  def_intelectual: boolean;
+  outra_def: boolean;
+  descricao_def: string;
+  acessibilidade_trab: boolean;
+  descricao_acessibilidade: string;
 }): Promise<any> => {
   try {
-    console.log("🚀 Iniciando createCanditado - criando instância da classe Candidate");
+    console.log(
+      "🚀 Iniciando createCanditado - criando instância da classe Candidate"
+    );
     let errorLog = [];
 
     // Criação do candidato
     let newUser = new Candidate(
-      user.name, user.email, user.confirme_email, user.senha, user.confirme_senha, user.telefone,
-      user.cpf, user.data_nascimento, user.def_visual, user.def_auditiva, user.def_fisica,
-      user.def_intelectual, user.outra_def, user.descricao_def, user.acessibilidade_trab,
+      user.name,
+      user.email,
+      user.confirme_email,
+      user.senha,
+      user.confirme_senha,
+      user.telefone,
+      user.cpf,
+      user.data_nascimento,
+      user.def_visual,
+      user.def_auditiva,
+      user.def_fisica,
+      user.def_intelectual,
+      user.outra_def,
+      user.descricao_def,
+      user.acessibilidade_trab,
       user.descricao_acessibilidade
     );
 
@@ -108,7 +158,11 @@ export let createCanditado = async (user: {
     let emailIsValid: boolean = newUser.email === newUser.confirme_email;
     if (emailIsValid === true) {
       console.log("validando email no banco");
-      emailIsValid = await validateEmailToDB(newUser.email, "email", "tb_candidato");
+      emailIsValid = await validateEmailToDB(
+        newUser.email,
+        "email",
+        "tb_candidato"
+      );
       console.log("✔️ emailIsValid:", emailIsValid);
       if (!emailIsValid) {
         console.log("❌ Email inválido:", newUser.email);
@@ -152,21 +206,37 @@ export let createCanditado = async (user: {
  * - Valida e-mail, CNPJ e senhas.
  * - Gera ID único.
  * - Insere no banco de dados.
- * 
+ *
  * @param user Objeto contendo os dados do contratante.
  * @returns string de sucesso, array de erros ou lança erro em caso de falha.
  */
 export let createContratante = async (user: {
-  nome_fantasia: string; razao_social: string; email: string; confirme_email: string;
-  senha: string; confirme_senha: string; cnpj: string; telefone: string; acessibilidade: string;
+  nome_fantasia: string;
+  razao_social: string;
+  email: string;
+  confirme_email: string;
+  senha: string;
+  confirme_senha: string;
+  cnpj: string;
+  telefone: string;
+  acessibilidade: string;
 }): Promise<any> => {
   try {
     let errorLog = [];
 
-    console.log("🚀 Iniciando createContratante - criando instância da classe Contratante");
+    console.log(
+      "🚀 Iniciando createContratante - criando instância da classe Contratante"
+    );
     let newContratante = new Contratante(
-      user.nome_fantasia, user.razao_social, user.email, user.confirme_email,
-      user.senha, user.confirme_senha, user.cnpj, user.telefone, user.acessibilidade
+      user.nome_fantasia,
+      user.razao_social,
+      user.email,
+      user.confirme_email,
+      user.senha,
+      user.confirme_senha,
+      user.cnpj,
+      user.telefone,
+      user.acessibilidade
     );
 
     // Gera ID único
@@ -179,9 +249,14 @@ export let createContratante = async (user: {
     console.log("✔️ ID validado para contratante:", newContratante.id);
 
     // Valida e-mail
-    let emailIsValid: boolean = newContratante.email === newContratante.confirme_email;
+    let emailIsValid: boolean =
+      newContratante.email === newContratante.confirme_email;
     if (emailIsValid === true) {
-      emailIsValid = await validateEmailToDB(newContratante.email, "email", "tb_contratante");
+      emailIsValid = await validateEmailToDB(
+        newContratante.email,
+        "email",
+        "tb_empresa"
+      );
       if (!emailIsValid) {
         console.log("❌ Email inválido:", newContratante.email);
         errorLog.push("Email inválido");
@@ -191,12 +266,17 @@ export let createContratante = async (user: {
     }
 
     // Valida senha
-    let passwordIsValid: boolean = newContratante.senha === newContratante.confirme_senha;
+    let passwordIsValid: boolean =
+      newContratante.senha === newContratante.confirme_senha;
 
     // Valida CNPJ
     let cnpjIsValid: boolean = validateCNPJ(newContratante.cnpj);
     if (cnpjIsValid === true) {
-      cnpjIsValid = await validateCNPJToDB(newContratante.cnpj, "cnpj", "tb_empresa");
+      cnpjIsValid = await validateCNPJToDB(
+        newContratante.cnpj,
+        "cnpj",
+        "tb_empresa"
+      );
       if (!cnpjIsValid) {
         console.log("❌ CNPJ inválido:", newContratante.cnpj);
         errorLog.push("CNPJ inválido");
@@ -215,7 +295,9 @@ export let createContratante = async (user: {
       console.warn("❌ Dados inválidos encontrados no contratante:", errorLog);
       return errorLog;
     } else {
-      console.log("✔️ Dados do contratante validados com sucesso, inserindo no banco");
+      console.log(
+        "✔️ Dados do contratante validados com sucesso, inserindo no banco"
+      );
       DB.insertIntoContratante(newContratante);
       return "Sucesso ao criar contratante";
     }
@@ -233,7 +315,9 @@ export let deleteUser = async (table: string, id: string) => {
   try {
     console.info(`${logPrefix} - Iniciando exclusão do registro`);
     const result = await DB.deleteFromTable(table, id);
-    console.debug(`${logPrefix} - Resultado da query: rowCount=${result.rowCount}`);
+    console.debug(
+      `${logPrefix} - Resultado da query: rowCount=${result.rowCount}`
+    );
     if (result.rowCount > 0) {
       console.info(`${logPrefix} - Exclusão realizada com sucesso`);
       return result;
@@ -255,7 +339,9 @@ export let getUser = async (table: string): Promise<any> => {
   try {
     console.info(`${logPrefix} - Iniciando consulta de todos os registros`);
     let result = await DB.selectFromTable(table);
-    console.info(`${logPrefix} - Consulta finalizada com sucesso, registros encontrados: ${result.rows.length}`);
+    console.info(
+      `${logPrefix} - Consulta finalizada com sucesso, registros encontrados: ${result.rowCount}`
+    );
     return result;
   } catch (error) {
     console.error(`${logPrefix} - ERRO ao consultar dados:`, error);
@@ -271,7 +357,9 @@ export let getUserByID = async (table: string, id: string): Promise<any> => {
   try {
     console.info(`${logPrefix} - Iniciando consulta por ID`);
     let result = await DB.selectFromIdWhere(table, id);
-    console.info(`${logPrefix} - Consulta finalizada, registros encontrados: ${result.rows.length}`);
+    console.info(
+      `${logPrefix} - Consulta finalizada, registros encontrados: ${result.rows.length}`
+    );
     return result;
   } catch (error) {
     console.error(`${logPrefix} - ERRO ao consultar dados por ID:`, error);
@@ -287,7 +375,9 @@ export let getColaborador = async (table: string, id: string): Promise<any> => {
   try {
     console.info(`${logPrefix} - Iniciando consulta do colaborador`);
     let result = await DB.selectFromIdWhere(table, id);
-    console.info(`${logPrefix} - Consulta finalizada, registros encontrados: ${result.rows.length}`);
+    console.info(
+      `${logPrefix} - Consulta finalizada, registros encontrados: ${result.rows.length}`
+    );
     return result;
   } catch (error) {
     console.error(`${logPrefix} - ERRO ao consultar colaborador:`, error);
@@ -314,7 +404,9 @@ export let updateUser = async (table: string, id: string, body: object) => {
     if (keys.includes("cpf")) {
       const index = keys.indexOf("cpf");
       const cpfIsValid: boolean = validateCpf(values[index]);
-      console.log(`${logPrefix} - Validando CPF: ${values[index]} => ${cpfIsValid}`);
+      console.log(
+        `${logPrefix} - Validando CPF: ${values[index]} => ${cpfIsValid}`
+      );
       if (!cpfIsValid) {
         console.error(`${logPrefix} - ERRO: CPF inválido`);
         throw new Error("CPF inválido");
@@ -325,7 +417,9 @@ export let updateUser = async (table: string, id: string, body: object) => {
     if (keys.includes("data_nascimento")) {
       const index = keys.indexOf("data_nascimento");
       const dateIsValid: boolean = validateAge(new Date(values[index]));
-      console.log(`${logPrefix} - Validando data_nascimento: ${values[index]} => ${dateIsValid}`);
+      console.log(
+        `${logPrefix} - Validando data_nascimento: ${values[index]} => ${dateIsValid}`
+      );
       if (!dateIsValid) {
         console.error(`${logPrefix} - ERRO: Data de nascimento inválida`);
         throw new Error("Data de nascimento inválida");
@@ -334,7 +428,9 @@ export let updateUser = async (table: string, id: string, body: object) => {
 
     // Executa atualização
     const result = await DB.updateUserColumn(table, id, sets, values);
-    console.log(`${logPrefix} - Atualização concluída com sucesso. Linhas afetadas: ${result.rowCount}`);
+    console.log(
+      `${logPrefix} - Atualização concluída com sucesso. Linhas afetadas: ${result.rowCount}`
+    );
     return result;
   } catch (error) {
     if (error instanceof Error) {
