@@ -7,7 +7,7 @@ import * as Db from "../../repositories/queryTools.js";
  * @param table - Nome da tabela onde o ID será buscado.
  * @returns void (apenas imprime no console o resultado da validação).
  */
-export let validateId = async (id: string, table: string) => {
+export let validateId = async (id: string, table: string): Promise<any> => {
   // Log inicial para rastrear a execução da validação.
   console.log(`🚀 Iniciando validação de ID ${id} na tabela ${table}`);
   
@@ -16,6 +16,7 @@ export let validateId = async (id: string, table: string) => {
   
   // Exibe o resultado da validação no console.
   console.log("✔️ Resultado da validação:", validId);
+  return validId;
 };
 
 /**
