@@ -775,7 +775,7 @@ export let insertIntoEventos = async (
 
     const query = `
       INSERT INTO tb_evento (
-        id_evento,
+        id,
         nome,
         descricao,
         data_evento,
@@ -812,13 +812,36 @@ export let insertIntoEventos = async (
   }
 };
 
+export let getEventosByCalendario = async (
+  id_calendario: string
+): Promise<any> => {
+  try {
+    console.log(
+      `[getEventosByCalendario] Buscando eventos do calendário ${id_calendario}`
+    );
+
+    const query = `SELECT * FROM tb_evento WHERE id_calendario = $1;`;
+    const result = await DB.pool.query(query, [id_calendario]);
+
+    console.log(
+      `[getEventosByCalendario] Eventos encontrados: ${result.rows.length}`
+    );
+    return result.rows;
+  } catch (error) {
+    console.error(
+      `[getEventosByCalendario] ERRO ao buscar eventos do calendário ${id_calendario}:`,
+      error
+    );
+    throw error;
+  }
+}
 
 export let insertCalendario = async (id_calendar: string, nome: string, id_empresa: string):Promise<any> => {
   try {
     console.log(`[insertCalendario] Iniciando inserção do calendário ${id_calendar}`);
 
     const query = `
-      INSERT INTO tb_calendario (id_calendario, nome_calendario, id_empresa) VALUES ($1, $2, $3);
+      INSERT INTO tb_calendario (id, nome_calendario, id_empresa) VALUES ($1, $2, $3);
     `;
 
     await DB.pool.query(query, [id_calendar, nome, id_empresa]);
@@ -828,6 +851,26 @@ export let insertCalendario = async (id_calendar: string, nome: string, id_empre
   } catch (error) {
     console.error(
       `[insertCalendario] ERRO ao inserir calendário ${id_empresa}:`,
+      error
+    );
+    throw error;
+  }
+}
+
+export let selectEmpbyCalendar = async (id_empresa: string):Promise<any> => {
+  try {
+    console.log(`[selectEmpbyCalendar] Buscando empresa pelo calendário ${id_empresa}`);
+
+    const query = `SELECT id_empresa FROM tb_calendario WHERE id = $1;`;
+    const result = await DB.pool.query(query, [id_empresa]);
+
+    console.log(
+      `[selectEmpbyCalendar] Empresa encontrada: ${result.rows.length}`
+    );
+    return result.rows;
+  } catch (error) {
+    console.error(
+      `[selectEmpbyCalendar] ERRO ao buscar empresa pelo calendário ${id_empresa}:`,
       error
     );
     throw error;
