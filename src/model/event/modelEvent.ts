@@ -65,11 +65,11 @@ export let createEvento = async (
  * 
  * @returns Retorna a lista de eventos encontrados no banco.
  */
-export let getEvento = async () => {
+export let getEvento = async (id: string) => {
   console.log("🚀 Passando ao getEventoModel()");
   // Busca todos os registros da tabela tb_evento.
-  let response = await DB.selectFromTable("tb_evento");
-  console.log(`✔️ Eventos encontrados: ${response.length || response.rows?.length || 0}`);
+  let response = await DB.getEventosByCalendario(id);
+  console.log(`✔️ Eventos encontrados: ${response.length}`);
   return response;
 };
 
