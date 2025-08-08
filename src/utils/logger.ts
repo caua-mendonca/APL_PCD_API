@@ -440,80 +440,89 @@ export let conectServ = (PORT: string) => {
   // -----------------------------------
 
   APP.post(Routes.createEvento, (req, res) => {
-    let body = req.body;
-    let id = req.params.id;
+    const body = req.body;
+    const id = req.params.id;
 
-    console.log(`🚀 [POST /evento/${id}] Requisição recebida, corpo:`, body);
+    console.log(`📥 [POST /evento/${id}] Iniciando criação de evento...`, {
+      payload: body,
+    });
 
-    let result = controllerColaborador.postEvento(body, id);
+    const result = controllerColaborador.postEvento(body, id);
     if (result) {
-      console.log(`✔️ [POST /evento/${id}] Evento criado com sucesso.`);
+      console.log(`✅ [POST /evento/${id}] Evento criado com sucesso.`, {
+        eventoId: id,
+      });
       res.status(200).send(result);
     } else {
-      console.warn(`❌ [POST /evento/${id}] Falha ao criar evento.`);
+      console.error(`❌ [POST /evento/${id}] Falha ao criar evento.`, {
+        eventoId: id,
+        payload: body,
+      });
       res.status(400).send({ message: "Erro ao criar evento!" });
     }
   });
 
   APP.get(Routes.getEvento, async (req, res) => {
-    let id = String(req.params.id);
-    console.log(`🚀 [GET /evento] Requisição recebida`);
+    const id = String(req.params.id);
+    console.log(`📥 [GET /evento/${id}] Solicitando eventos...`);
 
-    let result = await controllerColaborador.getEvento(id);
+    const result = await controllerColaborador.getEvento(id);
     if (result) {
-      console.log(`✔️ [GET /evento] Eventos encontrados: ${result.length}`);
+      console.log(`✅ [GET /evento/${id}] Eventos encontrados.`, {
+        quantidade: result.length,
+      });
       res.status(200).send(result);
     } else {
-      console.warn(`❌ [GET /evento] Erro ao buscar eventos.`);
+      console.error(
+        `❌ [GET /evento/${id}] Nenhum evento encontrado ou erro na busca.`
+      );
       res.status(400).send({ message: "Erro ao buscar eventos!" });
     }
   });
 
   APP.delete(Routes.deleteEvento, async (req, res) => {
-    let id = String(req.params.id);
+  const id = String(req.params.id);
+  console.log(`📥 [DELETE /evento/${id}] Solicitando exclusão de evento...`);
 
-    console.log(`🚀 [DELETE /evento/${id}] Requisição recebida`);
-    let result = await controllerColaborador.deleteEvento(id);
-    if (result) {
-      console.log(`✔️ [DELETE /evento/${id}] Evento deletado com sucesso.`);
-      res.status(200).send(result);
-    } else {
-      console.warn(`❌ [DELETE /evento/${id}] Erro ao deletar evento.`);
-      res.status(400).send({ message: "Erro ao deletar evento!" });
-    }
-  });
+  const result = await controllerColaborador.deleteEvento(id);
+  if (result) {
+    console.log(`✅ [DELETE /evento/${id}] Evento deletado com sucesso.`);
+    res.status(200).send(result);
+  } else {
+    console.error(`❌ [DELETE /evento/${id}] Falha ao deletar evento.`, { eventoId: id });
+    res.status(400).send({ message: "Erro ao deletar evento!" });
+  }
+});
 
   // -----------------------------------
   // Rotas CRUD Calendario
   // -----------------------------------
 
   APP.post(Routes.createCalendario, (req, res) => {
-    let id = req.params.id;
+  const id = req.params.id;
+  console.log(`📥 [POST /calendario/${id}] Iniciando criação de calendário...`);
 
-    console.log(`🚀 [POST /calendario/${id}] Requisição recebida`);
-    let result = controllerColaborador.postCalendario(id);
-    if (result) {
-      console.log(`✔️ [POST /calendario/${id}] Calendário criado com sucesso.`);
-      res.status(200).send(result);
-    } else {
-      console.warn(`❌ [POST /calendario/${id}] Falha ao criar calendário.`);
-      res.status(400).send({ message: "Erro ao criar calendário!" });
-    }
-  });
+  const result = controllerColaborador.postCalendario(id);
+  if (result) {
+    console.log(`✅ [POST /calendario/${id}] Calendário criado com sucesso.`);
+    res.status(200).send(result);
+  } else {
+    console.error(`❌ [POST /calendario/${id}] Falha ao criar calendário.`, { calendarioId: id });
+    res.status(400).send({ message: "Erro ao criar calendário!" });
+  }
+});
 
   APP.get(Routes.getCalendario, async (req, res) => {
-    let id: string = String(req.params.id);
-    console.log(`🚀 [GET /calendario] Requisição recebida`);
+  const id = String(req.params.id);
+  console.log(`📥 [GET /calendario/${id}] Solicitando calendários...`);
 
-    let result = await controllerColaborador.getCalendario(id);
-    if (result) {
-      console.log(
-        `✔️ [GET /calendario] Calendários encontrados: ${result.length}`
-      );
-      res.status(200).send(result);
-    } else {
-      console.warn(`❌ [GET /calendario] Erro ao buscar calendários.`);
-      res.status(400).send({ message: "Erro ao buscar calendários!" });
-    }
-  });
+  const result = await controllerColaborador.getCalendario(id);
+  if (result) {
+    console.log(`✅ [GET /calendario/${id}] Calendários encontrados.`, { quantidade: result.length });
+    res.status(200).send(result);
+  } else {
+    console.error(`❌ [GET /calendario/${id}] Erro ao buscar calendários.`);
+    res.status(400).send({ message: "Erro ao buscar calendários!" });
+  }
+});
 };
