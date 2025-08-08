@@ -812,67 +812,75 @@ export let insertIntoEventos = async (
   }
 };
 
+/**
+ * Busca todos os eventos vinculados a um determinado calendário.
+ * @param id_calendario - Identificador único do calendário.
+ * @returns Lista de eventos vinculados ao calendário.
+ * @throws Lança erro se houver falha na consulta ao banco de dados.
+ */
 export let getEventosByCalendario = async (
   id_calendario: string
 ): Promise<any> => {
   try {
-    console.log(
-      `[getEventosByCalendario] Buscando eventos do calendário ${id_calendario}`
-    );
+    console.log(`📥 [getEventosByCalendario] Iniciando busca de eventos...`, { calendarioId: id_calendario });
 
     const query = `SELECT * FROM tb_evento WHERE id_calendario = $1;`;
     const result = await DB.pool.query(query, [id_calendario]);
 
-    console.log(
-      `[getEventosByCalendario] Eventos encontrados: ${result.rows.length}`
-    );
+    console.log(`✅ [getEventosByCalendario] Busca concluída.`, { calendarioId: id_calendario, quantidadeEventos: result.rows.length });
     return result.rows;
   } catch (error) {
-    console.error(
-      `[getEventosByCalendario] ERRO ao buscar eventos do calendário ${id_calendario}:`,
-      error
-    );
+    console.error(`❌ [getEventosByCalendario] Erro ao buscar eventos.`, { calendarioId: id_calendario, error });
     throw error;
   }
-}
+};
 
-export let insertCalendario = async (id_calendar: string, nome: string, id_empresa: string):Promise<any> => {
+/**
+ * Insere um novo calendário na base de dados.
+ * @param id_calendar - Identificador único do calendário.
+ * @param nome - Nome do calendário.
+ * @param id_empresa - Identificador único da empresa associada.
+ * @returns Retorna `true` se a inserção for bem-sucedida.
+ * @throws Lança erro se houver falha na inserção no banco de dados.
+ */
+export let insertCalendario = async (
+  id_calendar: string,
+  nome: string,
+  id_empresa: string
+): Promise<any> => {
   try {
-    console.log(`[insertCalendario] Iniciando inserção do calendário ${id_calendar}`);
+    console.log(`📥 [insertCalendario] Iniciando inserção de calendário...`, { calendarioId: id_calendar, empresaId: id_empresa, nomeCalendario: nome });
 
     const query = `
       INSERT INTO tb_calendario (id, nome_calendario, id_empresa) VALUES ($1, $2, $3);
     `;
-
     await DB.pool.query(query, [id_calendar, nome, id_empresa]);
 
-    console.log(`[insertCalendario] Calendário ${id_calendar} inserido com sucesso!`);
+    console.log(`✅ [insertCalendario] Calendário inserido com sucesso.`, { calendarioId: id_calendar, empresaId: id_empresa });
     return true;
   } catch (error) {
-    console.error(
-      `[insertCalendario] ERRO ao inserir calendário ${id_empresa}:`,
-      error
-    );
+    console.error(`❌ [insertCalendario] Erro ao inserir calendário.`, { calendarioId: id_calendar, empresaId: id_empresa, error });
     throw error;
   }
-}
+};
 
-export let selectEmpbyCalendar = async (id_empresa: string):Promise<any> => {
+/**
+ * Busca o ID da empresa vinculada a um determinado calendário.
+ * @param id_empresa - Identificador único do calendário (nesse contexto, representa o ID do calendário).
+ * @returns Retorna a lista contendo o ID da empresa associada.
+ * @throws Lança erro se houver falha na consulta.
+ */
+export let selectEmpbyCalendar = async (id_empresa: string): Promise<any> => {
   try {
-    console.log(`[selectEmpbyCalendar] Buscando empresa pelo calendário ${id_empresa}`);
+    console.log(`📥 [selectEmpbyCalendar] Buscando empresa vinculada ao calendário...`, { calendarioId: id_empresa });
 
     const query = `SELECT id_empresa FROM tb_calendario WHERE id = $1;`;
     const result = await DB.pool.query(query, [id_empresa]);
 
-    console.log(
-      `[selectEmpbyCalendar] Empresa encontrada: ${result.rows.length}`
-    );
+    console.log(`✅ [selectEmpbyCalendar] Consulta concluída.`, { calendarioId: id_empresa, registrosEncontrados: result.rows.length });
     return result.rows;
   } catch (error) {
-    console.error(
-      `[selectEmpbyCalendar] ERRO ao buscar empresa pelo calendário ${id_empresa}:`,
-      error
-    );
+    console.error(`❌ [selectEmpbyCalendar] Erro ao buscar empresa vinculada ao calendário.`, { calendarioId: id_empresa, error });
     throw error;
   }
-}
+};
