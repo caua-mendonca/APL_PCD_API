@@ -439,7 +439,7 @@ export let conectServ = (PORT: string) => {
   // Rotas CRUD Evento
   // -----------------------------------
 
-  APP.post(Routes.createEvento, (req, res) => {
+  APP.post(Routes.createEvento, async (req, res) => {
     const body = req.body;
     const id = req.params.id;
 
@@ -448,11 +448,11 @@ export let conectServ = (PORT: string) => {
     });
 
     const result = controllerColaborador.postEvento(body, id);
-    if (result) {
+    console.log(result)
+    if (await result === true) {
       console.log(`✅ [POST /evento/${id}] Evento criado com sucesso.`, {
         eventoId: id,
       });
-      res.status(200).send(result);
     } else {
       console.error(`❌ [POST /evento/${id}] Falha ao criar evento.`, {
         eventoId: id,
