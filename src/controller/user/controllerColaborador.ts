@@ -1,7 +1,8 @@
 import * as Model from "../../model/user/modelUser.js";
 import * as modelVaga from "../../model/vaga/modelVaga.js";
-import * as modelEvento from "../../model/event/modelEvent.js"
+import * as modelEvento from "../../model/event/modelEvent.js";
 import * as modelCalendar from "../../model/calendar/modelCalendar.js";
+
 /**
  * Controller para criação de um novo colaborador.
  * Recebe dados do colaborador e o ID da empresa para associação.
@@ -154,10 +155,10 @@ export let postEvento = async (
  * @returns Array com os eventos encontrados.
  * @throws Erro caso a consulta falhe.
  */
-export let getEvento = async () => {
+export let getEvento = async (id: string) => {
   try {
     console.log("🚀 Passando ao getEvento()");
-    let response = await modelEvento.getEvento();
+    let response = await modelEvento.getEvento(id);
     console.log(
       `✔️ Eventos encontrados: ${response.length || response.rows?.length || 0}`
     );
@@ -191,4 +192,22 @@ export let postCalendario = async (id: string) => {
   let result = await modelCalendar.createCalendario(id);
   console.log("✔️ Resposta da criação do calendário recebida");
   return result;
-}
+};
+
+export let getCalendario = async (id: string) => {
+  try {
+    let result = await modelEvento.getEvento(id);
+    console.log("🚀 Passando ao getCalendario() com eventos");
+    result = await result;
+    console.log("🚀 Passando ao getCalendario()");
+    console.log(result)
+    let response = await modelCalendar.getCalendario(
+      new Date().getMonth() + 1,
+      new Date().getFullYear(),
+      result
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
