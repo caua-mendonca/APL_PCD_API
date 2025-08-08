@@ -10,6 +10,7 @@ import {
   validateIdCandidato,
   validateIdContratante,
 } from "../validation/validateId/validateId.js";
+import { get } from "http";
 
 const APP = express();
 APP.use(express.json());
@@ -455,9 +456,10 @@ export let conectServ = (PORT: string) => {
   });
 
   APP.get(Routes.getEvento, async (req, res) => {
+    let id = String(req.params.id);
     console.log(`🚀 [GET /evento] Requisição recebida`);
 
-    let result = await controllerColaborador.getEvento();
+    let result = await controllerColaborador.getEvento(id);
     if (result) {
       console.log(`✔️ [GET /evento] Eventos encontrados: ${result.length}`);
       res.status(200).send(result);
@@ -496,6 +498,22 @@ export let conectServ = (PORT: string) => {
     } else {
       console.warn(`❌ [POST /calendario/${id}] Falha ao criar calendário.`);
       res.status(400).send({ message: "Erro ao criar calendário!" });
+    }
+  });
+
+  APP.get(Routes.getCalendario, async (req, res) => {
+    let id: string = String(req.params.id);
+    console.log(`🚀 [GET /calendario] Requisição recebida`);
+
+    let result = await controllerColaborador.getCalendario(id);
+    if (result) {
+      console.log(
+        `✔️ [GET /calendario] Calendários encontrados: ${result.length}`
+      );
+      res.status(200).send(result);
+    } else {
+      console.warn(`❌ [GET /calendario] Erro ao buscar calendários.`);
+      res.status(400).send({ message: "Erro ao buscar calendários!" });
     }
   });
 };
