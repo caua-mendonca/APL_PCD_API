@@ -143,11 +143,16 @@ export let postEvento = async (
     id_candidato: string;
   },
   id_calendario: string
-) => {
-  console.log("🚀 Passando ao createEvento()");
-  let result = await modelEvento.createEvento(evento, id_calendario);
-  console.log("✔️ Resposta da criação do evento recebida");
-  return result;
+): Promise<boolean> => {
+  try {
+    console.log("🚀 Passando ao createEvento()");
+    let result = await modelEvento.createEvento(evento, id_calendario);
+    console.log("✔️ Resposta da criação do evento recebida");
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 };
 
 /**
@@ -181,18 +186,23 @@ export let getEvento = async (id: string) => {
  */
 export let deleteEvento = async (id: string) => {
   try {
-    console.log(`📥 [deleteEvento] Iniciando exclusão do evento...`, { eventoId: id });
+    console.log(`📥 [deleteEvento] Iniciando exclusão do evento...`, {
+      eventoId: id,
+    });
 
     const response = await modelEvento.deleteEvento(id);
 
-    console.log(`✅ [deleteEvento] Evento excluído com sucesso.`, { 
+    console.log(`✅ [deleteEvento] Evento excluído com sucesso.`, {
       eventoId: id,
-      quantidadeAfetada: response.length || response.rows?.length || 0 
+      quantidadeAfetada: response.length || response.rows?.length || 0,
     });
 
     return response;
   } catch (error) {
-    console.error(`❌ [deleteEvento] Erro ao excluir evento.`, { eventoId: id, error });
+    console.error(`❌ [deleteEvento] Erro ao excluir evento.`, {
+      eventoId: id,
+      error,
+    });
   }
 };
 
@@ -202,11 +212,15 @@ export let deleteEvento = async (id: string) => {
  * @returns Retorna a resposta da criação do calendário.
  */
 export let postCalendario = async (id: string) => {
-  console.log(`📥 [postCalendario] Iniciando criação de calendário...`, { calendarioId: id });
+  console.log(`📥 [postCalendario] Iniciando criação de calendário...`, {
+    calendarioId: id,
+  });
 
   const result = await modelCalendar.createCalendario(id);
 
-  console.log(`✅ [postCalendario] Calendário criado com sucesso.`, { calendarioId: id });
+  console.log(`✅ [postCalendario] Calendário criado com sucesso.`, {
+    calendarioId: id,
+  });
 
   return result;
 };
@@ -218,23 +232,39 @@ export let postCalendario = async (id: string) => {
  */
 export let getCalendario = async (id: string) => {
   try {
-    console.log(`📥 [getCalendario] Buscando eventos relacionados ao ID informado...`, { referenciaId: id });
+    console.log(
+      `📥 [getCalendario] Buscando eventos relacionados ao ID informado...`,
+      { referenciaId: id }
+    );
 
     let eventos = await modelEvento.getEvento(id);
-    console.log(`✅ [getCalendario] Eventos encontrados.`, { quantidadeEventos: eventos?.length || 0 });
+    console.log(`✅ [getCalendario] Eventos encontrados.`, {
+      quantidadeEventos: eventos?.length || 0,
+    });
 
     const mesAtual = new Date().getMonth() + 1;
     const anoAtual = new Date().getFullYear();
 
-    console.log(`📅 [getCalendario] Consultando calendário...`, { mes: mesAtual, ano: anoAtual });
+    console.log(`📅 [getCalendario] Consultando calendário...`, {
+      mes: mesAtual,
+      ano: anoAtual,
+    });
 
-    const calendario = await modelCalendar.getCalendario(mesAtual, anoAtual, eventos);
+    const calendario = await modelCalendar.getCalendario(
+      mesAtual,
+      anoAtual,
+      eventos
+    );
 
-    console.log(`✅ [getCalendario] Calendário recuperado com sucesso.`, { quantidadeRegistros: calendario?.length || 0 });
+    console.log(`✅ [getCalendario] Calendário recuperado com sucesso.`, {
+      quantidadeRegistros: calendario?.length || 0,
+    });
 
     return calendario;
   } catch (error) {
-    console.error(`❌ [getCalendario] Erro ao recuperar calendário.`, { referenciaId: id, error });
+    console.error(`❌ [getCalendario] Erro ao recuperar calendário.`, {
+      referenciaId: id,
+      error,
+    });
   }
 };
-
