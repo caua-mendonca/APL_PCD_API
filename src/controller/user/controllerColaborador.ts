@@ -174,40 +174,67 @@ export let getEvento = async (id: string) => {
  * @returns Resultado da operação de deleção.
  * @throws Erro caso a deleção falhe.
  */
+/**
+ * Exclui um evento com base no ID fornecido.
+ * @param id - Identificador único do evento a ser deletado.
+ * @returns Retorna a resposta da exclusão do evento.
+ */
 export let deleteEvento = async (id: string) => {
   try {
-    console.log("🚀 Passando ao deleteEvento()");
-    let response = await modelEvento.deleteEvento(id);
-    console.log(
-      `✔️ Evento deletado: ${response.length || response.rows?.length || 0}`
-    );
+    console.log(`📥 [deleteEvento] Iniciando exclusão do evento...`, { eventoId: id });
+
+    const response = await modelEvento.deleteEvento(id);
+
+    console.log(`✅ [deleteEvento] Evento excluído com sucesso.`, { 
+      eventoId: id,
+      quantidadeAfetada: response.length || response.rows?.length || 0 
+    });
+
     return response;
   } catch (error) {
-    console.log(error);
+    console.error(`❌ [deleteEvento] Erro ao excluir evento.`, { eventoId: id, error });
   }
 };
 
+/**
+ * Cria um calendário para um determinado identificador.
+ * @param id - Identificador associado ao calendário.
+ * @returns Retorna a resposta da criação do calendário.
+ */
 export let postCalendario = async (id: string) => {
-  console.log("🚀 Passando ao createCalendario()");
-  let result = await modelCalendar.createCalendario(id);
-  console.log("✔️ Resposta da criação do calendário recebida");
+  console.log(`📥 [postCalendario] Iniciando criação de calendário...`, { calendarioId: id });
+
+  const result = await modelCalendar.createCalendario(id);
+
+  console.log(`✅ [postCalendario] Calendário criado com sucesso.`, { calendarioId: id });
+
   return result;
 };
 
+/**
+ * Recupera o calendário para o mês e ano atuais, incluindo eventos vinculados a um ID específico.
+ * @param id - Identificador associado aos eventos.
+ * @returns Retorna a lista de calendários e eventos encontrados.
+ */
 export let getCalendario = async (id: string) => {
   try {
-    let result = await modelEvento.getEvento(id);
-    console.log("🚀 Passando ao getCalendario() com eventos");
-    result = await result;
-    console.log("🚀 Passando ao getCalendario()");
-    console.log(result)
-    let response = await modelCalendar.getCalendario(
-      new Date().getMonth() + 1,
-      new Date().getFullYear(),
-      result
-    );
-    return response;
+    console.log(`📥 [getCalendario] Buscando eventos relacionados ao ID informado...`, { referenciaId: id });
+
+    let eventos = await modelEvento.getEvento(id);
+    console.log(`✅ [getCalendario] Eventos encontrados.`, { quantidadeEventos: eventos?.length || 0 });
+
+    const mesAtual = new Date().getMonth() + 1;
+    const anoAtual = new Date().getFullYear();
+
+    console.log(`📅 [getCalendario] Consultando calendário...`, { mes: mesAtual, ano: anoAtual });
+
+    const calendario = await modelCalendar.getCalendario(mesAtual, anoAtual, eventos);
+
+    console.log(`✅ [getCalendario] Calendário recuperado com sucesso.`, { quantidadeRegistros: calendario?.length || 0 });
+
+    return calendario;
   } catch (error) {
-    console.log(error);
+    console.error(`❌ [getCalendario] Erro ao recuperar calendário.`, { referenciaId: id, error });
   }
 };
+
