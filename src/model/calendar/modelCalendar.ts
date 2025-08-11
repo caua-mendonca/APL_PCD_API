@@ -8,26 +8,48 @@ import * as DB from "../../repositories/queryTools.js";
  * @throws Lança erro se o ID for inválido ou se houver falha na criação do calendário.
  */
 export let createCalendario = async (id: string) => {
-  console.log(`📥 [createCalendario] Iniciando criação de calendário...`, { empresaId: id });
+  console.log(`📥 [createCalendario] Iniciando criação de calendário...`, {
+    empresaId: id,
+  });
 
   if (!Validations.validateId(id, "tb_empresa")) {
-    console.error(`❌ [createCalendario] ID inválido fornecido.`, { empresaId: id });
+    console.error(`❌ [createCalendario] ID inválido fornecido.`, {
+      empresaId: id,
+    });
     throw new Error("ID inválido");
   }
 
   const newCalendar = new Calendar(`Calendário da empresa: ${id}`);
   newCalendar.setId();
 
-  console.log(`🛠 [createCalendario] Inserindo calendário no banco de dados...`, { calendarioId: newCalendar.id, nome: newCalendar.nome });
+  console.log(
+    `🛠 [createCalendario] Inserindo calendário no banco de dados...`,
+    {
+      calendarioId: newCalendar.id,
+      nome: newCalendar.nome,
+    }
+  );
 
-  const result = await DB.insertCalendario(newCalendar.id, newCalendar.nome, id);
+  const result = await DB.insertCalendario(
+    newCalendar.id,
+    newCalendar.nome,
+    id
+  );
 
   if (!result) {
-    console.error(`❌ [createCalendario] Erro ao criar calendário no banco de dados.`, { calendarioId: newCalendar.id });
+    console.error(
+      `❌ [createCalendario] Erro ao criar calendário no banco de dados.`,
+      {
+        calendarioId: newCalendar.id,
+      }
+    );
     throw new Error("Erro ao criar calendário");
   }
 
-  console.log(`✅ [createCalendario] Calendário criado com sucesso.`, { calendarioId: newCalendar.id });
+  console.log(`✅ [createCalendario] Calendário criado com sucesso.`, {
+    calendarioId: newCalendar.id,
+  });
+
   return result;
 };
 
@@ -45,7 +67,11 @@ export let getCalendario = (
   year: number,
   events: any[]
 ): string => {
-  console.log(`📥 [getCalendario] Gerando calendário...`, { mes: monthNumber, ano: year, quantidadeEventos: events?.length || 0 });
+  console.log(`📥 [getCalendario] Gerando calendário...`, {
+    mes: monthNumber,
+    ano: year,
+    quantidadeEventos: events?.length || 0,
+  });
 
   const months: { [key: number]: string } = {
     1: "janeiro",
@@ -64,13 +90,19 @@ export let getCalendario = (
 
   const monthName = months[monthNumber];
   if (!monthName) {
-    console.error(`❌ [getCalendario] Mês inválido informado.`, { mes: monthNumber });
+    console.error(`❌ [getCalendario] Mês inválido informado.`, {
+      mes: monthNumber,
+    });
     throw new Error("Mês inválido. Informe o número do mês corretamente.");
   }
 
   // Filtra apenas eventos com uma data válida
-  const validEvents = (events || []).filter((e) => e && (e.date || e.data_evento || e.data));
-  console.log(`🔍 [getCalendario] Eventos válidos para processamento: ${validEvents.length}`);
+  const validEvents = (events || []).filter(
+    (e) => e && (e.date || e.data_evento || e.data)
+  );
+  console.log(
+    `🔍 [getCalendario] Eventos válidos para processamento: ${validEvents.length}`
+  );
 
   let output = `📅 Calendário de ${monthName} / ${year}\n`;
   output += " D   S   T   Q   Q   S   S\n";
