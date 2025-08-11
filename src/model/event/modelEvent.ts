@@ -83,7 +83,6 @@ export let createEvento = async (
  */
 export let getEvento = async (id: string) => {
   console.log("🚀 Passando ao getEventoModel()");
-  // Busca todos os registros da tabela tb_evento.
   let response = await DB.getEventosByCalendario(id);
   console.log(`✔️ Eventos encontrados: ${response.length}`);
   return response;
@@ -107,8 +106,7 @@ export let deleteEvento = async (id: string) => {
   // Executa a operação de deleção (atualização do status para inativo).
   let response = await DB.deleteFromTable("tb_evento", id);
 
-  // Valida se a operação foi concluída com sucesso.
-  if (response) {
+  if (response && response.rowCount > 0) {
     console.log(`✔️ Evento deletado com sucesso: ${id}`);
     return response;
   } else {
@@ -116,3 +114,4 @@ export let deleteEvento = async (id: string) => {
     throw new Error("Falha ao deletar evento");
   }
 };
+
