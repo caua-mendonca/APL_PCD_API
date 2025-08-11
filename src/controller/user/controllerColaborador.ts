@@ -146,11 +146,11 @@ export let postEvento = async (
 ): Promise<boolean> => {
   try {
     console.log("🚀 Passando ao createEvento()");
-    let result = await modelEvento.createEvento(evento, id_calendario);
+    await modelEvento.createEvento(evento, id_calendario);
     console.log("✔️ Resposta da criação do evento recebida");
     return true;
   } catch (error) {
-    console.log(error);
+    console.error("❌ Erro no postEvento:", error);
     return false;
   }
 };
@@ -169,7 +169,8 @@ export let getEvento = async (id: string) => {
     );
     return response;
   } catch (error) {
-    console.log(error);
+    console.error("❌ Erro no getEvento Controller:", error);
+    throw error;
   }
 };
 
@@ -194,7 +195,7 @@ export let deleteEvento = async (id: string) => {
 
     console.log(`✅ [deleteEvento] Evento excluído com sucesso.`, {
       eventoId: id,
-      quantidadeAfetada: response.length || response.rows?.length || 0,
+      quantidadeAfetada: response.rowCount || 0,
     });
 
     return response;
@@ -203,6 +204,7 @@ export let deleteEvento = async (id: string) => {
       eventoId: id,
       error,
     });
+    throw error;
   }
 };
 
