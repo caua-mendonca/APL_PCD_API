@@ -5,12 +5,7 @@ import * as controllerContratante from "../controller/user/controllerContratante
 import { controllerIFBR } from "../controller/IFBR/controllerIFBR.js";
 import * as controllerColaborador from "../controller/user/controllerColaborador.js";
 import cors from "cors";
-import { Request, Response, NextFunction } from "express";
-import {
-  validateIdCandidato,
-  validateIdContratante,
-} from "../validation/validateId/validateId.js";
-import { get } from "http";
+import * as Middleware from "../middleware/middleware.js"
 
 const APP = express();
 APP.use(express.json());
@@ -299,58 +294,10 @@ export let conectServ = (PORT: string) => {
   });
 
   // -----------------------------------
-  // Middlewares para validação de IDs
-  // -----------------------------------
-
-  let idIsValid = async (req: Request, res: Response, next: NextFunction) => {
-    const id = String(req.params.id);
-
-    console.log(`🔍 Validando ID contratante: ${id}`);
-
-    let isValid: boolean = await validateIdContratante(id);
-    console.log(`Resultado validação: ${isValid}`);
-
-    if (isValid === false) {
-      console.warn(
-        "❌ ID inválido - apenas empresas ou colaboradores podem criar vagas."
-      );
-      res
-        .status(400)
-        .send({ message: "ID inválido, Apenas Empresas podem criar vagas!" });
-    } else {
-      console.log("✔️ ID validado, prosseguindo...");
-      next();
-    }
-  };
-
-  let idIsValidVaga = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    const id = String(req.params.id);
-
-    console.log(`🔍 Validando ID candidato: ${id}`);
-
-    let isValid: any = validateIdCandidato(id);
-    console.log(`Resultado validação: ${isValid}`);
-
-    if (isValid === false) {
-      console.warn("❌ ID inválido - apenas candidatos podem se inscrever.");
-      res.status(400).send({
-        message: "ID inválido, Apenas Candidatos podem se inscrever à vagas!",
-      });
-    } else {
-      console.log("✔️ ID validado, prosseguindo...");
-      next();
-    }
-  };
-
-  // -----------------------------------
   // Rotas CRUD Vaga
   // -----------------------------------
 
-  APP.post(Routes.createVaga, idIsValid, (req, res) => {
+  APP.post(Routes.createVaga, Middleware.idIsColaborator, (req, res) => {
     let body = req.body;
     let id = req.params.id;
 
@@ -367,7 +314,7 @@ export let conectServ = (PORT: string) => {
     }
   });
 
-  APP.post(Routes.candidatarVaga, idIsValidVaga, (req, res) => {
+  APP.post(Routes.candidatarVaga, Middleware.isIdCandidate, (req, res) => {
     let id_vaga = String(Object.values(req.body));
     let id_candidate = req.params.id;
 
