@@ -38,16 +38,12 @@ export let controllerPostCandadate = async (body: {
 export let controllerGetCandidato = async () => {
   console.log("🚀 Iniciando controllerGetCandidato");
 
-  let result = await Model.getUser("Tb_candidato");
-  console.log(`✔️ Dados recebidos, total de candidatos: ${result.rows.length}`);
+  let result = await Model.getUser("tb_candidato");
+  console.log(`✔️ Dados recebidos, total de candidatos: ${result.rowCount}`);
 
-  let users = [];
-  if (result.rows.length > 0) {
-    for (let i = 0; i < result.rows.length; i++) {
-      users.push(result.rows[i]);
-    }
+  if (result.rowCount > 0) {
     console.log("✔️ Lista de candidatos preparada para retorno");
-    return users;
+    return result.rows;
   } else {
     console.warn("⚠️ Nenhum candidato encontrado");
     return "Candidato não encontrado";
