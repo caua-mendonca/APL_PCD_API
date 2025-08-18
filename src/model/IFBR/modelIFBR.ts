@@ -12,7 +12,7 @@ import { error } from "console";
  * @returns Retorna boolean true em caso de sucesso, ou false em caso de erro.
  */
 export let createIFBRCompleto = async (
-  body: [{ id: number; name: string; score: number }],
+  body: { id: number; name: string; score: number }[],
   id_user: string
 ): Promise<any> => {
   const logPrefix = `[createIFBRCompleto][UserID: ${id_user}]`;
