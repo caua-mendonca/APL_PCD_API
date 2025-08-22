@@ -14,14 +14,10 @@ export class Candidate {
   public telefone: string;
   public cpf: string;
   public data_nascimento: Date;
-  public def_visual: boolean;
+  public def_motora: boolean;
   public def_auditiva: boolean;
-  public def_fisica: boolean;
-  public def_intelectual: boolean;
-  public outra_def: boolean;
-  public descricao_def: string;
-  public acessibilidade_trab: boolean;
-  public descricao_acessibilidade: string;
+  public def_visual: boolean;
+  public sub_tipo: string;
   public status: boolean = true;
 
   /**
@@ -34,14 +30,10 @@ export class Candidate {
    * @param telefone - Telefone de contato
    * @param cpf - CPF do candidato
    * @param data_nascimento - Data de nascimento
-   * @param def_visual - Deficiência visual (booleano)
-   * @param def_auditiva - Deficiência auditiva (booleano)
-   * @param def_fisica - Deficiência física (booleano)
-   * @param def_intelectual - Deficiência intelectual (booleano)
-   * @param outra_def - Outra deficiência (booleano)
-   * @param descricao_def - Descrição da outra deficiência
-   * @param acessibilidade_trab - Necessidade de acessibilidade no trabalho (booleano)
-   * @param descricao_acessibilidade - Descrição da acessibilidade necessária
+   * @param def_motora - Deficiência motora
+   * @param def_auditiva - Deficiência auditiva
+   * @param def_visual - Deficiência visual
+   * @param sub_tipo - Subtipo de deficiência
    */
   constructor(
     name: string,
@@ -52,14 +44,10 @@ export class Candidate {
     telefone: string,
     cpf: string,
     data_nascimento: Date,
-    def_visual: boolean,
+    def_motora: boolean,
     def_auditiva: boolean,
-    def_fisica: boolean,
-    def_intelectual: boolean,
-    outra_def: boolean,
-    descricao_def: string,
-    acessibilidade_trab: boolean,
-    descricao_acessibilidade: string
+    def_visual: boolean,
+    sub_tipo: string
   ) {
     this.id = ""; // ID será gerado posteriormente
     this.name = name;
@@ -72,12 +60,8 @@ export class Candidate {
     this.data_nascimento = data_nascimento;
     this.def_visual = def_visual;
     this.def_auditiva = def_auditiva;
-    this.def_fisica = def_fisica;
-    this.def_intelectual = def_intelectual;
-    this.outra_def = outra_def;
-    this.descricao_def = descricao_def;
-    this.acessibilidade_trab = acessibilidade_trab;
-    this.descricao_acessibilidade = descricao_acessibilidade;
+    this.def_motora = def_motora;
+    this.sub_tipo = sub_tipo;
   }
 
   /**

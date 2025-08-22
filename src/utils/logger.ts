@@ -2,10 +2,9 @@ import express from "express";
 import * as Routes from "../routes/routes.js";
 import * as controllerCandidate from "../controller/user/controllerCandidate.js";
 import * as controllerContratante from "../controller/user/controllerContratante.js";
-import { controllerIFBR } from "../controller/IFBR/controllerIFBR.js";
 import * as controllerColaborador from "../controller/user/controllerColaborador.js";
-import cors from "cors";
 import * as Middleware from "../middleware/middleware.js"
+import cors from "cors";
 
 const APP = express();
 APP.use(express.json());
@@ -223,32 +222,6 @@ export let conectServ = (PORT: string) => {
       res.status(400).send({ message: result });
     }
   });
-
-  // -----------------------------------
-  // Rota CRUD IFBR - Formulário
-  // -----------------------------------
-
-  APP.post(Routes.formIFBR, async (req, res) => {
-    const ID = req.params.id;
-    const form = req.body;
-
-    console.log(
-      `🚀 [POST /formIFBR/${ID}] Requisição recebida, formulário:`,
-      form
-    );
-
-    let result = controllerIFBR(ID, form);
-    if ((await result) == true) {
-      console.log(
-        `✔️ [POST /formIFBR/${ID}] Formulário processado com sucesso.`
-      );
-      res.status(200).send(result);
-    } else {
-      console.warn(`❌ [POST /formIFBR/${ID}] Erro ao processar formulário.`);
-      res.status(400).send({ message: "Erro ao criar candidato!" });
-    }
-  });
-
   // -----------------------------------
   // Rotas CRUD Colaborador
   // -----------------------------------
@@ -297,7 +270,7 @@ export let conectServ = (PORT: string) => {
   // Rotas CRUD Vaga
   // -----------------------------------
 
-  APP.post(Routes.createVaga, Middleware.idIsColaborator, (req, res) => {
+  APP.post(Routes.createVaga, Middleware.idIsValid, (req, res) => {
     let body = req.body;
     let id = req.params.id;
 
@@ -314,7 +287,7 @@ export let conectServ = (PORT: string) => {
     }
   });
 
-  APP.post(Routes.candidatarVaga, Middleware.isIdCandidate, (req, res) => {
+  APP.post(Routes.candidatarVaga, Middleware.idIsValidVaga, (req, res) => {
     let id_vaga = String(Object.values(req.body));
     let id_candidate = req.params.id;
 

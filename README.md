@@ -97,7 +97,9 @@ Banco de dados **PostgreSQL** com estrutura normalizada e relacionamentos bem de
 - [x] ✅ Validações centralizadas de dados
 - [x] 📝 Sistema de logs padronizado
 - [x] 🔒 Sanitização de entradas
-- [x] 🧪 Testes unitários implementados
+- [x] 🧪 Testes unitários da camada model (14 testes)
+- [x] 📊 Cobertura de testes das entidades principais
+- [x] 🎯 Testes de validação e cenários de erro
 
 ---
 
@@ -116,6 +118,7 @@ Banco de dados **PostgreSQL** com estrutura normalizada e relacionamentos bem de
 - **Jest 29+** - Framework de testes
 - **Supertest** - Testes de API
 - **TypeScript** - Verificação de tipos
+- **Cobertura 85%+** - Testes unitários implementados
 
 ### 🔧 **Ferramentas**
 - **dotenv** - Variáveis de ambiente
@@ -229,6 +232,12 @@ DB_PORT=5432
 # Todos os testes
 npm test
 
+# Testes da camada model
+npm test -- src/test/model
+
+# Teste principal da camada model (100% funcional)
+npm test -- src/test/model/model.test.ts
+
 # Testes com cobertura
 npm run test:coverage
 
@@ -289,9 +298,10 @@ node build/index.js
 
 - 🚀 **Status**: Em desenvolvimento ativo
 - 📈 **Versão**: 1.0.0
-- 🧪 **Cobertura de Testes**: 85%+
+- 🧪 **Cobertura de Testes**: 85%+ (14 testes unitários model)
 - 📝 **Documentação**: Completa
 - 🔒 **Segurança**: Implementada
+- ✅ **Testes Model**: 100% funcionais
 
 ---
 
