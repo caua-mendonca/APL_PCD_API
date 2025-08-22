@@ -14,14 +14,10 @@ export let insertIntoCandidate = async (user: {
   telefone: string;
   cpf: string;
   data_nascimento: Date;
-  def_visual: boolean;
+  def_motora: boolean;
   def_auditiva: boolean;
-  def_fisica: boolean;
-  def_intelectual: boolean;
-  outra_def: boolean;
-  descricao_def: string;
-  acessibilidade_trab: boolean;
-  descricao_acessibilidade: string;
+  def_visual: boolean;
+  sub_tipo: string;
   status: boolean;
 }) => {
   try {
@@ -48,13 +44,10 @@ export let insertIntoCandidate = async (user: {
         user.data_nascimento,
         user.def_visual,
         user.def_auditiva,
-        user.def_fisica,
-        user.def_intelectual,
-        user.outra_def,
-        user.descricao_def,
-        user.acessibilidade_trab,
-        user.descricao_acessibilidade,
+        user.def_motora,
+        user.sub_tipo,
         user.status,
+        ,
       ]
     );
 
