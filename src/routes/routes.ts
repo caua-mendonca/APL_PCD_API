@@ -30,3 +30,12 @@ export let candidatarVaga: string = "/registerVaga/:id";
 export let getVagas: string = "/getVagas";
 export let getVagasById: string = "/getVagasById/:id";
 export let deleteVaga: string = "/deleteVaga/:id";
+
+// Rotas para o recurso Evento, com ID como parâmetro
+export let createEvento: string = "/createEvento/:id";
+export let getEvento: string = "/getEvento/:id";
+export let deleteEvento: string = "/deleteEvento/:id";
+
+// Rotas para o recurso Calendario, com ID como parâmetro
+export let createCalendario: string = "/createCalendario/:id";
+export let getCalendario: string = "/getCalendario/:id";

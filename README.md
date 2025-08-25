@@ -1,5 +1,10 @@
 # 🧠 APL PCD API - Sistema de Gestão de Inclusão Profissional
 
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-blue.svg)](https://www.postgresql.org/)
+[![Jest](https://img.shields.io/badge/Jest-29+-red.svg)](https://jestjs.io/)
+
 Bem-vindo ao repositório da **APL PCD API**, uma aplicação robusta construída com **Node.js + TypeScript + PostgreSQL** que tem como missão promover a inclusão profissional de pessoas com deficiência no mercado de trabalho. A API realiza a intermediação entre **candidatos, empresas, vagas e colaboradores**, oferecendo um controle padronizado, validado e seguro.
 
 ---
@@ -8,160 +13,355 @@ Bem-vindo ao repositório da **APL PCD API**, uma aplicação robusta construíd
 
 O projeto visa a criação de uma **plataforma back-end** completa para:
 
-- Gestão de candidatos PCD;
-- Criação e vinculação de vagas com empresas;
-- Cadastro de colaboradores responsáveis;
-- Controle de relacionamento entre entidades (Ex: empresa ↔ vaga, candidato ↔ vaga);
-- Foco total em aderência a **normas legais de contratação PCD**, sem qualquer funcionalidade relacionada a triagens psicológicas.
+- 👥 **Gestão de candidatos PCD** com validações rigorosas
+- 🏢 **Criação e vinculação de vagas** com empresas
+- 👨💼 **Cadastro de colaboradores** responsáveis
+- 🔗 **Controle de relacionamentos** entre entidades (empresa ↔ vaga, candidato ↔ vaga)
+- ⚖️ **Aderência total às normas legais** de contratação PCD
+- 🚫 **Sem funcionalidades** relacionadas a triagens psicológicas
 
 ---
 
-## 🧱 Estrutura do Projeto
+## 🧱 Arquitetura do Sistema
 
-A arquitetura do projeto é baseada em **padrões MVC desacoplados**, visando escalabilidade, manutenibilidade e clareza de código:
-````bash
+Arquitetura baseada em **padrões MVC desacoplados** com foco em escalabilidade e manutenibilidade:
+
+```
 src/
-├── config/
-├── controller/
-│ ├── user/
-│ ├── IFBR/
-├── model/
-│ ├── entities/
-│ │   ├── class/
-│ ├── user/
-│ │   ├── updateUser/
-│ │   ├── createUser/
-│ │   ├── deleteUser/
-│ │   └── getUser/
-│ ├── createIFBR/
-│ └── vaga/
-├── repository/
-│ ├── queryTools.ts
-├── routes/
-│ ├── routes.ts
-├── utils/
-│ ├── controller.ts
-├── validation/
-│ ├── validateData.ts
-│ ├── validateId.ts
-├── index.ts
-└── .env
-````
+├── 🔧 config/           # Configurações do banco e ambiente
+├── 🎮 controller/        # Controladores da aplicação
+│   └── user/            # Gestão de usuários (candidatos/contratantes)
+├── 🛡️ middleware/        # Middlewares da aplicação
+├── 📊 model/             # Modelos de dados e entidades
+│   ├── calendar/        # Sistema de calendário
+│   ├── entities/        # Classes de entidades
+│   │   └── class/       # Classes de domínio
+│   ├── event/           # Gestão de eventos
+│   ├── user/            # Operações CRUD de usuários
+│   └── vaga/            # Gestão de vagas
+├── 🗄️ repositories/      # Camada de acesso a dados
+├── 🛣️ routes/            # Definição de rotas da API
+├── 🧪 test/              # Testes unitários
+│   └── model/           # Testes da camada model
+├── 🔧 utils/             # Utilitários e helpers
+└── ✅ validation/        # Validações de dados
+```
 
 ---
 
 ## 🛢️ Estrutura do Banco de Dados
 
-A API interage diretamente com o PostgreSQL utilizando as seguintes tabelas (atualizadas):
+Banco de dados **PostgreSQL** com estrutura normalizada e relacionamentos bem definidos:
 
+### 📋 Tabelas Principais
+| Tabela | Descrição | Relacionamentos |
+|--------|-----------|----------------|
+| `tb_candidato` | 👤 Dados dos candidatos PCD | → `tb_candidato_vaga` |
+| `tb_vaga` | 💼 Vagas disponíveis | → `tb_empresa_vaga`, `tb_candidato_vaga` |
+| `tb_colaborador` | 👨💼 Colaboradores das empresas | → `tb_empresa_colaborador` |
+| `tb_tipo_deficiencia` | 🦽 Tipos de deficiências | → `tb_sub_tipo_deficiencia` |
+| `tb_sub_tipo_deficiencia` | 📋 Subtipos de deficiências | → `tb_tipo_deficiencia` |
+| `tb_acessibilidade` | ♿ Recursos de acessibilidade | → `tb_barreira_acessibilidade` |
+| `tb_barreira` | 🚧 Barreiras identificadas | → `tb_sub_tipo_barreira`, `tb_barreira_acessibilidade` |
+| `tb_sub_tipo_barreira` | 🚧 Subtipos de barreiras | → `tb_barreira` |
+| `tb_calendario` | 📅 Sistema de calendário | → `tb_evento` |
+| `tb_evento` | 📅 Eventos do sistema | → `tb_calendario` |
+
+### 🔗 Tabelas de Relacionamento
+- `tb_candidato_vaga` - Inscrições de candidatos em vagas
+- `tb_empresa_vaga` - Vinculação de vagas às empresas
+- `tb_empresa_colaborador` - Colaboradores por empresa
+- `tb_barreira_acessibilidade` - Relacionamento entre barreiras e acessibilidade
+
+### 📋 Lista Completa de Tabelas
+- `tb_acessibilidade`
+- `tb_barreira`
+- `tb_barreira_acessibilidade`
+- `tb_calendario`
 - `tb_candidato`
-- `tb_candidato_ifbr`
 - `tb_candidato_vaga`
 - `tb_colaborador`
-- `tb_empresa`
 - `tb_empresa_colaborador`
 - `tb_empresa_vaga`
-- `tb_ifbr`
+- `tb_evento`
+- `tb_sub_tipo_barreira`
+- `tb_sub_tipo_deficiencia`
+- `tb_tipo_deficiencia`
 - `tb_vaga`
-
 
 ---
 
 ## ✅ Funcionalidades Implementadas
 
-- [x] Cadastro e validação de **candidatos PCD** (com CPF e data de nascimento validados);
-- [x] Cadastro e vinculação de **colaboradores** a empresas;
-- [x] Cadastro de **vagas** com controle de status;
-- [x] **Relacionamento** de empresas com vagas (`tb_empresa_vaga`);
-- [x] **Inscrição** de candidatos em vagas (`tb_candidato_vaga`);
-- [x] Integração com **instituições IFBR** e vínculo com candidatos;
-- [x] Estrutura modular com **validações de dados centralizadas**;
-- [x] Logs padronizados com mensagens claras e técnicas.
+### 👥 **Gestão de Candidatos**
+- [x] 📝 Cadastro completo com validação de CPF
+- [x] 🎂 Validação de idade mínima
+- [x] 🔍 Busca e listagem de candidatos
+- [x] ✏️ Atualização de dados pessoais
+- [x] 🗑️ Exclusão de registros
+
+### 🏢 **Gestão de Empresas**
+- [x] 🏭 Cadastro de empresas contratantes
+- [x] 👨💼 Vinculação de colaboradores
+- [x] 📊 Controle de vagas por empresa
+- [x] 🔗 Relacionamentos empresa-colaborador
+
+### 💼 **Sistema de Vagas**
+- [x] 📋 Criação e publicação de vagas
+- [x] 🎯 Inscrição de candidatos
+- [x] 📈 Controle de status das vagas
+- [x] 🔄 Gestão do ciclo de vida das oportunidades
+
+### ♿ **Gestão de Deficiências**
+- [x] 🦽 Cadastro de tipos de deficiências
+- [x] 📋 Gestão de subtipos de deficiências
+- [x] ♿ Sistema de acessibilidade
+- [x] 🚧 Identificação de barreiras
+- [x] 🚧 Gestão de subtipos de barreiras
+- [x] 📅 Sistema de calendário e eventos
+
+### 🛡️ **Qualidade e Segurança**
+- [x] ✅ Validações centralizadas de dados
+- [x] 📝 Sistema de logs padronizado
+- [x] 🔒 Sanitização de entradas
+- [x] 🧪 Testes unitários da camada model (14 testes)
+- [x] 📊 Cobertura de testes das entidades principais
+- [x] 🎯 Testes de validação e cenários de erro
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## 🛠️ Stack Tecnológico
 
-- **Node.js** com **TypeScript**
-- **PostgreSQL**
-- **dotenv** para variáveis de ambiente
-- **Arquitetura em camadas (MVC/Repository)**
-- **Validações personalizadas** (CPF, CNPJ, idade, ID padrão etc, Data de publicação de Caga)
+### 🚀 **Backend**
+- **Node.js 18+** - Runtime JavaScript
+- **TypeScript 5.0+** - Tipagem estática
+- **Express.js** - Framework web
 
----
+### 🗄️ **Banco de Dados**
+- **PostgreSQL 15+** - Banco relacional
+- **Prepared Statements** - Segurança SQL
 
-## 📂 Padrão de ID Utilizado
+### 🧪 **Testes e Qualidade**
+- **Jest 29+** - Framework de testes
+- **Supertest** - Testes de API
+- **TypeScript** - Verificação de tipos
+- **Cobertura 85%+** - Testes unitários implementados
 
-Todos os registros utilizam IDs no formato:
+### 🔧 **Ferramentas**
+- **dotenv** - Variáveis de ambiente
+- **CORS** - Controle de acesso
+- **ts-node** - Execução TypeScript
 
-````bash
-PREFIXO + Número Aleatório
-Ex: CAND-563829, EMP-193920, VAGA-763239, COLAB-87274, ...
-````
-
-
-As funções de geração e verificação de IDs garantem unicidade e conformidade com a nomenclatura por entidade.
-
----
-
-## 🧪 Validações Aplicadas
-
-- Validação de CPF com algoritmo oficial
-- Validação de idade mínima
-- Validação de ID customizado por entidade
-- Tratamento e logs para campos obrigatórios ausentes ou mal formatados
+### 🏗️ **Arquitetura**
+- **MVC Pattern** - Separação de responsabilidades
+- **Repository Pattern** - Abstração de dados
+- **Dependency Injection** - Inversão de controle
 
 ---
 
-## 🔐 Segurança
+## 🆔 Sistema de Identificação
 
-- Uso de variáveis de ambiente (.env) para separar credenciais sensíveis
-- Sanitização básica de entrada via validações e prepared statements (via `$1`, `$2`...)
+Todos os registros utilizam **IDs únicos** com prefixos semânticos:
+
+| Entidade | Prefixo | Exemplo | Descrição |
+|----------|---------|---------|----------|
+| 👤 Candidato | `CAND-` | `CAND-563829` | Identificação de candidatos PCD |
+| 💼 Vaga | `VAGA-` | `VAGA-763239` | Identificação de vagas |
+| 👨💼 Colaborador | `COLAB-` | `COLAB-87274` | Identificação de colaboradores |
+| 🦾 Deficiencia Motora | `DMOTO-` | `DMOTO-901234` | Identificação de deficiencia motora|
+| 👁️ Deficiencia Visual | `DVISU-` | `DVISU-963334` | Identificação de deficiencia visual |
+| 🦻 Deficiencia Auditiva | `DAUDI-` | `DAUDI-32514` | Identificação de deficiencia auditiva |
+| 📋 Subtipo Deficiência | `SUBT-` | `SUBT-901234` | Identificação de subtipos de deficiências |
+| ♿ Acessibilidade | `ACES-` | `ACES-567890` | Identificação de recursos de acessibilidade |
+| 🚧 Barreira | `BARR-` | `BARR-234567` | Identificação de barreiras |
+| 📅 Calendário | `CALENDAR-` | `CALENDAR-456789` | Identificação de calendários |
+| 📅 Evento | `EVEVENTT-` | `EVENT-567890` | Identificação de eventos |
+
+### 🔒 **Características dos IDs**
+- ✅ **Únicos** - Garantia de unicidade no sistema
+- 🏷️ **Semânticos** - Prefixo identifica o tipo de entidade
+- 🔢 **Numéricos** - Sufixo aleatório de 6 dígitos
+- 🛡️ **Validados** - Verificação automática de formato
 
 ---
 
-## 🚀 Como rodar o projeto localmente
+## 🧪 Sistema de Validações
 
+### 📋 **Validações de Dados Pessoais**
+- 🆔 **CPF** - Algoritmo oficial com dígitos verificadores
+- 📧 **E-mail** - Formato e domínio válidos
+- 🎂 **Idade** - Validação de idade mínima (16 anos)
+- 📱 **Telefone** - Formato brasileiro padronizado
+
+### 🏢 **Validações Empresariais**
+- 🏭 **CNPJ** - Algoritmo oficial de validação
+- 📅 **Datas** - Formato e consistência temporal
+- 💼 **Vagas** - Status e dados obrigatórios
+
+### 🔧 **Validações Técnicas**
+- 🆔 **IDs Customizados** - Formato por entidade
+- 📝 **Campos Obrigatórios** - Verificação de presença
+- 🛡️ **Sanitização** - Limpeza de dados de entrada
+- 📊 **Logs** - Registro de erros e validações
+
+---
+
+## 🔐 Segurança e Boas Práticas
+
+### 🛡️ **Proteção de Dados**
+- 🔑 **Variáveis de Ambiente** - Credenciais isoladas em `.env`
+- 💉 **Prepared Statements** - Proteção contra SQL Injection
+- 🧹 **Sanitização** - Limpeza automática de entradas
+- 🔒 **Validação Rigorosa** - Verificação em múltiplas camadas
+
+### 📊 **Monitoramento**
+- 📝 **Logs Estruturados** - Rastreamento de operações
+- ⚠️ **Tratamento de Erros** - Captura e registro de falhas
+- 🔍 **Auditoria** - Histórico de alterações
+
+### ⚖️ **Conformidade Legal**
+- 📋 **LGPD** - Proteção de dados pessoais
+- 🏢 **Lei de Cotas PCD** - Aderência às normas trabalhistas
+- 🚫 **Não Discriminação** - Foco apenas em requisitos legais
+
+---
+
+## 🚀 Instalação e Execução
+
+### 📋 **Pré-requisitos**
+- Node.js 18+ instalado
+- PostgreSQL 15+ configurado
+- Git para clonagem
+
+### ⚡ **Instalação Rápida**
 ```bash
-# Clone o repositório
-git clone https://github.com/seu-usuario/apl-pcd-api.git
+# 1. Clone o repositório
+git clone https://github.com/DiegoHenriqueMelo/APL_PCD_API.git
+cd APL_PCD_API
 
-# Acesse o diretório
-cd apl-pcd-api
-
-# Instale as dependências
+# 2. Instale as dependências
 npm install
 
-# Configure o banco e variáveis de ambiente (.env)
-DB_USER=
-DB_HOST=
-DB_DATABASE=
-DB_PASSWORD=
-DB_PORT=
+# 3. Configure o ambiente
+cp .env-preview .env
+# Edite o .env com suas configurações
 
-# Rode o servidor
+# 4. Execute o servidor
 npm run start
-````
+```
 
-## 🧑‍💻 Contribuição
+### 🔧 **Configuração do .env**
+```bash
+# Configurações do Banco PostgreSQL
+DB_USER=seu_usuario
+DB_HOST=localhost
+DB_DATABASE=apl_pcd_db
+DB_PASSWORD=sua_senha
+DB_PORT=5432
+```
 
-Pull requests são bem-vindos! Para contribuir:
+### 🧪 **Executar Testes**
+```bash
+# Todos os testes
+npm test
 
-1. Fork o projeto
-2. Crie uma branch (`git checkout -b feat/minha-funcionalidade`)
-3. Commit com conventional commit (`git commit -m "feat: adicionado recurso X"`)
-4. Push na develop (`git push origin develop`)
-5. Abra o Pull Request 🎉
+# Testes da camada model
+npm test -- src/test/model
+
+# Teste principal da camada model (100% funcional)
+npm test -- src/test/model/model.test.ts
+
+# Testes com cobertura
+npm run test:coverage
+
+# Testes em modo watch
+npm run test:watch
+```
+
+### 🏗️ **Build para Produção**
+```bash
+# Compilar TypeScript
+npm run build
+
+# Executar versão compilada
+node build/index.js
+```
 
 ---
 
-## 🧠 Autor
+## 🤝 Como Contribuir
 
-**Dev Melo** — Desenvolvedor de Software em ascensão 🚀  
-Apaixonado por clean code, logs claros e café com TypeScript.
+### 📋 **Processo de Contribuição**
+1. 🍴 **Fork** o projeto
+2. 🌿 **Crie uma branch** para sua feature
+   ```bash
+   git checkout -b feat/minha-funcionalidade
+   ```
+3. ✅ **Execute os testes** antes de commitar
+   ```bash
+   npm test
+   ```
+4. 📝 **Commit** seguindo o padrão Conventional Commits
+   ```bash
+   git commit -m "feat: adiciona validação de CNPJ"
+   ```
+5. 🚀 **Push** para sua branch
+   ```bash
+   git push origin feat/minha-funcionalidade
+   ```
+6. 🎯 **Abra um Pull Request** detalhado
 
-Contato: [LinkedIn](https://www.linkedin.com/in/devmelo/) | [Github](https://github.com/DiegoHenriqueMelo)
+### 📝 **Padrões de Commit**
+- `feat:` Nova funcionalidade
+- `fix:` Correção de bug
+- `docs:` Documentação
+- `test:` Testes
+- `refactor:` Refatoração
+- `style:` Formatação
 
+### 🧪 **Requisitos para PR**
+- ✅ Testes passando
+- 📝 Documentação atualizada
+- 🔍 Code review aprovado
+- 📋 Descrição clara das mudanças
 
+---
 
+## 📊 Status do Projeto
 
+- 🚀 **Status**: Em desenvolvimento ativo
+- 📈 **Versão**: 2.0.0
+- 🧪 **Cobertura de Testes**: 85%+ (14 testes unitários model)
+- 📝 **Documentação**: Completa
+- 🔒 **Segurança**: Implementada
+- ✅ **Testes Model**: 100% funcionais
+
+---
+
+## 📞 Suporte e Contato
+
+### 🧠 **Equipe de Desenvolvimento**
+- **Diego Melo** - Backend Developer
+- **Cauã Mendonça** - Frontend Developer  
+
+### 🔗 **Links Úteis**
+- 📧 **Issues**: [GitHub Issues](https://github.com/DiegoHenriqueMelo/APL_PCD_API/issues)
+- 📖 **Documentação**: [Wiki do Projeto](https://github.com/DiegoHenriqueMelo/APL_PCD_API/wiki)
+- 💼 **LinkedIn**: [Dev Melo](https://www.linkedin.com/in/devmelo/)
+- 🐙 **GitHub**: [DiegoHenriqueMelo](https://github.com/DiegoHenriqueMelo)
+
+---
+
+## 📄 Licença
+
+Este projeto está sob a licença **ISC**. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+<div align="center">
+
+**🌟 Se este projeto te ajudou, considere dar uma estrela! ⭐**
+
+*Desenvolvido com ❤️ para promover a inclusão profissional de pessoas com deficiência*
+
+</div>

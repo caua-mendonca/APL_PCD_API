@@ -2,14 +2,9 @@ import express from "express";
 import * as Routes from "../routes/routes.js";
 import * as controllerCandidate from "../controller/user/controllerCandidate.js";
 import * as controllerContratante from "../controller/user/controllerContratante.js";
-import { controllerIFBR } from "../controller/IFBR/controllerIFBR.js";
 import * as controllerColaborador from "../controller/user/controllerColaborador.js";
+import * as Middleware from "../middleware/middleware.js"
 import cors from "cors";
-import { Request, Response, NextFunction } from "express";
-import {
-  validateIdCandidato,
-  validateIdContratante,
-} from "../validation/validateId/validateId.js";
 
 const APP = express();
 APP.use(express.json());
@@ -227,32 +222,6 @@ export let conectServ = (PORT: string) => {
       res.status(400).send({ message: result });
     }
   });
-
-  // -----------------------------------
-  // Rota CRUD IFBR - Formulário
-  // -----------------------------------
-
-  APP.post(Routes.formIFBR, async (req, res) => {
-    const ID = req.params.id;
-    const form = req.body;
-
-    console.log(
-      `🚀 [POST /formIFBR/${ID}] Requisição recebida, formulário:`,
-      form
-    );
-
-    let result = controllerIFBR(ID, form);
-    if ((await result) == true) {
-      console.log(
-        `✔️ [POST /formIFBR/${ID}] Formulário processado com sucesso.`
-      );
-      res.status(200).send(result);
-    } else {
-      console.warn(`❌ [POST /formIFBR/${ID}] Erro ao processar formulário.`);
-      res.status(400).send({ message: "Erro ao criar candidato!" });
-    }
-  });
-
   // -----------------------------------
   // Rotas CRUD Colaborador
   // -----------------------------------
@@ -298,60 +267,10 @@ export let conectServ = (PORT: string) => {
   });
 
   // -----------------------------------
-  // Middlewares para validação de IDs
-  // -----------------------------------
-
-  let idIsValid = async (req: Request, res: Response, next: NextFunction) => {
-    const id = String(req.params.id);
-
-    console.log(`🔍 Validando ID contratante: ${id}`);
-
-    let isValid: boolean = await validateIdContratante(id);
-    console.log(`Resultado validação: ${isValid}`);
-
-    if (isValid === false) {
-      console.warn(
-        "❌ ID inválido - apenas empresas ou colaboradores podem criar vagas."
-      );
-      res
-        .status(400)
-        .send({ message: "ID inválido, Apenas Empresas podem criar vagas!" });
-    } else {
-      console.log("✔️ ID validado, prosseguindo...");
-      next();
-    }
-  };
-
-  let idIsValidVaga = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    const id = String(req.params.id);
-
-    console.log(`🔍 Validando ID candidato: ${id}`);
-
-    let isValid: any = validateIdCandidato(id);
-    console.log(`Resultado validação: ${isValid}`);
-
-    if (isValid === false) {
-      console.warn("❌ ID inválido - apenas candidatos podem se inscrever.");
-      res
-        .status(400)
-        .send({
-          message: "ID inválido, Apenas Candidatos podem se inscrever à vagas!",
-        });
-    } else {
-      console.log("✔️ ID validado, prosseguindo...");
-      next();
-    }
-  };
-
-  // -----------------------------------
   // Rotas CRUD Vaga
   // -----------------------------------
 
-  APP.post(Routes.createVaga, idIsValid, (req, res) => {
+  APP.post(Routes.createVaga, Middleware.idIsValid, (req, res) => {
     let body = req.body;
     let id = req.params.id;
 
@@ -368,7 +287,7 @@ export let conectServ = (PORT: string) => {
     }
   });
 
-  APP.post(Routes.candidatarVaga, idIsValidVaga, (req, res) => {
+  APP.post(Routes.candidatarVaga, Middleware.idIsValidVaga, (req, res) => {
     let id_vaga = String(Object.values(req.body));
     let id_candidate = req.params.id;
 
@@ -427,13 +346,223 @@ export let conectServ = (PORT: string) => {
 
     let result = await controllerColaborador.deleteVaga(id);
 
-    if(result) {
+    if (result) {
       console.log(`✔️ [DELETE /vaga/${id}] Vaga deletada com sucesso.`);
       res.status(200).send(result);
     } else {
       console.warn(`❌ [DELETE /vaga/${id}] Erro ao deletar vaga.`);
       res.status(400).send({ message: "Erro ao deletar vaga!" });
     }
-  }
-  );
+  });
+
+  // -----------------------------------
+  // Rotas CRUD Evento
+  // -----------------------------------
+
+  APP.post(Routes.createEvento, async (req, res) => {
+    const body = req.body;
+    const id = req.params.id;
+
+    console.log(`📥 [POST /evento/${id}] Iniciando criação de evento...`, {
+      payload: body,
+    });
+
+    try {
+      const result = await controllerColaborador.postEvento(body, id);
+
+      if (result === true) {
+        console.log(`✅ [POST /evento/${id}] Evento criado com sucesso.`, {
+          eventoId: id,
+        });
+
+        res.status(201).json({
+          success: true,
+          message: "Evento criado com sucesso.",
+          data: {
+            eventoId: id,
+            ...body,
+          },
+        });
+      } else {
+        console.error(`❌ [POST /evento/${id}] Falha ao criar evento.`, {
+          eventoId: id,
+          payload: body,
+        });
+
+        res.status(400).json({
+          success: false,
+          message: "Erro ao criar evento.",
+        });
+      }
+    } catch (error) {
+      console.error(`💥 [POST /evento/${id}] Erro inesperado:`, error);
+
+      res.status(500).json({
+        success: false,
+        message: "Erro interno ao processar a requisição.",
+        error: error instanceof Error ? error.message : error,
+      });
+    }
+  });
+
+  APP.get(Routes.getEvento, async (req, res) => {
+    const id = String(req.params.id);
+    console.log(`📥 [GET /evento/${id}] Solicitando eventos...`);
+
+    try {
+      const result = await controllerColaborador.getEvento(id);
+
+      if (result && result.length > 0) {
+        console.log(`✅ [GET /evento/${id}] Eventos encontrados.`, {
+          quantidade: result.length,
+        });
+
+        res.status(200).json({
+          success: true,
+          message: `Foram encontrados ${result.length} evento(s) para o calendário ${id}.`,
+          data: result,
+        });
+      } else {
+        console.warn(`⚠️ [GET /evento/${id}] Nenhum evento encontrado.`);
+
+        res.status(404).json({
+          success: false,
+          message: `Nenhum evento encontrado para o calendário ${id}.`,
+          data: [],
+        });
+      }
+    } catch (error) {
+      console.error(`💥 [GET /evento/${id}] Erro ao buscar eventos:`, error);
+
+      res.status(500).json({
+        success: false,
+        message: "Erro interno ao buscar eventos.",
+        error: error instanceof Error ? error.message : error,
+      });
+    }
+  });
+
+  APP.delete(Routes.deleteEvento, async (req, res) => {
+    const id = String(req.params.id);
+    console.log(`📥 [DELETE /evento/${id}] Solicitando exclusão de evento...`);
+
+    try {
+      const result = await controllerColaborador.deleteEvento(id);
+
+      if (result && result.rowCount > 0) {
+        console.log(`✅ [DELETE /evento/${id}] Evento deletado com sucesso.`);
+
+        res.status(200).json({
+          success: true,
+          message: `Evento ${id} deletado com sucesso.`,
+          data: { eventoId: id },
+        });
+      } else {
+        console.warn(
+          `⚠️ [DELETE /evento/${id}] Nenhum evento encontrado para deletar.`
+        );
+
+        res.status(404).json({
+          success: false,
+          message: `Nenhum evento encontrado com o ID ${id}.`,
+          data: [],
+        });
+      }
+    } catch (error) {
+      console.error(`💥 [DELETE /evento/${id}] Erro ao deletar evento:`, error);
+
+      res.status(500).json({
+        success: false,
+        message: "Erro interno ao deletar evento.",
+        error: error instanceof Error ? error.message : error,
+      });
+    }
+  });
+
+  // -----------------------------------
+  // Rotas CRUD Calendario
+  // -----------------------------------
+
+  APP.post(Routes.createCalendario, async (req, res) => {
+    const id = req.params.id;
+    console.log(
+      `📥 [POST /calendario/${id}] Iniciando criação de calendário...`
+    );
+
+    try {
+      const result = await controllerColaborador.postCalendario(id);
+
+      if (result) {
+        console.log(
+          `✅ [POST /calendario/${id}] Calendário criado com sucesso.`
+        );
+
+        res.status(201).json({
+          success: true,
+          message: `Calendário criado com sucesso para a empresa ${id}.`,
+          data: { empresaId: id },
+        });
+      } else {
+        console.warn(`⚠️ [POST /calendario/${id}] Falha ao criar calendário.`);
+
+        res.status(400).json({
+          success: false,
+          message: `Não foi possível criar o calendário para a empresa ${id}.`,
+        });
+      }
+    } catch (error) {
+      console.error(
+        `💥 [POST /calendario/${id}] Erro ao criar calendário:`,
+        error
+      );
+
+      res.status(500).json({
+        success: false,
+        message: "Erro interno ao criar calendário.",
+        error: error instanceof Error ? error.message : error,
+      });
+    }
+  });
+
+  APP.get(Routes.getCalendario, async (req, res) => {
+    const id = String(req.params.id);
+    console.log(`📥 [GET /calendario/${id}] Solicitando calendários...`);
+
+    try {
+      const result = await controllerColaborador.getCalendario(id);
+
+      if (result && result.length > 0) {
+        console.log(`✅ [GET /calendario/${id}] Calendários encontrados.`, {
+          quantidade: result.length,
+        });
+
+        res.status(200).json({
+          success: true,
+          message: `Foram encontrados ${result.length} calendário(s) para a empresa ${id}.`,
+          data: result,
+        });
+      } else {
+        console.warn(
+          `⚠️ [GET /calendario/${id}] Nenhum calendário encontrado.`
+        );
+
+        res.status(404).json({
+          success: false,
+          message: `Nenhum calendário encontrado para a empresa ${id}.`,
+          data: [],
+        });
+      }
+    } catch (error) {
+      console.error(
+        `💥 [GET /calendario/${id}] Erro ao buscar calendários:`,
+        error
+      );
+
+      res.status(500).json({
+        success: false,
+        message: "Erro interno ao buscar calendários.",
+        error: error instanceof Error ? error.message : error,
+      });
+    }
+  });
 };

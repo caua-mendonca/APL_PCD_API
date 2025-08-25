@@ -1,13 +1,13 @@
-// server/data/connect.ts (ou .js)
 import { Pool } from "pg";
-import "dotenv/config";
+import dotenv from 'dotenv';
+dotenv.config();
 
 /**
  * Configuração do pool de conexões com o banco PostgreSQL,
  * utilizando variáveis de ambiente para dados sensíveis.
  */
 export const pool = new Pool({
-  user: process.env.DB_USER,
+  user: process.env.DB_USER,        
   host: process.env.DB_HOST,
   database: process.env.DB_DATABASE,
   password: process.env.DB_PASSWORD,
