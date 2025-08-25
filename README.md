@@ -30,18 +30,21 @@ Arquitetura baseada em **padrões MVC desacoplados** com foco em escalabilidade 
 src/
 ├── 🔧 config/           # Configurações do banco e ambiente
 ├── 🎮 controller/        # Controladores da aplicação
-│   ├── user/            # Gestão de usuários (candidatos/contratantes)
-│   └── IFBR/            # Integração com instituições
+│   └── user/            # Gestão de usuários (candidatos/contratantes)
+├── 🛡️ middleware/        # Middlewares da aplicação
 ├── 📊 model/             # Modelos de dados e entidades
+│   ├── calendar/        # Sistema de calendário
 │   ├── entities/        # Classes de entidades
+│   │   └── class/       # Classes de domínio
+│   ├── event/           # Gestão de eventos
 │   ├── user/            # Operações CRUD de usuários
-│   ├── vaga/            # Gestão de vagas
-│   └── calendar/        # Sistema de calendário
+│   └── vaga/            # Gestão de vagas
 ├── 🗄️ repositories/      # Camada de acesso a dados
 ├── 🛣️ routes/            # Definição de rotas da API
+├── 🧪 test/              # Testes unitários
+│   └── model/           # Testes da camada model
 ├── 🔧 utils/             # Utilitários e helpers
-├── ✅ validation/        # Validações de dados
-└── 🧪 test/              # Testes unitários
+└── ✅ validation/        # Validações de dados
 ```
 
 ---
@@ -53,17 +56,38 @@ Banco de dados **PostgreSQL** com estrutura normalizada e relacionamentos bem de
 ### 📋 Tabelas Principais
 | Tabela | Descrição | Relacionamentos |
 |--------|-----------|----------------|
-| `tb_candidato` | 👤 Dados dos candidatos PCD | → `tb_candidato_vaga`, `tb_candidato_ifbr` |
-| `tb_empresa` | 🏢 Informações das empresas | → `tb_empresa_vaga`, `tb_empresa_colaborador` |
+| `tb_candidato` | 👤 Dados dos candidatos PCD | → `tb_candidato_vaga` |
 | `tb_vaga` | 💼 Vagas disponíveis | → `tb_empresa_vaga`, `tb_candidato_vaga` |
 | `tb_colaborador` | 👨💼 Colaboradores das empresas | → `tb_empresa_colaborador` |
-| `tb_ifbr` | 🏫 Instituições parceiras | → `tb_candidato_ifbr` |
+| `tb_tipo_deficiencia` | 🦽 Tipos de deficiências | → `tb_sub_tipo_deficiencia` |
+| `tb_sub_tipo_deficiencia` | 📋 Subtipos de deficiências | → `tb_tipo_deficiencia` |
+| `tb_acessibilidade` | ♿ Recursos de acessibilidade | → `tb_barreira_acessibilidade` |
+| `tb_barreira` | 🚧 Barreiras identificadas | → `tb_sub_tipo_barreira`, `tb_barreira_acessibilidade` |
+| `tb_sub_tipo_barreira` | 🚧 Subtipos de barreiras | → `tb_barreira` |
+| `tb_calendario` | 📅 Sistema de calendário | → `tb_evento` |
+| `tb_evento` | 📅 Eventos do sistema | → `tb_calendario` |
 
 ### 🔗 Tabelas de Relacionamento
 - `tb_candidato_vaga` - Inscrições de candidatos em vagas
 - `tb_empresa_vaga` - Vinculação de vagas às empresas
 - `tb_empresa_colaborador` - Colaboradores por empresa
-- `tb_candidato_ifbr` - Candidatos vinculados a instituições
+- `tb_barreira_acessibilidade` - Relacionamento entre barreiras e acessibilidade
+
+### 📋 Lista Completa de Tabelas
+- `tb_acessibilidade`
+- `tb_barreira`
+- `tb_barreira_acessibilidade`
+- `tb_calendario`
+- `tb_candidato`
+- `tb_candidato_vaga`
+- `tb_colaborador`
+- `tb_empresa_colaborador`
+- `tb_empresa_vaga`
+- `tb_evento`
+- `tb_sub_tipo_barreira`
+- `tb_sub_tipo_deficiencia`
+- `tb_tipo_deficiencia`
+- `tb_vaga`
 
 ---
 
@@ -88,10 +112,13 @@ Banco de dados **PostgreSQL** com estrutura normalizada e relacionamentos bem de
 - [x] 📈 Controle de status das vagas
 - [x] 🔄 Gestão do ciclo de vida das oportunidades
 
-### 🏫 **Integração IFBR**
-- [x] 🤝 Cadastro de instituições parceiras
-- [x] 🔗 Vinculação candidato-instituição
-- [x] 📊 Relatórios de parcerias
+### ♿ **Gestão de Deficiências**
+- [x] 🦽 Cadastro de tipos de deficiências
+- [x] 📋 Gestão de subtipos de deficiências
+- [x] ♿ Sistema de acessibilidade
+- [x] 🚧 Identificação de barreiras
+- [x] 🚧 Gestão de subtipos de barreiras
+- [x] 📅 Sistema de calendário e eventos
 
 ### 🛡️ **Qualidade e Segurança**
 - [x] ✅ Validações centralizadas de dados
@@ -139,10 +166,16 @@ Todos os registros utilizam **IDs únicos** com prefixos semânticos:
 | Entidade | Prefixo | Exemplo | Descrição |
 |----------|---------|---------|----------|
 | 👤 Candidato | `CAND-` | `CAND-563829` | Identificação de candidatos PCD |
-| 🏢 Empresa | `EMP-` | `EMP-193920` | Identificação de empresas |
 | 💼 Vaga | `VAGA-` | `VAGA-763239` | Identificação de vagas |
 | 👨💼 Colaborador | `COLAB-` | `COLAB-87274` | Identificação de colaboradores |
-| 🏫 IFBR | `IFBR-` | `IFBR-456123` | Identificação de instituições |
+| 🦾 Deficiencia Motora | `DMOTO-` | `DMOTO-901234` | Identificação de deficiencia motora|
+| 👁️ Deficiencia Visual | `DVISU-` | `DVISU-963334` | Identificação de deficiencia visual |
+| 🦻 Deficiencia Auditiva | `DAUDI-` | `DAUDI-32514` | Identificação de deficiencia auditiva |
+| 📋 Subtipo Deficiência | `SUBT-` | `SUBT-901234` | Identificação de subtipos de deficiências |
+| ♿ Acessibilidade | `ACES-` | `ACES-567890` | Identificação de recursos de acessibilidade |
+| 🚧 Barreira | `BARR-` | `BARR-234567` | Identificação de barreiras |
+| 📅 Calendário | `CALENDAR-` | `CALENDAR-456789` | Identificação de calendários |
+| 📅 Evento | `EVEVENTT-` | `EVENT-567890` | Identificação de eventos |
 
 ### 🔒 **Características dos IDs**
 - ✅ **Únicos** - Garantia de unicidade no sistema
@@ -297,7 +330,7 @@ node build/index.js
 ## 📊 Status do Projeto
 
 - 🚀 **Status**: Em desenvolvimento ativo
-- 📈 **Versão**: 1.0.0
+- 📈 **Versão**: 2.0.0
 - 🧪 **Cobertura de Testes**: 85%+ (14 testes unitários model)
 - 📝 **Documentação**: Completa
 - 🔒 **Segurança**: Implementada
