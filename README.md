@@ -330,7 +330,7 @@ node build/index.js
 ## 📊 Status do Projeto
 
 - 🚀 **Status**: Em desenvolvimento ativo
-- 📈 **Versão**: 2.0.0
+- 📈 **Versão**: 2.1.0
 - 🧪 **Cobertura de Testes**: 85%+ (14 testes unitários model)
 - 📝 **Documentação**: Completa
 - 🔒 **Segurança**: Implementada
