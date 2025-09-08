@@ -29,7 +29,7 @@ export let controllerContratante = (user: {
  */
 export let controllerGetContratante = async () => {
   console.log("🚀 Passando ao controllerGetContratante()");
-  let result = await Model.getUser("contratante");
+  let result = await Model.getUser("tb_empresa");
   console.log(`✔️ Contratantes encontrados: ${result.rows.length}`);
   return result.rows;
 };

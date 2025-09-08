@@ -3,7 +3,7 @@ import * as Routes from "../routes/routes.js";
 import * as controllerCandidate from "../controller/user/controllerCandidate.js";
 import * as controllerContratante from "../controller/user/controllerContratante.js";
 import * as controllerColaborador from "../controller/user/controllerColaborador.js";
-import * as Middleware from "../middleware/middleware.js"
+import * as Middleware from "../middleware/middleware.js";
 import cors from "cors";
 
 const APP = express();
@@ -270,7 +270,7 @@ export let conectServ = (PORT: string) => {
   // Rotas CRUD Vaga
   // -----------------------------------
 
-  APP.post(Routes.createVaga, Middleware.idIsValid, (req, res) => {
+  APP.post(Routes.createVaga, Middleware.authenticateTokenEmp, (req, res) => {
     let body = req.body;
     let id = req.params.id;
 
@@ -287,27 +287,31 @@ export let conectServ = (PORT: string) => {
     }
   });
 
-  APP.post(Routes.candidatarVaga, Middleware.idIsValidVaga, (req, res) => {
-    let id_vaga = String(Object.values(req.body));
-    let id_candidate = req.params.id;
+  APP.post(
+    Routes.candidatarVaga,
+    Middleware.authenticateTokenCand,
+    (req, res) => {
+      let id_vaga = String(Object.values(req.body));
+      let id_candidate = req.params.id;
 
-    console.log(
-      `🚀 [POST /vaga/candidatar/${id_candidate}] Requisição recebida para vaga: ${id_vaga}`
-    );
-
-    let result = controllerCandidate.candidatarVaga(id_candidate, id_vaga);
-    if (result) {
       console.log(
-        `✔️ [POST /vaga/candidatar/${id_candidate}] Candidatura realizada com sucesso.`
+        `🚀 [POST /vaga/candidatar/${id_candidate}] Requisição recebida para vaga: ${id_vaga}`
       );
-      res.status(200).send(result);
-    } else {
-      console.warn(
-        `❌ [POST /vaga/candidatar/${id_candidate}] Falha ao candidatar.`
-      );
-      res.status(400).send({ message: "Erro ao candidatar a vaga!" });
+
+      let result = controllerCandidate.candidatarVaga(id_candidate, id_vaga);
+      if (result) {
+        console.log(
+          `✔️ [POST /vaga/candidatar/${id_candidate}] Candidatura realizada com sucesso.`
+        );
+        res.status(200).send(result);
+      } else {
+        console.warn(
+          `❌ [POST /vaga/candidatar/${id_candidate}] Falha ao candidatar.`
+        );
+        res.status(400).send({ message: "Erro ao candidatar a vaga!" });
+      }
     }
-  });
+  );
 
   APP.get(Routes.getVagas, async (req, res) => {
     console.log(`🚀 [POST /vagas] Requisição recebida`);

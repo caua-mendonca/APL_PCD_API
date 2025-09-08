@@ -1,3 +1,4 @@
+import { error } from "console";
 import * as DB from "../config/connect.js";
 
 /**
@@ -733,6 +734,8 @@ export let validateData = async (
       `[validateData] Validação concluída. Registros encontrados: ${result.rows.length}`
     );
     return result.rows.length;
+
+  
   } catch (error) {
     console.error(
       `[validateData] ERRO ao validar dados na tabela ${table}, coluna ${data}:`,
