@@ -1,48 +1,34 @@
-import { Request, Response, NextFunction } from "express";
-import { validateIdCandidato, validateIdContratante } from "../validation/validateId/validateId";
+import JWT from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
-export  let idIsValid = async (req: Request, res: Response, next: NextFunction) => {
-    const id = String(req.params.id);
+export let authenticateTokenCand = (req: any, res: any, next: any) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ msg: "Não autorizado!" });
+  }
+  try {
+    const secretCand = process.env.SECRET_CAND
+    JWT.verify(token, secretCand as string);
+    next();
 
-    console.log(`🔍 Validando ID contratante: ${id}`);
+  } catch (error) {
+    res.status(403).json({ msg: "Token inválido!" });
+  }
+};
+export let authenticateTokenEmp = (req: any, res: any, next: any) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ msg: "Não autorizado!" });
+  }
+  try {
+    const secretEmp = process.env.SECRET_EPM
+    JWT.verify(token, secretEmp as string);
+    next();
 
-    let isValid: boolean = await validateIdContratante(id);
-    console.log(`Resultado validação: ${isValid}`);
-
-    if (isValid === false) {
-      console.warn(
-        "❌ ID inválido - apenas empresas ou colaboradores podem criar vagas."
-      );
-      res
-        .status(400)
-        .send({ message: "ID inválido, Apenas Empresas podem criar vagas!" });
-    } else {
-      console.log("✔️ ID validado, prosseguindo...");
-      next();
-    }
-  };
-
-export  let idIsValidVaga = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    const id = String(req.params.id);
-
-    console.log(`🔍 Validando ID candidato: ${id}`);
-
-    let isValid: any = validateIdCandidato(id);
-    console.log(`Resultado validação: ${isValid}`);
-
-    if (isValid === false) {
-      console.warn("❌ ID inválido - apenas candidatos podem se inscrever.");
-      res
-        .status(400)
-        .send({
-          message: "ID inválido, Apenas Candidatos podem se inscrever à vagas!",
-        });
-    } else {
-      console.log("✔️ ID validado, prosseguindo...");
-      next();
-    }
-  };
+  } catch (error) {
+    res.status(403).json({ msg: "Token inválido!" });
+  }
+};
