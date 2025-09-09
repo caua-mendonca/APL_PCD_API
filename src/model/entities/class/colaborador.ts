@@ -33,4 +33,7 @@ export class Colaborador {
     let suffix = Math.floor(Math.random() * 1000000);
     this.id = prefix + suffix;
   }
+    public async SetCryptPass(newPass: string): Promise<any> {
+    this.senha = newPass;
+  }
 }

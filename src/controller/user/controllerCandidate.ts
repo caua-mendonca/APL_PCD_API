@@ -18,7 +18,9 @@ export let controllerPostCandadate = async (body: {
   def_motora: boolean,
   def_auditiva: boolean,
   def_visual:boolean,
-  sub_tipo: string
+  sub_tipo: string,
+  barreira: string,
+  acessbilidade: string
 }):Promise<any> => {
   console.log("🚀 Iniciando controllerPostCandadate - enviando dados para createCanditado");
   let response = await Model.createCanditado(body);

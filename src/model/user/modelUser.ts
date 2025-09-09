@@ -16,6 +16,7 @@ import {
   validateCNPJToDB,
 } from "../../validation/validateData/validateCNPJ.js";
 import { validateEmailToDB } from "../../validation/validateData/validateEmail.js";
+import bcrypt from "bcrypt";
 
 /**
  * Cria um colaborador e associa-o a uma empresa.
@@ -55,6 +56,16 @@ export let createColaborador = async (
     while (colaborador.id == "") {
       console.log("ID vazio detectado, gerando novo ID");
       await colaborador.setId();
+    }
+
+    let emailIsValid: boolean = await validateEmailToDB(
+      colaborador.email,
+      "email",
+      "tb_colaborador"
+    );
+    if (!emailIsValid) {
+      console.log("❌ Email inválido:", colaborador.email);
+      throw new Error("Email inválido");
     }
 
     // Inserção no banco de dados
@@ -102,10 +113,12 @@ export let createCanditado = async (user: {
   telefone: string;
   cpf: string;
   data_nascimento: Date;
-  def_motora: boolean,
-  def_auditiva: boolean,
-  def_visual:boolean,
-  sub_tipo: string
+  def_motora: boolean;
+  def_auditiva: boolean;
+  def_visual: boolean;
+  sub_tipo: string;
+  barreira: string;
+  acessbilidade: string;
 }): Promise<any> => {
   try {
     console.log(
@@ -126,7 +139,9 @@ export let createCanditado = async (user: {
       user.def_visual,
       user.def_auditiva,
       user.def_motora,
-      user.sub_tipo
+      user.sub_tipo,
+      user.barreira,
+      user.acessbilidade
     );
 
     // Gera ID único
@@ -155,7 +170,6 @@ export let createCanditado = async (user: {
         "email",
         "tb_candidato"
       );
-      console.log("✔️ emailIsValid:", emailIsValid);
       if (!emailIsValid) {
         console.log("❌ Email inválido:", newUser.email);
         errorLog.push("Email inválido");
@@ -163,6 +177,11 @@ export let createCanditado = async (user: {
     }
 
     let passwordIsValid: boolean = newUser.senha === newUser.confirme_senha;
+    if (passwordIsValid) {
+      const salt = await bcrypt.genSalt(12);
+      const passwordHash = await bcrypt.hash(user.senha, salt);
+      newUser.SetCryptPass(passwordHash);
+    }
 
     // Regenera ID se inválido
     while (idIsValid == "") {
@@ -249,7 +268,7 @@ export let createContratante = async (user: {
         "email",
         "tb_empresa"
       );
-      if (!emailIsValid) {
+      if (emailIsValid == false) {
         console.log("❌ Email inválido:", newContratante.email);
         errorLog.push("Email inválido");
       } else {
@@ -260,6 +279,12 @@ export let createContratante = async (user: {
     // Valida senha
     let passwordIsValid: boolean =
       newContratante.senha === newContratante.confirme_senha;
+
+    if (passwordIsValid) {
+      const salt = await bcrypt.genSalt(12);
+      const passwordHash = await bcrypt.hash(newContratante.senha, salt);
+      newContratante.SetCryptPass(passwordHash);
+    }
 
     // Valida CNPJ
     let cnpjIsValid: boolean = validateCNPJ(newContratante.cnpj);

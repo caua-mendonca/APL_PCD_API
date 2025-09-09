@@ -7,7 +7,7 @@ import * as Model from "../../model/user/modelUser.js";
  * @param user - Dados do contratante a ser criado
  * @returns resposta do createContratante (sucesso, erros ou exceção)
  */
-export let controllerContratante = (user: {
+export let controllerContratante = async (user: {
   nome_fantasia: string;
   razao_social: string;
   email: string;

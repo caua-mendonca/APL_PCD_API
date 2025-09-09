@@ -14,10 +14,13 @@ export class Candidate {
   public telefone: string;
   public cpf: string;
   public data_nascimento: Date;
+  public def: string; //;
   public def_motora: boolean;
   public def_auditiva: boolean;
   public def_visual: boolean;
   public sub_tipo: string;
+  public barreira: string;
+  public acessbilidade: string;
   public status: boolean = true;
 
   /**
@@ -47,7 +50,9 @@ export class Candidate {
     def_motora: boolean,
     def_auditiva: boolean,
     def_visual: boolean,
-    sub_tipo: string
+    sub_tipo: string,
+    barreira: string,
+    acessbilidade: string
   ) {
     this.id = ""; // ID será gerado posteriormente
     this.name = name;
@@ -58,10 +63,23 @@ export class Candidate {
     this.telefone = telefone;
     this.cpf = cpf;
     this.data_nascimento = data_nascimento;
+    this.def = ""; // Deficiência será gerada posteriormente
     this.def_visual = def_visual;
     this.def_auditiva = def_auditiva;
     this.def_motora = def_motora;
     this.sub_tipo = sub_tipo;
+    this.barreira = barreira;
+    this.acessbilidade = acessbilidade;
+
+    if (def_auditiva === true) {
+      this.setDef("DAUDI-");
+    } else if (def_motora === true) {
+      this.setDef("DMOTO-");
+    } else if (def_visual === true) {
+      this.setDef("DVISU-");
+    } else {
+      this.setDef("");
+    }
   }
 
   /**
@@ -72,5 +90,13 @@ export class Candidate {
     let prefix = "CAND-";
     let suffix = Math.floor(Math.random() * 1000000);
     this.id = prefix + suffix;
+  }
+
+  public async setDef(prefix: string): Promise<void> {
+    let suffix = Math.floor(Math.random() * 1000000);
+    this.def = prefix + suffix;
+  }
+  public async SetCryptPass(newPass: string): Promise<any> {
+    this.senha = newPass;
   }
 }
