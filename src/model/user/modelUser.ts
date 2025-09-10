@@ -316,7 +316,7 @@ export let createContratante = async (user: {
         "✔️ Dados do contratante validados com sucesso, inserindo no banco"
       );
       DB.insertIntoContratante(newContratante);
-      return "Sucesso ao criar contratante";
+      return true;
     }
   } catch (error) {
     console.error("❌ Erro capturado em createContratante:", error);

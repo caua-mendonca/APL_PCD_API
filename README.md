@@ -41,8 +41,7 @@ src/
 │   └── vaga/            # Gestão de vagas
 ├── 🗄️ repositories/      # Camada de acesso a dados
 ├── 🛣️ routes/            # Definição de rotas da API
-├── 🧪 test/              # Testes unitários
-│   └── model/           # Testes da camada model
+├── 🧪 test/              # Testes unitários (em desenvolvimento)
 ├── 🔧 utils/             # Utilitários e helpers
 └── ✅ validation/        # Validações de dados
 ```
@@ -124,9 +123,11 @@ Banco de dados **PostgreSQL** com estrutura normalizada e relacionamentos bem de
 - [x] ✅ Validações centralizadas de dados
 - [x] 📝 Sistema de logs padronizado
 - [x] 🔒 Sanitização de entradas
-- [x] 🧪 Testes unitários da camada model (14 testes)
-- [x] 📊 Cobertura de testes das entidades principais
-- [x] 🎯 Testes de validação e cenários de erro
+- [x] 🔐 Criptografia de senhas com bcrypt
+- [x] 🎫 Autenticação JWT (JSON Web Token)
+- [ ] 🧪 Testes unitários da camada model (em desenvolvimento)
+- [ ] 📊 Cobertura de testes das entidades principais
+- [ ] 🎯 Testes de validação e cenários de erro
 
 ---
 
@@ -145,12 +146,14 @@ Banco de dados **PostgreSQL** com estrutura normalizada e relacionamentos bem de
 - **Jest 29+** - Framework de testes
 - **Supertest** - Testes de API
 - **TypeScript** - Verificação de tipos
-- **Cobertura 85%+** - Testes unitários implementados
+- **Cobertura 0%** - Testes em desenvolvimento
 
 ### 🔧 **Ferramentas**
 - **dotenv** - Variáveis de ambiente
 - **CORS** - Controle de acesso
 - **ts-node** - Execução TypeScript
+- **bcrypt** - Criptografia de senhas
+- **jsonwebtoken** - Autenticação JWT
 
 ### 🏗️ **Arquitetura**
 - **MVC Pattern** - Separação de responsabilidades
@@ -203,6 +206,8 @@ Todos os registros utilizam **IDs únicos** com prefixos semânticos:
 - 📝 **Campos Obrigatórios** - Verificação de presença
 - 🛡️ **Sanitização** - Limpeza de dados de entrada
 - 📊 **Logs** - Registro de erros e validações
+- 🔐 **Senhas Seguras** - Hash bcrypt com salt
+- 🎫 **Tokens JWT** - Autenticação stateless
 
 ---
 
@@ -213,6 +218,8 @@ Todos os registros utilizam **IDs únicos** com prefixos semânticos:
 - 💉 **Prepared Statements** - Proteção contra SQL Injection
 - 🧹 **Sanitização** - Limpeza automática de entradas
 - 🔒 **Validação Rigorosa** - Verificação em múltiplas camadas
+- 🔐 **Criptografia bcrypt** - Hash seguro de senhas
+- 🎫 **JWT Authentication** - Tokens seguros para autenticação
 
 ### 📊 **Monitoramento**
 - 📝 **Logs Estruturados** - Rastreamento de operações
@@ -236,7 +243,7 @@ Todos os registros utilizam **IDs únicos** com prefixos semânticos:
 ### ⚡ **Instalação Rápida**
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/DiegoHenriqueMelo/APL_PCD_API.git
+git clone https://github.com/cMendoncaaa/APL-WEB-PCD.git
 cd APL_PCD_API
 
 # 2. Instale as dependências
@@ -264,12 +271,6 @@ DB_PORT=5432
 ```bash
 # Todos os testes
 npm test
-
-# Testes da camada model
-npm test -- src/test/model
-
-# Teste principal da camada model (100% funcional)
-npm test -- src/test/model/model.test.ts
 
 # Testes com cobertura
 npm run test:coverage
@@ -331,10 +332,10 @@ node build/index.js
 
 - 🚀 **Status**: Em desenvolvimento ativo
 - 📈 **Versão**: 2.1.0
-- 🧪 **Cobertura de Testes**: 85%+ (14 testes unitários model)
+- 🧪 **Cobertura de Testes**: 0% (testes em desenvolvimento)
 - 📝 **Documentação**: Completa
 - 🔒 **Segurança**: Implementada
-- ✅ **Testes Model**: 100% funcionais
+- ⏳ **Testes**: Em desenvolvimento
 
 ---
 
@@ -342,11 +343,11 @@ node build/index.js
 
 ### 🧠 **Equipe de Desenvolvimento**
 - **Diego Melo** - Backend Developer
-- **Cauã Mendonça** - Frontend Developer  
+- **Cauã Mendonça** - Frontend Developer
 
 ### 🔗 **Links Úteis**
-- 📧 **Issues**: [GitHub Issues](https://github.com/DiegoHenriqueMelo/APL_PCD_API/issues)
-- 📖 **Documentação**: [Wiki do Projeto](https://github.com/DiegoHenriqueMelo/APL_PCD_API/wiki)
+- 📧 **Issues**: [GitHub Issues](https://github.com/cMendoncaaa/APL-WEB-PCD/issues)
+- 📖 **Documentação**: [Wiki do Projeto](https://github.com/cMendoncaaa/APL-WEB-PCD/wiki)
 - 💼 **LinkedIn**: [Dev Melo](https://www.linkedin.com/in/devmelo/)
 - 🐙 **GitHub**: [DiegoHenriqueMelo](https://github.com/DiegoHenriqueMelo)
 

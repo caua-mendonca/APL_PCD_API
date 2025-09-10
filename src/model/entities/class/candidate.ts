@@ -14,7 +14,7 @@ export class Candidate {
   public telefone: string;
   public cpf: string;
   public data_nascimento: Date;
-  public def: string; //;
+  public def: string;
   public def_motora: boolean;
   public def_auditiva: boolean;
   public def_visual: boolean;

@@ -8,16 +8,14 @@ export let insertIntoCandidate = async (user: {
   id: string;
   name: string;
   email: string;
-  confirme_email: string;
   senha: string;
-  confirme_senha: string;
   telefone: string;
   cpf: string;
   data_nascimento: Date;
-  def_motora: boolean;
-  def_auditiva: boolean;
-  def_visual: boolean;
+  def: string;
   sub_tipo: string;
+  barreira: string;
+  acessbilidade: string;
   status: boolean;
 }) => {
   try {
@@ -27,12 +25,10 @@ export let insertIntoCandidate = async (user: {
 
     await DB.pool.query(
       `INSERT INTO tb_candidato (
-        id, nome, email, senha, telefone, cpf, data_nascimento,
-        def_visual, def_auditiva, def_fisica, def_intelectual, outra_def,
-        desc_def, acess_trab, desc_acess, status
+        id, nome, email, senha, telefone, cpf, data_nascimento, status, deficiencia, tipo_deficiencia, barreira, acessibilidade
       ) VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8,
-        $9, $10, $11, $12, $13, $14, $15, $16
+        $9, $10, $11, $12
       )`,
       [
         user.id,
@@ -42,12 +38,12 @@ export let insertIntoCandidate = async (user: {
         user.telefone,
         user.cpf,
         user.data_nascimento,
-        user.def_visual,
-        user.def_auditiva,
-        user.def_motora,
-        user.sub_tipo,
         user.status,
-        ,
+        user.def,
+        user.sub_tipo,
+        user.barreira,
+        user.acessbilidade,
+        
       ]
     );
 
