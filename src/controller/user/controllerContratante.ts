@@ -1,4 +1,4 @@
-import * as Model from "../../model/user/modelUser.js";
+import * as Model from "../../model/user/contratante/modelContratante.js";
 
 
 /**
@@ -30,8 +30,7 @@ export let controllerContratante = async (user: {
 export let controllerGetContratante = async () => {
   console.log("🚀 Passando ao controllerGetContratante()");
   let result = await Model.getUser("tb_empresa");
-  console.log(`✔️ Contratantes encontrados: ${result.rows.length}`);
-  return result.rows;
+
 };
 
 /**

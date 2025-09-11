@@ -1,4 +1,4 @@
-import * as Model from "../../model/user/modelUser.js";
+import * as Model from "../../model/user/colaborador/modelColaborador.js";
 import * as modelVaga from "../../model/vaga/modelVaga.js";
 import * as modelEvento from "../../model/event/modelEvent.js";
 import * as modelCalendar from "../../model/calendar/modelCalendar.js";
@@ -81,7 +81,7 @@ export let getVaga = async () => {
     console.log("🚀 Passando ao getVaga()");
     let response = await modelVaga.getVagaModel();
     console.log(
-      `✔️ Vagas encontradas: ${response.length || response.rows?.length || 0}`
+      `✔️ Vagas encontradas: ${response}`
     );
     return response;
   } catch (error) {
