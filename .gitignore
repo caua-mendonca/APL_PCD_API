@@ -1,4 +1,5 @@
 .env
+.env.routes
 node_modules/
 /build/
 coverage/
