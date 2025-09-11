@@ -10,7 +10,7 @@ export let getVagaModel = async () => {
   try {
     let result = await DB.selectFromTable("tb_vaga");
 
-    if (result.rows.length > 0) return result.rows;
+    return result;
   } catch (error) {
     console.error(`[getVagaModel] ERRO ao consultar dados:`, error);
   }

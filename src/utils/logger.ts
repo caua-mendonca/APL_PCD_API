@@ -35,57 +35,32 @@ export let conectServ = (PORT: number) => {
     try {
       let body = req.body;
       console.log(
-        `[POST /${Routes.createCanditado}] Requisição recebida, corpo:`,
+        `[POST ${Routes.createCanditado}] Requisição recebida, corpo:`,
         body
       );
 
       let [status, message] = await controllerCandidate.controllerPostCandadate(
         body
       );
-      if (status === 201) {
-        res.status(status).send({ message: message });
-      } else {
-        res.status(status).send({ message: message });
-      }
+      res.status(status).send({ message: message });
     } catch (error) {
       res.status(500).send({ message: String(process.env.STATUS_500) });
     }
-    // let body = req.body;
-    // console.log("[POST /candidato] Requisição recebida, corpo:", body);
-
-    // let result = await controllerCandidate.controllerPostCandadate(body);
-
-    // if ((await result) == true) {
-    //   console.log("[POST /candidato] Candidato criado com sucesso.");
-    //   res.status(200).send("Sucesso ao criar o candidato");
-    // } else {
-    //   console.warn("[POST /candidato] Falha ao criar candidato:", result);
-    //   res.status(400).send({ message: result });
-    // }
   });
 
   APP.get(
     Routes.getCanditado,
     Middleware.authenticateTokenCand,
     async (req, res) => {
-      console.log("🚀 [GET /candidato] Requisição recebida");
+      console.log(`Requisição recebida em ${Routes.getCanditado}`);
 
       try {
-        let result = await controllerCandidate.controllerGetCandidato();
-        console.log("✔️ [GET /candidato] Resultado recebido:", result);
-
-        if (Array.isArray(result)) {
-          res.status(200).send(result);
-        } else {
-          console.warn(
-            "⚠️ [GET /candidato] Nenhum candidato encontrado:",
-            result
-          );
-          res.status(404).send({ message: result });
-        }
+        console.log(`[GET ${Routes.getCanditado}] Requisição recebida`);
+        let [status, message] =
+          await controllerCandidate.controllerGetCandidato();
+        res.status(status).send({ message: message });
       } catch (error) {
-        console.error("❌ [GET /candidato] Erro ao buscar candidatos:", error);
-        res.status(500).send({ message: "Erro interno no servidor" });
+        res.status(500).send({ message: String(process.env.STATUS_500) });
       }
     }
   );
@@ -94,28 +69,19 @@ export let conectServ = (PORT: number) => {
     Routes.getCanditadoById,
     Middleware.authenticateTokenCand,
     async (req, res) => {
-      const id = String(req.params.id);
-      console.log(`🚀 [GET /candidato/${id}] Requisição recebida`);
+      console.log(`Requisição recebida em ${Routes.getCanditadoById}`);
 
       try {
-        let result = await controllerCandidate.controllerGetCandidatoById(id);
-        console.log(`✔️ [GET /candidato/${id}] Resultado recebido:`, result);
-
-        if (result && typeof result === "object") {
-          res.status(200).send(result);
-        } else {
-          console.warn(
-            `⚠️ [GET /candidato/${id}] Candidato não encontrado:`,
-            result
-          );
-          res.status(404).send({ message: result });
-        }
-      } catch (error) {
-        console.error(
-          `❌ [GET /candidato/${id}] Erro ao buscar candidato:`,
-          error
+        const id = String(req.params.id);
+        console.log(
+          `[GET ${Routes.getCanditadoById}] Requisição recebida, corpo:`,
+          id
         );
-        res.status(500).send({ message: "Erro interno no servidor" });
+        let [status, message] =
+          await controllerCandidate.controllerGetCandidatoById(id);
+        res.status(status).send({ message: message });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
       }
     }
   );
@@ -124,28 +90,18 @@ export let conectServ = (PORT: number) => {
     Routes.deleteCanditado,
     Middleware.authenticateTokenCand,
     async (req, res) => {
-      const id = String(req.params.id);
-      console.log(`🚀 [DELETE /candidato/${id}] Requisição recebida`);
-
+      console.log(`Requisição recebida em ${Routes.deleteCanditado}`);
       try {
-        let result = await controllerCandidate.controllerDeleteCandidato(id);
-        if (result) {
-          console.log(
-            `✔️ [DELETE /candidato/${id}] Candidato deletado com sucesso.`
-          );
-          res.status(200).send({ message: "Candidato deletado com sucesso!" });
-        } else {
-          console.warn(
-            `⚠️ [DELETE /candidato/${id}] Candidato não encontrado.`
-          );
-          res.status(404).send({ message: "Candidato não encontrado!" });
-        }
-      } catch (error) {
-        console.error(
-          `❌ [DELETE /candidato/${id}] Erro ao deletar candidato:`,
-          error
+        const id = String(req.params.id);
+        console.log(
+          `[GET ${Routes.deleteCanditado}] Requisição recebida, corpo:`,
+          id
         );
-        res.status(500).send({ message: "Erro interno no servidor" });
+        let [status, message] =
+          await controllerCandidate.controllerDeleteCandidato(id);
+        res.status(status).send({ message: message });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
       }
     }
   );
@@ -204,13 +160,6 @@ export let conectServ = (PORT: number) => {
 
       let result = await controllerContratante.controllerGetContratante();
       console.log("✔️ [GET /contratante] Resultado recebido:", result);
-
-      if (result) {
-        res.status(200).send(result);
-      } else {
-        console.warn("⚠️ [GET /contratante] Nenhum contratante encontrado.");
-        res.status(400).send({ message: result });
-      }
     }
   );
 

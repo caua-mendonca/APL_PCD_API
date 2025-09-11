@@ -47,10 +47,10 @@ export let insertIntoCandidate = async (user: {
     );
     console.log(`[POST / QUERY] Success`);
 
-    return [201, String(process.env.STATUS_201) ]
+    return [201, String(process.env.STATUS_201)];
   } catch (error) {
     console.log(`[POST / QUERY] Failed`);
-    return [400, String(Error) ];
+    return [400, String(Error)];
   }
 };
 
@@ -364,25 +364,22 @@ export let updateColaboradorEmpresa = async (
  * @param table Nome da tabela.
  * @returns Resultado da consulta.
  */
-export let selectFromTable = async (table: string): Promise<any> => {
-  try {
-    console.log(
-      `[selectFromTable] Consultando todos os dados da tabela ${table}`
-    );
+export let selectFromTable = async (
+  table: string
+): Promise<[number, string[] | string]> => {
+  console.log(`[GET / QUERY] resgatando tabela ${table}`);
 
+  try {
     const query = `SELECT * FROM ${table};`;
     const result = await DB.pool.query(query);
 
-    console.log(
-      `[selectFromTable] Consulta concluída. Total de linhas: ${result.rowCount}`
-    );
-    return result;
+    console.log(`[GET / QUERY] Success`);
+    let response = result.rows
+
+    return [200, response];
   } catch (error) {
-    console.error(
-      `[selectFromTable] ERRO na consulta da tabela ${table}:`,
-      error
-    );
-    throw error;
+    console.log(`[GET / QUERY] Failed`);
+    return [500, String(error)];
   }
 };
 
@@ -396,24 +393,20 @@ export let selectFromIdWhere = async (
   table: string,
   id: string
 ): Promise<any> => {
+  console.log(
+    `[QUERY] Resgatando registro ID ${id} da tabela ${table}`
+  );
   try {
-    console.log(
-      `[selectFromIdWhere] Consultando registro ID ${id} na tabela ${table}`
-    );
 
     const query = `SELECT * FROM ${table} WHERE id = $1`;
     const result = await DB.pool.query(query, [id]);
 
-    console.log(
-      `[selectFromIdWhere] Consulta concluída. Linhas retornadas: ${result.rowCount}`
-    );
-    return result;
+    console.log(`[QUERY] Success`);
+
+    return [200, result.rows];
   } catch (error) {
-    console.error(
-      `[selectFromIdWhere] ERRO na consulta de ID ${id} na tabela ${table}:`,
-      error
-    );
-    throw error;
+    console.log(`[QUERY] Failed`);
+    return [500, String(error)];
   }
 };
 
@@ -434,26 +427,17 @@ export let deleteFromTable = async (
   table: string,
   id: string
 ): Promise<any> => {
-  try {
-    console.log(
-      `[deleteFromTable] Atualizando status para false no registro ID ${id} da tabela ${table}`
-    );
-
+console.log(`[QUERY] Deletando usuario ${id}`);
+  try{
     let result = await DB.pool.query(
       `UPDATE ${table} SET status = $1 WHERE id = $2;`,
       [false, id]
     );
-
-    console.log(
-      `[deleteFromTable] Atualização realizada com sucesso, linhas afetadas: ${result.rowCount}`
-    );
-    return result;
+    console.log(`[QUERY] Success`);
+    return [200, result];
   } catch (error) {
-    console.error(
-      `[deleteFromTable] ERRO ao atualizar status no registro ID ${id} da tabela ${table}:`,
-      error
-    );
-    throw error;
+    console.log(`[QUERY] Failed`);
+    return [500, String(error)];
   }
 };
 

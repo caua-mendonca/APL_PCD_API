@@ -1,5 +1,4 @@
 import * as Model from "../../model/user//candidate/modelCandidate.js";
-import * as MODELAR from '../../model/user/modelUser.js'
 import { registerCandidateToVaga } from "../../model/vaga/modelVaga.js";
 import * as dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
@@ -35,7 +34,7 @@ export let controllerPostCandadate = async (body: {
       return [status, message];
     }
   } catch (error) {
-    return [400, String(process.env.STATUS_400)];
+    return [400, String(error)];
   }
 };
 
@@ -44,18 +43,16 @@ export let controllerPostCandadate = async (body: {
  * Busca os dados no banco, valida a resposta e retorna uma lista ou mensagem.
  * @returns array de candidatos ou mensagem de erro
  */
-export let controllerGetCandidato = async () => {
-  console.log("🚀 Iniciando controllerGetCandidato");
+export let controllerGetCandidato = async (): Promise<
+  [number, string[] | string]
+> => {
+  console.log("[GET / CONTROLLER Candidato]");
 
-  let result = await MODELAR.getUser("tb_candidato");
-  console.log(`✔️ Dados recebidos, total de candidatos: ${result.rowCount}`);
-
-  if (result.rowCount > 0) {
-    console.log("✔️ Lista de candidatos preparada para retorno");
-    return result.rows;
-  } else {
-    console.warn("⚠️ Nenhum candidato encontrado");
-    return "Candidato não encontrado";
+  try {
+    let [status, message] = await Model.getUser("tb_candidato");
+    return [status, message];
+  } catch (error) {
+    return [400, String(error)];
   }
 };
 
@@ -66,17 +63,13 @@ export let controllerGetCandidato = async () => {
  * @returns objeto candidato ou mensagem de erro
  */
 export let controllerGetCandidatoById = async (id: string) => {
-  console.log(`🚀 Iniciando controllerGetCandidatoById para ID: ${id}`);
+  console.log("[GET / CONTROLLER Candidato]");
 
-  let result = await MODELAR.getUserByID("Tb_candidato", id);
-  console.log(`✔️ Resultado da consulta, quantidade: ${result.rows.length}`);
-
-  if (result.rows.length > 0) {
-    console.log("✔️ Candidato encontrado, retornando dados");
-    return result.rows[0];
-  } else {
-    console.warn("⚠️ Candidato não encontrado");
-    return "Candidato não encontrado";
+  try {
+    let [status, message] = await Model.getUserByID("tb_candidato", id);
+    return [status, message];
+  } catch (error) {
+    return [400, String(error)];
   }
 };
 
@@ -87,17 +80,13 @@ export let controllerGetCandidatoById = async (id: string) => {
  * @returns resultado do delete ou false se não encontrado
  */
 export let controllerDeleteCandidato = async (id: string) => {
-  console.log(`🚀 Iniciando controllerDeleteCandidato para ID: ${id}`);
+  console.log("[DELETE / CONTROLLER Candidato]");
 
-  let result = await MODELAR.deleteUser("tb_candidato", id);
-  console.log(`✔️ Delete executado, linhas afetadas: ${result.rowCount}`);
-
-  if (result.rowCount > 0) {
-    console.log("✔️ Candidato deletado com sucesso");
-    return result;
-  } else {
-    console.warn("⚠️ Candidato não encontrado para deleção");
-    return false;
+  try {
+    let [status, message] = await Model.deleteUser("tb_candidato", id);
+    return [status, message];
+  } catch (error) {
+    return [400, String(error)];
   }
 };
 
@@ -113,7 +102,7 @@ export let controllerUpdateCandidato = async (id: string, body: object) => {
     `🚀 Iniciando controllerUpdateCandidato para ID: ${id} com dados:`,
     body
   );
-  let result = await MODELAR.updateUser("tb_candidato", id, body);
+  let result = await Model.updateUser("tb_candidato", id, body);
   console.log("✔️ Atualização concluída, resultado:", result);
   return result;
 };
