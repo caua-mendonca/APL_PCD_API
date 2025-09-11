@@ -5,6 +5,8 @@ import * as controllerContratante from "../controller/user/controllerContratante
 import * as controllerColaborador from "../controller/user/controllerColaborador.js";
 import * as Middleware from "../middleware/middleware.js";
 import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.status" });
 
 const APP = express();
 APP.use(express.json());
@@ -17,7 +19,11 @@ APP.use(cors());
 export let conectServ = (PORT: number) => {
   // Inicializa servidor HTTP na porta especificada
   APP.listen(PORT, () => {
-    console.log(`✔️ Servidor iniciado e escutando na porta ${PORT}`);
+    try {
+      console.log(`Servidor iniciado e escutando na porta ${PORT}`);
+    } catch (error) {
+      console.error("Erro ao iniciar o servidor:", error);
+    }
   });
 
   // -----------------------------------
@@ -25,18 +31,37 @@ export let conectServ = (PORT: number) => {
   // -----------------------------------
 
   APP.post(Routes.createCanditado, async (req, res) => {
-    let body = req.body;
-    console.log("🚀 [POST /candidato] Requisição recebida, corpo:", body);
+    console.log(`Requisição recebida em ${Routes.createCanditado}`);
+    try {
+      let body = req.body;
+      console.log(
+        `[POST /${Routes.createCanditado}] Requisição recebida, corpo:`,
+        body
+      );
 
-    let result = await controllerCandidate.controllerPostCandadate(body);
-
-    if ((await result) == true) {
-      console.log("✔️ [POST /candidato] Candidato criado com sucesso.");
-      res.status(200).send("Sucesso ao criar o candidato");
-    } else {
-      console.warn("❌ [POST /candidato] Falha ao criar candidato:", result);
-      res.status(400).send({ message: result });
+      let [status, message] = await controllerCandidate.controllerPostCandadate(
+        body
+      );
+      if (status === 201) {
+        res.status(status).send({ message: message });
+      } else {
+        res.status(status).send({ message: message });
+      }
+    } catch (error) {
+      res.status(500).send({ message: String(process.env.STATUS_500) });
     }
+    // let body = req.body;
+    // console.log("[POST /candidato] Requisição recebida, corpo:", body);
+
+    // let result = await controllerCandidate.controllerPostCandadate(body);
+
+    // if ((await result) == true) {
+    //   console.log("[POST /candidato] Candidato criado com sucesso.");
+    //   res.status(200).send("Sucesso ao criar o candidato");
+    // } else {
+    //   console.warn("[POST /candidato] Falha ao criar candidato:", result);
+    //   res.status(400).send({ message: result });
+    // }
   });
 
   APP.get(

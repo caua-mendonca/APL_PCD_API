@@ -1,5 +1,9 @@
-import * as Model from "../../model/user/modelUser.js";
+import * as Model from "../../model/user//candidate/modelCandidate.js";
+import * as MODELAR from '../../model/user/modelUser.js'
 import { registerCandidateToVaga } from "../../model/vaga/modelVaga.js";
+import * as dotenv from "dotenv";
+dotenv.config({ path: ".env.status" });
+
 /**
  * Controlador para criação de candidato.
  * Recebe os dados do corpo da requisição e passa para o modelo responsável pela criação.
@@ -15,17 +19,24 @@ export let controllerPostCandadate = async (body: {
   telefone: string;
   cpf: string;
   data_nascimento: Date;
-  def_motora: boolean,
-  def_auditiva: boolean,
-  def_visual:boolean,
-  sub_tipo: string,
-  barreira: string,
-  acessbilidade: string
-}):Promise<any> => {
-  console.log("🚀 Iniciando controllerPostCandadate - enviando dados para createCanditado");
-  let response = await Model.createCanditado(body);
-   console.log("✔️ createCanditado executado, resultado:", response);
-  return response;
+  def_motora: boolean;
+  def_auditiva: boolean;
+  def_visual: boolean;
+  sub_tipo: string;
+  barreira: string;
+  acessbilidade: string;
+}): Promise<[number, string]> => {
+  console.log("[POST / CONTROLLER Candidato]");
+  try {
+    let [status, message] = await Model.createCanditado(body);
+    if (status === 201) {
+      return [status, message];
+    } else {
+      return [status, message];
+    }
+  } catch (error) {
+    return [400, String(process.env.STATUS_400)];
+  }
 };
 
 /**
@@ -36,7 +47,7 @@ export let controllerPostCandadate = async (body: {
 export let controllerGetCandidato = async () => {
   console.log("🚀 Iniciando controllerGetCandidato");
 
-  let result = await Model.getUser("tb_candidato");
+  let result = await MODELAR.getUser("tb_candidato");
   console.log(`✔️ Dados recebidos, total de candidatos: ${result.rowCount}`);
 
   if (result.rowCount > 0) {
@@ -57,7 +68,7 @@ export let controllerGetCandidato = async () => {
 export let controllerGetCandidatoById = async (id: string) => {
   console.log(`🚀 Iniciando controllerGetCandidatoById para ID: ${id}`);
 
-  let result = await Model.getUserByID("Tb_candidato", id);
+  let result = await MODELAR.getUserByID("Tb_candidato", id);
   console.log(`✔️ Resultado da consulta, quantidade: ${result.rows.length}`);
 
   if (result.rows.length > 0) {
@@ -78,7 +89,7 @@ export let controllerGetCandidatoById = async (id: string) => {
 export let controllerDeleteCandidato = async (id: string) => {
   console.log(`🚀 Iniciando controllerDeleteCandidato para ID: ${id}`);
 
-  let result = await Model.deleteUser("tb_candidato", id);
+  let result = await MODELAR.deleteUser("tb_candidato", id);
   console.log(`✔️ Delete executado, linhas afetadas: ${result.rowCount}`);
 
   if (result.rowCount > 0) {
@@ -98,8 +109,11 @@ export let controllerDeleteCandidato = async (id: string) => {
  * @returns resultado da atualização
  */
 export let controllerUpdateCandidato = async (id: string, body: object) => {
-  console.log(`🚀 Iniciando controllerUpdateCandidato para ID: ${id} com dados:`, body);
-  let result = await Model.updateUser("tb_candidato", id, body);
+  console.log(
+    `🚀 Iniciando controllerUpdateCandidato para ID: ${id} com dados:`,
+    body
+  );
+  let result = await MODELAR.updateUser("tb_candidato", id, body);
   console.log("✔️ Atualização concluída, resultado:", result);
   return result;
 };
@@ -112,7 +126,9 @@ export let controllerUpdateCandidato = async (id: string, body: object) => {
  * @returns resultado do registro da candidatura
  */
 export let candidatarVaga = async (id_candidate: string, id_vaga: string) => {
-  console.log(`🚀 Iniciando candidatarVaga para candidato: ${id_candidate} e vaga: ${id_vaga}`);
+  console.log(
+    `🚀 Iniciando candidatarVaga para candidato: ${id_candidate} e vaga: ${id_vaga}`
+  );
   let result = await registerCandidateToVaga(id_candidate, id_vaga);
   console.log("✔️ Resultado do registro de candidatura:", result);
   return result;

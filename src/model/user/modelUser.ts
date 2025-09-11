@@ -8,7 +8,6 @@ import {
   validateCpf,
   validateCpfToDB,
 } from "../../validation/validateData/validadeteCpf.js";
-import { Candidate } from "../entities/class/candidate.js";
 import { Contratante } from "../entities/class/contratante.js";
 import { validateAge } from "../../validation/validateData/validateAge.js";
 import {
@@ -18,16 +17,7 @@ import {
 import { validateEmailToDB } from "../../validation/validateData/validateEmail.js";
 import bcrypt from "bcrypt";
 
-/**
- * Cria um colaborador e associa-o a uma empresa.
- * - Valida a existência da empresa.
- * - Gera um ID único para o colaborador.
- * - Insere no banco e associa com a empresa.
- *
- * @param user Dados do colaborador (nome, email, senha e setor).
- * @param id_empresa ID da empresa à qual o colaborador será vinculado.
- * @returns true em caso de sucesso, ou lança erro em caso de falha.
- */
+
 export let createColaborador = async (
   user: { name: string; email: string; senha: string; setor: string },
   id_empresa: string
@@ -58,16 +48,6 @@ export let createColaborador = async (
       await colaborador.setId();
     }
 
-    let emailIsValid: boolean = await validateEmailToDB(
-      colaborador.email,
-      "email",
-      "tb_colaborador"
-    );
-    if (!emailIsValid) {
-      console.log("❌ Email inválido:", colaborador.email);
-      throw new Error("Email inválido");
-    }
-
     // Inserção no banco de dados
     console.log(
       `Inserindo colaborador com ID: ${colaborador.id} no banco de dados`
@@ -95,122 +75,6 @@ export let createColaborador = async (
   }
 };
 
-/**
- * Cria um novo candidato.
- * - Valida CPF, e-mail, data de nascimento e senhas.
- * - Gera um ID único.
- * - Insere no banco de dados.
- *
- * @param user Objeto contendo os dados do candidato.
- * @returns true se sucesso, array com erros de validação ou lança erro em caso de falha.
- */
-export let createCanditado = async (user: {
-  name: string;
-  email: string;
-  confirme_email: string;
-  senha: string;
-  confirme_senha: string;
-  telefone: string;
-  cpf: string;
-  data_nascimento: Date;
-  def_motora: boolean;
-  def_auditiva: boolean;
-  def_visual: boolean;
-  sub_tipo: string;
-  barreira: string;
-  acessbilidade: string;
-}): Promise<any> => {
-  try {
-    console.log(
-      "🚀 Iniciando createCanditado - criando instância da classe Candidate"
-    );
-    let errorLog = [];
-
-    // Criação do candidato
-    let newUser = new Candidate(
-      user.name,
-      user.email,
-      user.confirme_email,
-      user.senha,
-      user.confirme_senha,
-      user.telefone,
-      user.cpf,
-      user.data_nascimento,
-      user.def_visual,
-      user.def_auditiva,
-      user.def_motora,
-      user.sub_tipo,
-      user.barreira,
-      user.acessbilidade
-    );
-
-    // Gera ID único
-    newUser.setId();
-    console.log("✔️ ID inicial criado:", newUser.id);
-
-    // Validações
-    let idIsValid: any = validateId(newUser.id, "tb_candidato");
-    let cpfIsValid: boolean = validateCpf(newUser.cpf);
-    if (cpfIsValid === true) {
-      console.log("validando cpf no banco");
-      cpfIsValid = await validateCpfToDB(newUser.cpf, "cpf", "tb_candidato");
-      console.log("✔️ cpfIsValid:", cpfIsValid);
-      if (!cpfIsValid) {
-        console.log("❌ CPF inválido:", newUser.cpf);
-        errorLog.push("CPF inválido");
-      }
-    }
-
-    let dateIsValid: boolean = validateAge(newUser.data_nascimento);
-    let emailIsValid: boolean = newUser.email === newUser.confirme_email;
-    if (emailIsValid === true) {
-      console.log("validando email no banco");
-      emailIsValid = await validateEmailToDB(
-        newUser.email,
-        "email",
-        "tb_candidato"
-      );
-      if (!emailIsValid) {
-        console.log("❌ Email inválido:", newUser.email);
-        errorLog.push("Email inválido");
-      }
-    }
-
-    let passwordIsValid: boolean = newUser.senha === newUser.confirme_senha;
-    if (passwordIsValid) {
-      const salt = await bcrypt.genSalt(12);
-      const passwordHash = await bcrypt.hash(user.senha, salt);
-      newUser.SetCryptPass(passwordHash);
-    }
-
-    // Regenera ID se inválido
-    while (idIsValid == "") {
-      newUser.setId();
-      idIsValid = validateId(newUser.id, "tb_candidato");
-      console.log("🔄 Gerando novo ID, tentando validar:", newUser.id);
-    }
-    console.log("✔️ ID validado:", newUser.id);
-
-    // Verifica erros acumulados
-    !cpfIsValid && errorLog.push("CPF inválido");
-    !dateIsValid && errorLog.push("Data de nascimento inválida");
-    !emailIsValid && errorLog.push("Emails não coincidem ou inválidos");
-    !passwordIsValid && errorLog.push("Senhas não coincidem ou inválidas");
-
-    // Retorna erros se houver
-    if (errorLog.length > 0) {
-      console.warn("❌ Dados inválidos encontrados:", errorLog);
-      return errorLog;
-    } else {
-      console.log("✔️ Todos dados validados com sucesso, inserindo no banco");
-      DB.insertIntoCandidate(newUser);
-      return true;
-    }
-  } catch (error) {
-    console.error("❌ Erro capturado em createCanditado:", error);
-    return error;
-  }
-};
 
 /**
  * Cria um contratante.
@@ -458,3 +322,5 @@ export let updateUser = async (table: string, id: string, body: object) => {
     throw error;
   }
 };
+
+

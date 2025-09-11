@@ -80,6 +80,7 @@ export class Candidate {
     } else {
       this.setDef("");
     }
+    this.setId();
   }
 
   /**

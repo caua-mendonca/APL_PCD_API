@@ -1,4 +1,6 @@
 import * as DB from "../config/connect.js";
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.status" });
 
 /**
  * Insere um novo candidato na tabela tb_candidato.
@@ -17,11 +19,9 @@ export let insertIntoCandidate = async (user: {
   barreira: string;
   acessbilidade: string;
   status: boolean;
-}) => {
+}): Promise<[number, string]> => {
   try {
-    console.log(
-      `[insertIntoCandidate] Iniciando inserção do candidato ID: ${user.id}`
-    );
+    console.log(`[POST / QUERY] inserindo ${user.id}`);
 
     await DB.pool.query(
       `INSERT INTO tb_candidato (
@@ -43,19 +43,14 @@ export let insertIntoCandidate = async (user: {
         user.sub_tipo,
         user.barreira,
         user.acessbilidade,
-        
       ]
     );
+    console.log(`[POST / QUERY] Success`);
 
-    console.log(
-      `[insertIntoCandidate] Candidato ${user.id} inserido com sucesso!`
-    );
+    return [201, String(process.env.STATUS_201) ]
   } catch (error) {
-    console.error(
-      `[insertIntoCandidate] ERRO ao inserir candidato ${user.id}:`,
-      error
-    );
-    throw error; // Propaga erro para tratamento superior
+    console.log(`[POST / QUERY] Failed`);
+    return [400, String(Error) ];
   }
 };
 
