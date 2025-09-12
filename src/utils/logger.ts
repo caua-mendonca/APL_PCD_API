@@ -203,7 +203,7 @@ export let conectServ = (PORT: number) => {
       try {
         let [status, message] =
           await controllerContratante.controllerUpdateContratante(id, body);
-          res.status(status).send({ message: message });
+        res.status(status).send({ message: message });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });
       }
@@ -217,25 +217,16 @@ export let conectServ = (PORT: number) => {
     Routes.createColaborador,
     Middleware.authenticateTokenEmp,
     async (req, res) => {
-      let body = req.body;
-      let id = req.params.id;
+      console.log(`🚀 [POST /colaborador] Requisição recebida`);
+      try {
+        let body = req.body;
+        let id = req.params.id;
 
-      console.log(
-        `🚀 [POST /colaborador/${id}] Requisição recebida, corpo:`,
-        body
-      );
-
-      let result = await controllerColaborador.controllerColaborador(body, id);
-      if (result) {
-        console.log(
-          `✔️ [POST /colaborador/${id}] Colaborador criado com sucesso.`
-        );
-        res.status(200).send(result);
-      } else {
-        console.warn(
-          `❌ [POST /colaborador/${id}] Falha ao criar colaborador.`
-        );
-        res.status(400).send({ message: "Erro ao criar colaborador!" });
+        let [status, message] =
+          await controllerColaborador.controllerColaborador(body, id);
+        res.status(status).send({ message: message });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
       }
     }
   );
@@ -245,22 +236,17 @@ export let conectServ = (PORT: number) => {
     Middleware.authenticateTokenEmp,
     async (req, res) => {
       const id = String(req.params.id);
-      console.log(`🚀 [GET /colaborador/${id}] Requisição recebida`);
+      console.log(`🚀 [GET / colaborador] Requisição recebida`);
 
-      console.log(`Tipo do ID recebido: ${typeof id}`);
-
-      let result = await controllerColaborador.controllerGetColaborador(
-        "tb_empresa",
-        id
-      );
-      if (result) {
-        console.log(`✔️ [GET /colaborador/${id}] Resultado recebido.`);
-        res.status(200).send(result);
-      } else {
-        console.warn(
-          `❌ [GET /colaborador/${id}] Erro ao buscar colaboradores.`
-        );
-        res.status(400).send({ message: "Erro ao buscar colaboradores!" });
+      try {
+        let [status, message] =
+          await controllerColaborador.controllerGetColaborador(
+            "tb_empresa",
+            id
+          );
+        res.status(status).send({ message: message });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
       }
     }
   );

@@ -19,10 +19,13 @@ export let controllerColaborador = async (
   },
   id_empresa: string
 ) => {
-  console.log("🚀 Passando ao createColaborador()");
-  let response = Model.createColaborador(user, id_empresa);
-  console.log("✔️ Resposta da criação do colaborador recebida");
-  return response;
+  console.log("[POST / CONTROLLER Colaborador]");
+  try {
+    let [status, message] = await Model.createColaborador(user, id_empresa);
+    return [status, message];
+  } catch (error) {
+    return [500, String(process.env.STATUS_500)];
+  }
 };
 
 /**
@@ -32,14 +35,13 @@ export let controllerColaborador = async (
  * @returns lista de colaboradores encontrados
  */
 export let controllerGetColaborador = async (table: string, id: string) => {
-  console.log("🚀 Passando ao getColaborador()");
-  let response = await Model.getColaborador(table, id);
-  console.log(
-    `✔️ Colaboradores encontrados: ${
-      response.length || response.rows?.length || 0
-    }`
-  );
-  return response;
+  console.log("[POST / CONTROLLER Colaborador]");
+  try {
+    let [status, message] = await Model.getColaborador(table, id);
+    return [status, message];
+  } catch (error) {
+    return [500, String(process.env.STATUS_500)];
+  }
 };
 
 /**
@@ -80,9 +82,7 @@ export let getVaga = async () => {
   try {
     console.log("🚀 Passando ao getVaga()");
     let response = await modelVaga.getVagaModel();
-    console.log(
-      `✔️ Vagas encontradas: ${response}`
-    );
+    console.log(`✔️ Vagas encontradas: ${response}`);
     return response;
   } catch (error) {
     console.log(error);

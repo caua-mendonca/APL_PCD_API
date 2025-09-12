@@ -73,7 +73,6 @@ export let insertIntoContratante = async (user: {
 }) => {
   console.log("[QUERY] Inserindo contratante");
   try {
-
     await DB.pool.query(
       `INSERT INTO tb_empresa (
         id, nome_fantasia, razao_social, email, senha, cnpj, telefone, status, acessibilidade
@@ -94,7 +93,7 @@ export let insertIntoContratante = async (user: {
     );
 
     console.log(`[POST / QUERY] Success`);
-    return[201, String(process.env.STATUS_201)];
+    return [201, String(process.env.STATUS_201)];
   } catch (error) {
     console.log(`[POST / QUERY] Failed`);
     return [400, String(Error)];
@@ -284,13 +283,9 @@ export let insertIntoColaborador = async (
 export let insertEmpresaColaborador = async (
   id_colaborador: string,
   id_empresa: string
-) => {
+): Promise<[number, any]> => {
+  console.log("[QUERY] Inserindo relação colaborador-empresa...");
   try {
-    console.log(
-      `[insertEmpresaColaborador] Iniciando inserção da relação colaborador ${id_colaborador} - empresa ${id_empresa}`
-    );
-
-    // Verifica se a empresa existe antes de inserir a relação
     const empresa = await DB.pool.query(
       `SELECT cnpj, razao_social FROM tb_empresa WHERE id = $1`,
       [id_empresa]
@@ -310,16 +305,13 @@ export let insertEmpresaColaborador = async (
       ON CONFLICT DO NOTHING;
     `;
 
-    await DB.pool.query(sql, [id_empresa, id_colaborador]);
-    console.log(
-      `[insertEmpresaColaborador] Relação colaborador-empresa inserida com sucesso!`
-    );
+    let result = await DB.pool.query(sql, [id_empresa, id_colaborador]);
+
+    console.log(`[POST / QUERY] Success`);
+    return [201, String(process.env.STATUS_201)];
   } catch (error) {
-    console.error(
-      `[insertEmpresaColaborador] ERRO ao inserir relação colaborador-empresa:`,
-      error
-    );
-    throw error;
+    console.error(`[POST / QUERY] Failed`);
+    return [500, error];
   }
 };
 /**
@@ -368,7 +360,7 @@ export let selectFromTable = async (
     const result = await DB.pool.query(query);
 
     console.log(`[GET / QUERY] Success`);
-    let response = result.rows
+    let response = result.rows;
 
     return [200, response];
   } catch (error) {
@@ -383,16 +375,12 @@ export let selectFromTable = async (
  * @param id ID do registro.
  * @returns Resultado da consulta.
  */
-export let 
-selectFromIdWhere = async (
+export let selectFromIdWhere = async (
   table: string,
   id: string
 ): Promise<any> => {
-  console.log(
-    `[QUERY] Resgatando registro ID ${id} da tabela ${table}`
-  );
+  console.log(`[QUERY] Resgatando registro ID ${id} da tabela ${table}`);
   try {
-
     const query = `SELECT * FROM ${table} WHERE id = $1`;
     const result = await DB.pool.query(query, [id]);
 
@@ -422,8 +410,8 @@ export let deleteFromTable = async (
   table: string,
   id: string
 ): Promise<any> => {
-console.log(`[QUERY] Deletando usuario ${id}`);
-  try{
+  console.log(`[QUERY] Deletando usuario ${id}`);
+  try {
     let result = await DB.pool.query(
       `UPDATE ${table} SET status = $1 WHERE id = $2;`,
       [false, id]
@@ -450,9 +438,8 @@ export let updateUserColumn = async (
   sets: string,
   values: any[]
 ): Promise<any> => {
-  console.log(`[QUERY] Atulizando usuario ${id}`)
+  console.log(`[QUERY] Atulizando usuario ${id}`);
   try {
-
     const query = `UPDATE ${table} SET ${sets} WHERE id = $${
       values.length + 1
     }`;
