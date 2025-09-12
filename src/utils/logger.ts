@@ -112,21 +112,14 @@ export let conectServ = (PORT: number) => {
     async (req, res) => {
       const id = String(req.params.id);
       const body = req.body;
-      console.log(
-        `🚀 [PUT /candidato/${id}] Requisição recebida com dados:`,
-        body
-      );
+      console.log(`🚀 [PUT / Candidato] Requisição recebida com dados:`, body);
 
       try {
-        const result = await controllerCandidate.controllerUpdateCandidato(
-          id,
-          body
-        );
-        console.log(`✔️ [PUT /candidato/${id}] Atualização concluída:`, result);
-        res.status(200).json({ status: "sucesso", result });
+        const [status, message] =
+          await controllerCandidate.controllerUpdateCandidato(id, body);
+        res.status(status).json({ message: message });
       } catch (error) {
-        console.error(`❌ [PUT /candidato/${id}] Erro na atualização:`, error);
-        res.status(500).json({ error: "Erro ao atualizar candidato." });
+        res.status(500).json({ error: error });
       }
     }
   );
@@ -137,18 +130,13 @@ export let conectServ = (PORT: number) => {
 
   APP.post(Routes.createContratante, async (req, res) => {
     let body = req.body;
-    console.log("🚀 [POST /contratante] Requisição recebida, corpo:", body);
-
-    let result = await controllerContratante.controllerContratante(body);
-    if ((await result) == true) {
-      console.log("✔️ [POST /contratante] Contratante criado com sucesso.");
-      res.status(200).send(result);
-    } else {
-      console.warn(
-        "❌ [POST /contratante] Falha ao criar contratante:",
-        result
-      );
-      res.status(400).send({ message: result });
+    console.log("[POST /contratante] Requisição recebida, corpo:", body);
+    try {
+      let [status, messagem] =
+        await controllerContratante.controllerContratante(body);
+      res.status(status).send({ message: messagem });
+    } catch (error) {
+      res.status(500).send({ message: String(process.env.STATUS_500) });
     }
   });
 
@@ -156,10 +144,15 @@ export let conectServ = (PORT: number) => {
     Routes.getContratante,
     Middleware.authenticateTokenEmp,
     async (req, res) => {
-      console.log("🚀 [GET /contratante] Requisição recebida");
+      console.log("[GET /contratante] Requisição recebida");
 
-      let result = await controllerContratante.controllerGetContratante();
-      console.log("✔️ [GET /contratante] Resultado recebido:", result);
+      try {
+        let [status, message] =
+          await controllerContratante.controllerGetContratante();
+        res.status(status).send({ message: message });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
+      }
     }
   );
 
@@ -168,16 +161,14 @@ export let conectServ = (PORT: number) => {
     Middleware.authenticateTokenEmp,
     async (req, res) => {
       const id = String(req.params.id);
-      console.log(`🚀 [GET /contratante/${id}] Requisição recebida`);
+      console.log(`[GET / contratante] Requisição recebida`);
 
-      let result = await controllerContratante.controllerGetContratanteById(id);
-      console.log(`✔️ [GET /contratante/${id}] Resultado recebido:`, result);
-
-      if (result) {
-        res.status(200).send(result);
-      } else {
-        console.warn(`⚠️ [GET /contratante/${id}] Contratante não encontrado.`);
-        res.status(400).send({ message: result });
+      try {
+        let [status, message] =
+          await controllerContratante.controllerGetContratanteById(id);
+        res.status(status).send({ message: message });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
       }
     }
   );
@@ -187,19 +178,13 @@ export let conectServ = (PORT: number) => {
     Middleware.authenticateTokenEmp,
     async (req, res) => {
       const id = String(req.params.id);
-      console.log(`🚀 [DELETE /contratante/${id}] Requisição recebida`);
-
-      let result = await controllerContratante.controllerDeleteContratante(id);
-      if (result) {
-        console.log(
-          `✔️ [DELETE /contratante/${id}] Contratante deletado com sucesso.`
-        );
-        res.status(200).send(result);
-      } else {
-        console.warn(
-          `⚠️ [DELETE /contratante/${id}] Contratante não encontrado.`
-        );
-        res.status(400).send({ message: result });
+      console.log(`🚀 [DELETE / contratante] Requisição recebida`);
+      try {
+        let [status, message] =
+          await controllerContratante.controllerDeleteContratante(id);
+        res.status(status).send({ message: message });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
       }
     }
   );
@@ -211,20 +196,16 @@ export let conectServ = (PORT: number) => {
       const id = String(req.params.id);
       const body = req.body;
       console.log(
-        `🚀 [PUT /contratante/${id}] Requisição recebida com dados:`,
+        `🚀 [PUT / contratante] Requisição recebida com dados:`,
         body
       );
 
-      let result = await controllerContratante.controllerUpdateContratante(
-        id,
-        body
-      );
-      if (result) {
-        console.log(`✔️ [PUT /contratante/${id}] Atualização concluída.`);
-        res.status(200).send(result);
-      } else {
-        console.warn(`❌ [PUT /contratante/${id}] Falha na atualização.`);
-        res.status(400).send({ message: result });
+      try {
+        let [status, message] =
+          await controllerContratante.controllerUpdateContratante(id, body);
+          res.status(status).send({ message: message });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
       }
     }
   );

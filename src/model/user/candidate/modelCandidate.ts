@@ -9,6 +9,7 @@ import { Candidate } from "../../entities/class/candidate.js";
 import bcrypt from "bcrypt";
 import * as DB from "../../../repositories/queryTools.js";
 import dotenv from "dotenv";
+import { error } from "console";
 dotenv.config({ path: ".env.status" });
 
 /**
@@ -165,14 +166,12 @@ export let deleteUser = async (table: string, id: string) => {
  * Atualiza dados de um usuário.
  */
 export let updateUser = async (table: string, id: string, body: object) => {
-  const logPrefix = `[updateUser][Table: ${table}][ID: ${id}]`;
-  console.log(`${logPrefix} - Iniciando atualização do usuário`);
-
+  console.log("[PUT / MODEL Candidato]");
   try {
+    let errorlog: string[] = [];
     // Monta os pares chave = valor para o UPDATE
     const keys = Object.keys(body);
     const values = Object.values(body);
-    console.log(`${logPrefix} - Campos a atualizar: ${keys.join(", ")}`);
 
     const sets = keys.map((key, index) => `${key} = $${index + 1}`).join(", ");
 
@@ -180,12 +179,8 @@ export let updateUser = async (table: string, id: string, body: object) => {
     if (keys.includes("cpf")) {
       const index = keys.indexOf("cpf");
       const cpfIsValid: boolean = validateCpf(values[index]);
-      console.log(
-        `${logPrefix} - Validando CPF: ${values[index]} => ${cpfIsValid}`
-      );
       if (!cpfIsValid) {
-        console.error(`${logPrefix} - ERRO: CPF inválido`);
-        throw new Error("CPF inválido");
+        errorlog.push("CPF inválido");
       }
     }
 
@@ -193,27 +188,16 @@ export let updateUser = async (table: string, id: string, body: object) => {
     if (keys.includes("data_nascimento")) {
       const index = keys.indexOf("data_nascimento");
       const dateIsValid: boolean = validateAge(new Date(values[index]));
-      console.log(
-        `${logPrefix} - Validando data_nascimento: ${values[index]} => ${dateIsValid}`
-      );
       if (!dateIsValid) {
-        console.error(`${logPrefix} - ERRO: Data de nascimento inválida`);
-        throw new Error("Data de nascimento inválida");
+         errorlog.push("Data de nascimento inválida");
       }
     }
 
     // Executa atualização
-    const result = await DB.updateUserColumn(table, id, sets, values);
-    console.log(
-      `${logPrefix} - Atualização concluída com sucesso. Linhas afetadas: ${result.rowCount}`
-    );
-    return result;
+    const [status, message] = await DB.updateUserColumn(table, id, sets, values);
+    if(errorlog.length > 0) return [400, errorlog];
+    return [status, message];
   } catch (error) {
-    if (error instanceof Error) {
-      console.error(`${logPrefix} - ERRO na atualização:`, error.message);
-    } else {
-      console.error(`${logPrefix} - ERRO na atualização:`, error);
-    }
-    throw error;
+    return [500, String(process.env.STATUS_500)];
   }
 };

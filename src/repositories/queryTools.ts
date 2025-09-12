@@ -71,10 +71,8 @@ export let insertIntoContratante = async (user: {
   acessibilidade: string;
   status: boolean;
 }) => {
+  console.log("[QUERY] Inserindo contratante");
   try {
-    console.log(
-      `[insertIntoContratante] Iniciando inserção do contratante ID: ${user.id}`
-    );
 
     await DB.pool.query(
       `INSERT INTO tb_empresa (
@@ -95,15 +93,11 @@ export let insertIntoContratante = async (user: {
       ]
     );
 
-    console.log(
-      `[insertIntoContratante] Contratante ${user.id} inserido com sucesso!`
-    );
+    console.log(`[POST / QUERY] Success`);
+    return[201, String(process.env.STATUS_201)];
   } catch (error) {
-    console.error(
-      `[insertIntoContratante] ERRO ao inserir contratante ${user.id}:`,
-      error
-    );
-    throw error;
+    console.log(`[POST / QUERY] Failed`);
+    return [400, String(Error)];
   }
 };
 
@@ -389,7 +383,8 @@ export let selectFromTable = async (
  * @param id ID do registro.
  * @returns Resultado da consulta.
  */
-export let selectFromIdWhere = async (
+export let 
+selectFromIdWhere = async (
   table: string,
   id: string
 ): Promise<any> => {
@@ -455,10 +450,8 @@ export let updateUserColumn = async (
   sets: string,
   values: any[]
 ): Promise<any> => {
+  console.log(`[QUERY] Atulizando usuario ${id}`)
   try {
-    console.log(
-      `[updateUserColumn] Atualizando registro ID ${id} na tabela ${table} com campos: ${sets}`
-    );
 
     const query = `UPDATE ${table} SET ${sets} WHERE id = $${
       values.length + 1
@@ -467,16 +460,11 @@ export let updateUserColumn = async (
 
     const result = await DB.pool.query(query, values);
 
-    console.log(
-      `[updateUserColumn] Atualização concluída com sucesso, linhas afetadas: ${result.rowCount}`
-    );
-    return result;
+    console.log(`[QUERY] Success`);
+    return [200, result];
   } catch (error) {
-    console.error(
-      `[updateUserColumn] ERRO ao atualizar registro ID ${id} na tabela ${table}:`,
-      error
-    );
-    throw error;
+    console.log(`[QUERY] Failed`);
+    return [500, String(error)];
   }
 };
 /**
