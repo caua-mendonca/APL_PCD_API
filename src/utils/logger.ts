@@ -350,45 +350,19 @@ export let conectServ = (PORT: number) => {
       const body = req.body;
       const id = req.params.id;
 
-      console.log(`📥 [POST /evento/${id}] Iniciando criação de evento...`, {
+      console.log(`[POST / Evento] Iniciando criação de evento...`, {
         payload: body,
       });
 
       try {
-        const result = await controllerColaborador.postEvento(body, id);
+        const [status, message] = await controllerColaborador.postEvento(
+          body,
+          id
+        );
 
-        if (result === true) {
-          console.log(`✅ [POST /evento/${id}] Evento criado com sucesso.`, {
-            eventoId: id,
-          });
-
-          res.status(201).json({
-            success: true,
-            message: "Evento criado com sucesso.",
-            data: {
-              eventoId: id,
-              ...body,
-            },
-          });
-        } else {
-          console.error(`❌ [POST /evento/${id}] Falha ao criar evento.`, {
-            eventoId: id,
-            payload: body,
-          });
-
-          res.status(400).json({
-            success: false,
-            message: "Erro ao criar evento.",
-          });
-        }
+        res.status(status).json({ message: message });
       } catch (error) {
-        console.error(`💥 [POST /evento/${id}] Erro inesperado:`, error);
-
-        res.status(500).json({
-          success: false,
-          message: "Erro interno ao processar a requisição.",
-          error: error instanceof Error ? error.message : error,
-        });
+        res.status(500).send({ message: String(process.env.STATUS_500) });
       }
     }
   );
@@ -398,38 +372,14 @@ export let conectServ = (PORT: number) => {
     Middleware.authenticateTokenEmp,
     async (req, res) => {
       const id = String(req.params.id);
-      console.log(`📥 [GET /evento/${id}] Solicitando eventos...`);
+      console.log(`[GET / evento ] Solicitando eventos...`);
 
       try {
-        const result = await controllerColaborador.getEvento(id);
+        const [status, message] = await controllerColaborador.getEvento(id);
 
-        if (result && result.length > 0) {
-          console.log(`✅ [GET /evento/${id}] Eventos encontrados.`, {
-            quantidade: result.length,
-          });
-
-          res.status(200).json({
-            success: true,
-            message: `Foram encontrados ${result.length} evento(s) para o calendário ${id}.`,
-            data: result,
-          });
-        } else {
-          console.warn(`⚠️ [GET /evento/${id}] Nenhum evento encontrado.`);
-
-          res.status(404).json({
-            success: false,
-            message: `Nenhum evento encontrado para o calendário ${id}.`,
-            data: [],
-          });
-        }
+        res.status(status).json({ message: message });
       } catch (error) {
-        console.error(`💥 [GET /evento/${id}] Erro ao buscar eventos:`, error);
-
-        res.status(500).json({
-          success: false,
-          message: "Erro interno ao buscar eventos.",
-          error: error instanceof Error ? error.message : error,
-        });
+        res.status(500).send({ message: String(process.env.STATUS_500) });
       }
     }
   );
@@ -439,43 +389,14 @@ export let conectServ = (PORT: number) => {
     Middleware.authenticateTokenEmp,
     async (req, res) => {
       const id = String(req.params.id);
-      console.log(
-        `📥 [DELETE /evento/${id}] Solicitando exclusão de evento...`
-      );
+      console.log(`📥 [DELETE / Evento] Solicitando exclusão de evento...`);
 
       try {
-        const result = await controllerColaborador.deleteEvento(id);
+        const [status, message] = await controllerColaborador.deleteEvento(id);
 
-        if (result && result.rowCount > 0) {
-          console.log(`✅ [DELETE /evento/${id}] Evento deletado com sucesso.`);
-
-          res.status(200).json({
-            success: true,
-            message: `Evento ${id} deletado com sucesso.`,
-            data: { eventoId: id },
-          });
-        } else {
-          console.warn(
-            `⚠️ [DELETE /evento/${id}] Nenhum evento encontrado para deletar.`
-          );
-
-          res.status(404).json({
-            success: false,
-            message: `Nenhum evento encontrado com o ID ${id}.`,
-            data: [],
-          });
-        }
+        res.status(status).json({ message: message });
       } catch (error) {
-        console.error(
-          `💥 [DELETE /evento/${id}] Erro ao deletar evento:`,
-          error
-        );
-
-        res.status(500).json({
-          success: false,
-          message: "Erro interno ao deletar evento.",
-          error: error instanceof Error ? error.message : error,
-        });
+        res.status(500).send({ message: String(process.env.STATUS_500) });
       }
     }
   );

@@ -118,7 +118,7 @@ export let deleteVaga = async (id: string) => {
   try {
     let [status, message] = await modelVaga.deleteVaga(id);
     return [status, message];
-  } catch (error) { 
+  } catch (error) {
     return [400, String(error)];
   }
 };
@@ -139,15 +139,16 @@ export let postEvento = async (
     id_candidato: string;
   },
   id_calendario: string
-): Promise<boolean> => {
+): Promise<any> => {
+  console.log("[POST / CONTROLLER Evento]");
   try {
-    console.log("🚀 Passando ao createEvento()");
-    await modelEvento.createEvento(evento, id_calendario);
-    console.log("✔️ Resposta da criação do evento recebida");
-    return true;
+    let [status, message] = await modelEvento.createEvento(
+      evento,
+      id_calendario
+    );
+    return [status, message];
   } catch (error) {
-    console.error("❌ Erro no postEvento:", error);
-    return false;
+    return [400, String(error)];
   }
 };
 
@@ -157,16 +158,12 @@ export let postEvento = async (
  * @throws Erro caso a consulta falhe.
  */
 export let getEvento = async (id: string) => {
+  console.log("[GET / CONTROLLER Evento]");
   try {
-    console.log("🚀 Passando ao getEvento()");
-    let response = await modelEvento.getEvento(id);
-    console.log(
-      `✔️ Eventos encontrados: ${response.length || response.rows?.length || 0}`
-    );
-    return response;
+    let [status, message] = await modelEvento.getEvento(id);
+    return [status, message];
   } catch (error) {
-    console.error("❌ Erro no getEvento Controller:", error);
-    throw error;
+    return [400, String(error)];
   }
 };
 
@@ -187,20 +184,11 @@ export let deleteEvento = async (id: string) => {
       eventoId: id,
     });
 
-    const response = await modelEvento.deleteEvento(id);
+    const [status, messgae] = await modelEvento.deleteEvento(id);
 
-    console.log(`✅ [deleteEvento] Evento excluído com sucesso.`, {
-      eventoId: id,
-      quantidadeAfetada: response.rowCount || 0,
-    });
-
-    return response;
+    return [status, messgae];
   } catch (error) {
-    console.error(`❌ [deleteEvento] Erro ao excluir evento.`, {
-      eventoId: id,
-      error,
-    });
-    throw error;
+    return [400, String(error)];
   }
 };
 

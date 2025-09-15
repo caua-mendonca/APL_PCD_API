@@ -634,7 +634,6 @@ export const insertCandidateVaga = async (
   id_vaga: string,
   id_candidate: string
 ): Promise<any> => {
-
   console.log("[QUERY] Inserindo candidato na vaga...");
   try {
     const query = `INSERT INTO tb_candidato_vaga (tb_vaga_id, tb_candidato_id) VALUES ($1, $2);`;
@@ -701,11 +700,8 @@ export let insertIntoEventos = async (
   },
   id_calendario: string
 ) => {
+  console.log("[QUERY] Inserindo evento...]");
   try {
-    console.log(
-      `[insertIntoEventos] Iniciando inserção do evento ${evento.id} no calendário ${id_calendario}`
-    );
-
     const { id, titulo, descricao, data, hora_inicio, hora_fim, id_candidato } =
       evento;
 
@@ -735,16 +731,12 @@ export let insertIntoEventos = async (
       true,
     ]);
 
-    console.log(
-      `[insertIntoEventos] Evento ${id} inserido com sucesso no calendário ${id_calendario}.`
-    );
-    return query;
+    console.log(`[QUERY] Success`);
+
+    return [200, String(process.env.STATUS_200)];
   } catch (error) {
-    console.error(
-      `[insertIntoEventos] ERRO ao inserir evento ${evento.id} no calendário ${id_calendario}:`,
-      error
-    );
-    throw error;
+    console.error("[QUERY] Failed");
+    return [500, String(process.env.STATUS_500)];
   }
 };
 
@@ -757,25 +749,14 @@ export let insertIntoEventos = async (
 export let getEventosByCalendario = async (
   id_calendario: string
 ): Promise<any> => {
+  console.log("[QUERY] Buscando eventos...");
   try {
-    console.log(`📥 [getEventosByCalendario] Iniciando busca de eventos...`, {
-      calendarioId: id_calendario,
-    });
-
     const query = `SELECT * FROM tb_evento WHERE id_calendario = $1;`;
     const result = await DB.pool.query(query, [id_calendario]);
 
-    console.log(`✅ [getEventosByCalendario] Busca concluída.`, {
-      calendarioId: id_calendario,
-      quantidadeEventos: result.rows.length,
-    });
-    return result.rows;
+    return [200, result.rows];
   } catch (error) {
-    console.error(`❌ [getEventosByCalendario] Erro ao buscar eventos.`, {
-      calendarioId: id_calendario,
-      error,
-    });
-    throw error;
+    return [500, String(process.env.STATUS_500)];
   }
 };
 
