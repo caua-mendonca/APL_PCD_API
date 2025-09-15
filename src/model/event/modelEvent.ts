@@ -94,7 +94,7 @@ export let getEvento = async (id: string) => {
  * @throws Lança um erro caso o ID seja inválido ou a exclusão falhe.
  */
 export let deleteEvento = async (id: string) => {
-  console.log("🚀 Passando ao deleteEventoModel()");
+  console.log("[DELETE / MODEL Evento]");
 
   try {
     let response = await DB.deleteFromTable("tb_evento", id);

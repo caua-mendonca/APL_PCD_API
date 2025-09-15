@@ -180,7 +180,7 @@ export let getEvento = async (id: string) => {
  */
 export let deleteEvento = async (id: string) => {
   try {
-    console.log(`📥 [deleteEvento] Iniciando exclusão do evento...`, {
+    console.log(`[DELETE / CONTROLLER Evento]`, {
       eventoId: id,
     });
 
@@ -197,18 +197,15 @@ export let deleteEvento = async (id: string) => {
  * @param id - Identificador associado ao calendário.
  * @returns Retorna a resposta da criação do calendário.
  */
-export let postCalendario = async (id: string) => {
-  console.log(`📥 [postCalendario] Iniciando criação de calendário...`, {
-    calendarioId: id,
-  });
+export let postCalendario = async (id: string): Promise<any> => {
+  console.log(`[POST / CONTROLLER Calendario]`);
 
-  const result = await modelCalendar.createCalendario(id);
-
-  console.log(`✅ [postCalendario] Calendário criado com sucesso.`, {
-    calendarioId: id,
-  });
-
-  return result;
+  try {
+    const [status, message] = await modelCalendar.createCalendario(id);
+    return [status, message]
+  } catch (error) {
+    return [400, String(error)];
+  }
 };
 
 /**
@@ -217,40 +214,22 @@ export let postCalendario = async (id: string) => {
  * @returns Retorna a lista de calendários e eventos encontrados.
  */
 export let getCalendario = async (id: string) => {
+  console.log(`[GET / CONTROLLER Calendario]`);
   try {
-    console.log(
-      `📥 [getCalendario] Buscando eventos relacionados ao ID informado...`,
-      { referenciaId: id }
-    );
 
     let eventos = await modelEvento.getEvento(id);
-    console.log(`✅ [getCalendario] Eventos encontrados.`, {
-      quantidadeEventos: eventos?.length || 0,
-    });
 
     const mesAtual = new Date().getMonth() + 1;
     const anoAtual = new Date().getFullYear();
 
-    console.log(`📅 [getCalendario] Consultando calendário...`, {
-      mes: mesAtual,
-      ano: anoAtual,
-    });
-
-    const calendario = await modelCalendar.getCalendario(
+    let [status, message] = await modelCalendar.getCalendario(
       mesAtual,
       anoAtual,
       eventos
     );
 
-    console.log(`✅ [getCalendario] Calendário recuperado com sucesso.`, {
-      quantidadeRegistros: calendario?.length || 0,
-    });
-
-    return calendario;
+    return [status, message] ;
   } catch (error) {
-    console.error(`❌ [getCalendario] Erro ao recuperar calendário.`, {
-      referenciaId: id,
-      error,
-    });
+
   }
 };

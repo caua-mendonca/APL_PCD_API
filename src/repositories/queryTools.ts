@@ -773,31 +773,19 @@ export let insertCalendario = async (
   nome: string,
   id_empresa: string
 ): Promise<any> => {
+  console.log("[QUERY] Inserindo calendário...");
   try {
-    console.log(`📥 [insertCalendario] Iniciando inserção de calendário...`, {
-      calendarioId: id_calendar,
-      empresaId: id_empresa,
-      nomeCalendario: nome,
-    });
-
     const query = `
       INSERT INTO tb_calendario (id, nome_calendario, id_empresa) VALUES ($1, $2, $3);
     `;
-    await DB.pool.query(query, [id_calendar, nome, id_empresa]);
+    let result = await DB.pool.query(query, [id_calendar, nome, id_empresa]);
 
-    console.log(`✅ [insertCalendario] Calendário inserido com sucesso.`, {
-      calendarioId: id_calendar,
-      empresaId: id_empresa,
-    });
+    console.log(`[QUERY] Success`);
+    return [201, result]
 
-    return true;
   } catch (error) {
-    console.error(`❌ [insertCalendario] Erro ao inserir calendário.`, {
-      calendarioId: id_calendar,
-      empresaId: id_empresa,
-      error,
-    });
-    throw error;
+    console.error("[QUERY] Failed");
+    return [500, String(process.env.STATUS_500)];
   }
 };
 
