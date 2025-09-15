@@ -6,32 +6,34 @@ import jwt from "jsonwebtoken";
 import dotevn from "dotenv";
 dotevn.config();
 
-export let getVagaModel = async () => {
+export let getVagaModel = async (): Promise<any> => {
+  console.log("[GET / CONTROLLER Vaga]");
   try {
-    let result = await DB.selectFromTable("tb_vaga");
+    let [status, message] = await DB.selectFromTable("tb_vaga");
 
-    return result;
+    return [status, message];
   } catch (error) {
-    console.error(`[getVagaModel] ERRO ao consultar dados:`, error);
+    return [400, String(error)];
   }
 };
 
 export let getVagaById = async (id: string) => {
+  console.log("[GET / MODEL Vaga]");
   try {
-    let result = await DB.selectFromIdWhere("tb_vaga", id);
-
-    if (result.rows.length > 0) return result.rows;
+    let [status, message] = await DB.selectFromIdWhere("tb_vaga", id);
+    return [status, message];
   } catch (error) {
-    console.error(`[getVagaById] ERRO ao consultar dados:`, error);
+    return [400, String(error)];
   }
 };
 
 export let deleteVaga = async (id: string) => {
+  console.log("[DELETE / MODEL Vaga]");
   try {
-    let result = await DB.deleteFromTable("tb_vaga", id);
-    return result.rows;
+    let [status, message] = await DB.deleteFromTable("tb_vaga", id);
+    return [status, message]
   } catch (error) {
-    console.error(`[deleteVaga] ERRO ao consultar dados:`, error);
+    return [400, String(error)];
   }
 };
 
@@ -54,11 +56,11 @@ export let createVaga = async (
     acessibilidade: string;
   },
   id_empresa: string
-): Promise<boolean> => {
-  const logPrefix = `[createVaga][Empresa: ${id_empresa}]`;
-  console.log(`${logPrefix} - Iniciando processo de criação da vaga`);
+): Promise<any> => {
+  console.log("[POST / MODEL Vaga]");
 
   try {
+    let errorLog: string[] = [];
     // Instancia um novo objeto Vaga com os dados recebidos
     let newVaga = new Vaga(
       new Date(vaga.data_fim),
@@ -74,31 +76,11 @@ export let createVaga = async (
     while (newVaga.id === "") {
       newVaga.setId(id_empresa);
     }
-    console.log(`${logPrefix} - ID gerado para vaga: ${newVaga.id}`);
 
     // Validação da data de término da vaga
     if (!validateDate(newVaga.data_fim)) {
-      console.error(
-        `${logPrefix} - Falha na validação: Data fim inválida: ${newVaga.data_fim}`
-      );
-      throw new Error("Data de fim inválida");
+      errorLog.push("Data de fim inválida");
     }
-    console.log(
-      `${logPrefix} - Data fim validada: ${newVaga.data_fim.toISOString()}`
-    );
-
-    const secret = process.env.SECRET_EMP;
-
-    if (!secret) {
-      throw new Error("⚠️ SECRET não definida no .env");
-    }
-
-    const token = jwt.sign(
-      {
-        id: id_empresa,
-      },
-      secret
-    );
 
     // Insere a vaga na tabela principal
     await DB.insertVaga(
@@ -113,35 +95,19 @@ export let createVaga = async (
       newVaga.acessibilidade,
       id_empresa
     );
-    console.log(`${logPrefix} - Vaga inserida com sucesso na tabela principal`);
-
     // Verifica se o id_empresa refere-se a um colaborador para obter a empresa mãe
     if (id_empresa.toUpperCase().startsWith("COLAB")) {
-      console.log(
-        `${logPrefix} - ID pertence a colaborador, buscando empresa associada`
-      );
       let empresaId = await DB.getEmpByColab(id_empresa);
-      console.log(`${logPrefix} - Empresa associada encontrada: ${empresaId}`);
 
-      await DB.insertEmpVaga(newVaga, empresaId);
-      console.log(
-        `${logPrefix} - Relação vaga-empresa registrada para empresa ${empresaId}`
-      );
+      let [status, message] = await DB.insertEmpVaga(newVaga, empresaId);
+      return [status, message];
     } else {
       // Caso seja ID direto da empresa, insere diretamente
-      await DB.insertEmpVaga(newVaga, id_empresa);
-      console.log(
-        `${logPrefix} - Relação vaga-empresa registrada para empresa ${id_empresa}`
-      );
+      let [status, message] = await DB.insertEmpVaga(newVaga, id_empresa);
+      return [status, message];
     }
-
-    console.log(
-      `${logPrefix} - Processo de criação da vaga concluído com sucesso`
-    );
-    return true;
   } catch (error) {
-    console.error(`${logPrefix} - ERRO crítico ao criar vaga:`, error);
-    return false;
+    return [500, String(process.env.STATUS_500)];
   }
 };
 
@@ -156,23 +122,20 @@ export let registerCandidateToVaga = async (
   id_candidate: string,
   id_vaga: string
 ): Promise<any> => {
-  const logPrefix = `[registerCandidateToVaga][Candidate: ${id_candidate}][Vaga: ${id_vaga}]`;
-  console.log(`${logPrefix} - Iniciando inscrição do candidato na vaga`);
+  console.log("[POST / MODEL Vaga]");
 
+  let errorLog: string[] = [];
   try {
     let id_candidateValid = await validateIdByRelation(
       id_candidate,
       "tb_candidato",
       "id"
     );
-    if (id_candidateValid === false)
-      throw new Error(`${logPrefix} - Candidato inválido`);
+    if (id_candidateValid === false) errorLog.push(`Candidato inválido`);
 
-    let result = await DB.insertCandidateVaga(id_candidate, id_vaga);
-    console.log(`${logPrefix} - Inscrição do candidato concluída com sucesso`);
-    return result;
+    let [status, message] = await DB.insertCandidateVaga(id_candidate, id_vaga);
+    return [status, message];
   } catch (error) {
-    console.error(`${logPrefix} - ERRO na inscrição do candidato:`, error);
-    throw error;
+    return [500, errorLog];
   }
 };

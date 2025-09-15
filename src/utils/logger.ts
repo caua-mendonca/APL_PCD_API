@@ -255,45 +255,38 @@ export let conectServ = (PORT: number) => {
   // Rotas CRUD Vaga
   // -----------------------------------
 
-  APP.post(Routes.createVaga, Middleware.authenticateTokenEmp, (req, res) => {
-    let body = req.body;
-    let id = req.params.id;
+  APP.post(
+    Routes.createVaga,
+    Middleware.authenticateTokenEmp,
+    async (req, res) => {
+      let body = req.body;
+      let id = req.params.id;
 
-    console.log(`🚀 [POST /vaga/${id}] Requisição recebida, corpo:`, body);
-
-    let result = controllerColaborador.postVaga(body, id);
-
-    if (result) {
-      console.log(`✔️ [POST /vaga/${id}] Vaga criada com sucesso.`);
-      res.status(200).send(result);
-    } else {
-      console.warn(`❌ [POST /vaga/${id}] Falha ao criar vaga.`);
-      res.status(400).send({ message: "Erro ao criar vaga!" });
+      console.log(`🚀 [POST / vaga] Requisição recebida, corpo`);
+      try {
+        let [status, message] = await controllerColaborador.postVaga(body, id);
+        res.status(status).send({ message: message });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
+      }
     }
-  });
+  );
 
   APP.post(
     Routes.candidatarVaga,
     Middleware.authenticateTokenCand,
-    (req, res) => {
-      let id_vaga = String(Object.values(req.body));
-      let id_candidate = req.params.id;
-
-      console.log(
-        `🚀 [POST /vaga/candidatar/${id_candidate}] Requisição recebida para vaga: ${id_vaga}`
-      );
-
-      let result = controllerCandidate.candidatarVaga(id_candidate, id_vaga);
-      if (result) {
-        console.log(
-          `✔️ [POST /vaga/candidatar/${id_candidate}] Candidatura realizada com sucesso.`
+    async (req, res) => {
+      console.log(`🚀 [POST / vaga candidatar]`);
+      try {
+        let id_vaga = String(Object.values(req.body));
+        let id_candidate = req.params.id;
+        let [status, message] = await controllerCandidate.candidatarVaga(
+          id_candidate,
+          id_vaga
         );
-        res.status(200).send(result);
-      } else {
-        console.warn(
-          `❌ [POST /vaga/candidatar/${id_candidate}] Falha ao candidatar.`
-        );
-        res.status(400).send({ message: "Erro ao candidatar a vaga!" });
+        res.status(status).send({ message: message });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
       }
     }
   );
@@ -302,16 +295,13 @@ export let conectServ = (PORT: number) => {
     Routes.getVagas,
     Middleware.authenticateTokenEmp,
     async (req, res) => {
-      console.log(`🚀 [POST /vagas] Requisição recebida`);
+      console.log(`[POST /vagas] Requisição recebida`);
 
-      let result = await controllerColaborador.getVaga();
-
-      if (result) {
-        console.log(`✔️ [POST /vagas] Vagas encontradas: ${result.length}`);
-        res.status(200).send(result);
-      } else {
-        console.warn(`❌ [POST /vagas] Erro ao buscar vagas.`);
-        res.status(400).send({ message: "Erro ao buscar vagas!" });
+      try {
+        let [status, message] = await controllerColaborador.getVaga();
+        res.status(status).send({ message: message });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
       }
     }
   );
@@ -322,16 +312,13 @@ export let conectServ = (PORT: number) => {
     async (req, res) => {
       let id = String(req.params.id);
 
-      console.log(`🚀 [GET /vaga/${id}] Requisição recebida`);
+      console.log(`[GET / vaga] Requisição recebida`);
 
-      let result = await controllerColaborador.getVagaById(id);
-
-      if (result) {
-        console.log(`✔️ [GET /vaga/${id}] Vaga encontrada: ${result.length}`);
-        res.status(200).send(result);
-      } else {
-        console.warn(`❌ [GET /vaga/${id}] Erro ao buscar vaga.`);
-        res.status(400).send({ message: "Erro ao buscar vaga!" });
+      try {
+        let [status, message] = await controllerColaborador.getVagaById(id);
+        res.status(status).send({ message: message });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
       }
     }
   );
@@ -340,18 +327,14 @@ export let conectServ = (PORT: number) => {
     Routes.deleteVaga,
     Middleware.authenticateTokenEmp,
     async (req, res) => {
-      let id = String(req.params.id);
+      console.log(`[DELETE / Vaga] Requisição recebida`);
 
-      console.log(`🚀 [DELETE /vaga/${id}] Requisição recebida`);
-
-      let result = await controllerColaborador.deleteVaga(id);
-
-      if (result) {
-        console.log(`✔️ [DELETE /vaga/${id}] Vaga deletada com sucesso.`);
-        res.status(200).send(result);
-      } else {
-        console.warn(`❌ [DELETE /vaga/${id}] Erro ao deletar vaga.`);
-        res.status(400).send({ message: "Erro ao deletar vaga!" });
+      try {
+        let id = String(req.params.id);
+        let [status, message] = await controllerColaborador.deleteVaga(id);
+        res.status(status).send({ message: message });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
       }
     }
   );

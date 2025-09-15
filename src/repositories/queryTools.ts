@@ -554,11 +554,8 @@ export let insertEmpVaga = async (
   },
   id_empresa: string
 ) => {
+  console.log("[QUERY] Inserindo relação vaga-empresa...");
   try {
-    console.log(
-      `[insertEmpVaga] Associando vaga ${vaga.id} à empresa ${id_empresa}`
-    );
-
     const { id, data_inicio, data_fim, status } = vaga;
     const query = `
       INSERT INTO tb_empresa_vaga (
@@ -570,17 +567,19 @@ export let insertEmpVaga = async (
       ) VALUES ($1, $2, $3, $4, $5);
     `;
 
-    await DB.pool.query(query, [id_empresa, id, status, data_fim, data_inicio]);
+    let result = await DB.pool.query(query, [
+      id_empresa,
+      id,
+      status,
+      data_fim,
+      data_inicio,
+    ]);
 
-    console.log(
-      `[insertEmpVaga] Associação vaga-empresa realizada com sucesso`
-    );
+    console.log(`[QUERY] Success`);
+    return [201, String(process.env.STATUS_201)];
   } catch (error) {
-    console.error(
-      `[insertEmpVaga] ERRO ao associar vaga ${vaga.id} à empresa ${id_empresa}:`,
-      error
-    );
-    throw error;
+    console.log(`[QUERY] Failed`);
+    return [500, String(error)];
   }
 };
 
@@ -634,25 +633,16 @@ export let getEmpByColab = async (id_colaborador: string) => {
 export const insertCandidateVaga = async (
   id_vaga: string,
   id_candidate: string
-): Promise<boolean> => {
-  try {
-    console.log(
-      `[insertCandidateVaga] Iniciando inserção do candidato ${id_candidate} na vaga ${id_vaga}`
-    );
+): Promise<any> => {
 
+  console.log("[QUERY] Inserindo candidato na vaga...");
+  try {
     const query = `INSERT INTO tb_candidato_vaga (tb_vaga_id, tb_candidato_id) VALUES ($1, $2);`;
     await DB.pool.query(query, [id_vaga, id_candidate]);
 
-    console.log(
-      `[insertCandidateVaga] Candidato ${id_candidate} vinculado à vaga ${id_vaga} com sucesso.`
-    );
-    return true;
+    return [200, String(process.env.STATUS_200)];
   } catch (error) {
-    console.error(
-      `[insertCandidateVaga] ERRO ao vincular candidato ${id_candidate} à vaga ${id_vaga}:`,
-      error
-    );
-    return false;
+    return [500, String(process.env.STATUS_500)];
   }
 };
 

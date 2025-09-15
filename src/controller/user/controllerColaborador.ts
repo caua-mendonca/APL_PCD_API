@@ -66,11 +66,14 @@ export let postVaga = async (
     acessibilidade: string;
   },
   id_empresa: string
-) => {
-  console.log("🚀 Passando ao createVaga()");
-  let result = await modelVaga.createVaga(vaga, id_empresa);
-  console.log("✔️ Resposta da criação da vaga recebida");
-  return result;
+): Promise<any> => {
+  console.log("[POST / CONTROLLER Vaga]");
+  try {
+    let [status, message] = await modelVaga.createVaga(vaga, id_empresa);
+    return [status, message];
+  } catch (error) {
+    return;
+  }
 };
 
 /**
@@ -79,13 +82,12 @@ export let postVaga = async (
  * @throws Erro caso a consulta falhe.
  */
 export let getVaga = async () => {
+  console.log("[GET / CONTROLLER Vaga]");
   try {
-    console.log("🚀 Passando ao getVaga()");
-    let response = await modelVaga.getVagaModel();
-    console.log(`✔️ Vagas encontradas: ${response}`);
-    return response;
+    let [staus, messgae] = await modelVaga.getVagaModel();
+    return [staus, messgae];
   } catch (error) {
-    console.log(error);
+    return [400, String(error)];
   }
 };
 
@@ -96,15 +98,12 @@ export let getVaga = async () => {
  * @throws Erro caso a consulta falhe.
  */
 export let getVagaById = async (id: string) => {
+  console.log("[GET / CONTROLLER Vaga]");
   try {
-    console.log("🚀 Passando ao getVaga()");
-    let response = await modelVaga.getVagaById(id);
-    console.log(
-      `✔️ Vagas encontradas: ${response.length || response.rows?.length || 0}`
-    );
-    return response;
+    let [status, message] = await modelVaga.getVagaById(id);
+    return [status, message];
   } catch (error) {
-    console.log(error);
+    return [400, String(error)];
   }
 };
 
@@ -115,15 +114,12 @@ export let getVagaById = async (id: string) => {
  * @throws Erro caso a deleção falhe.
  */
 export let deleteVaga = async (id: string) => {
+  console.log("[DELETE / CONTROLLER Vaga]");
   try {
-    console.log("🚀 Passando ao deleteVaga()");
-    let response = await modelVaga.deleteVaga(id);
-    console.log(
-      `✔️ Vagas encontradas: ${response.length || response.rows?.length || 0}`
-    );
-    return response;
-  } catch (error) {
-    console.log(error);
+    let [status, message] = await modelVaga.deleteVaga(id);
+    return [status, message];
+  } catch (error) { 
+    return [400, String(error)];
   }
 };
 

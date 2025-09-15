@@ -115,10 +115,14 @@ export let controllerUpdateCandidato = async (id: string, body: object) => {
  * @returns resultado do registro da candidatura
  */
 export let candidatarVaga = async (id_candidate: string, id_vaga: string) => {
-  console.log(
-    `🚀 Iniciando candidatarVaga para candidato: ${id_candidate} e vaga: ${id_vaga}`
-  );
-  let result = await registerCandidateToVaga(id_candidate, id_vaga);
-  console.log("✔️ Resultado do registro de candidatura:", result);
-  return result;
+  console.log(`[POST / CONTROLLER Vaga]`);
+  try {
+    let [status, message] = await registerCandidateToVaga(
+      id_candidate,
+      id_vaga
+    );
+    return [status, message];
+  } catch (error) {
+    return [400, String(error)];
+  }
 };
