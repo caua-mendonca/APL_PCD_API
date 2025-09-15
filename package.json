@@ -10,6 +10,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:unit": "jest --testPathPattern=unit",
+    "test:integration": "jest --testPathPattern=integration",
+    "test:setup": "node scripts/test-setup.js",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
