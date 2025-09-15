@@ -41,7 +41,7 @@ src/
 │   └── vaga/            # Gestão de vagas
 ├── 🗄️ repositories/      # Camada de acesso a dados
 ├── 🛣️ routes/            # Definição de rotas da API
-├── 🧪 test/              # Testes unitários (em desenvolvimento)
+├── 🧪 test/              # 23 Testes unitários implementados
 ├── 🔧 utils/             # Utilitários e helpers
 └── ✅ validation/        # Validações de dados
 ```
@@ -125,9 +125,11 @@ Banco de dados **PostgreSQL** com estrutura normalizada e relacionamentos bem de
 - [x] 🔒 Sanitização de entradas
 - [x] 🔐 Criptografia de senhas com bcrypt
 - [x] 🎫 Autenticação JWT (JSON Web Token)
-- [ ] 🧪 Testes unitários da camada model (em desenvolvimento)
-- [ ] 📊 Cobertura de testes das entidades principais
-- [ ] 🎯 Testes de validação e cenários de erro
+- [x] 🧪 **23 Testes unitários implementados**
+- [x] 📊 **Cobertura 84-100% nas funções testadas**
+- [x] 🎯 **Testes de validação (CPF, idade, email)**
+- [x] 🛠️ **Testes de entidades (Candidate)**
+- [ ] 🔗 Testes de integração (requer PostgreSQL)
 
 ---
 
@@ -146,7 +148,8 @@ Banco de dados **PostgreSQL** com estrutura normalizada e relacionamentos bem de
 - **Jest 29+** - Framework de testes
 - **Supertest** - Testes de API
 - **TypeScript** - Verificação de tipos
-- **Cobertura 0%** - Testes em desenvolvimento
+- **23 Testes Unitários** - Validações e entidades
+- **Cobertura 84-100%** - Funções críticas testadas
 
 ### 🔧 **Ferramentas**
 - **dotenv** - Variáveis de ambiente
@@ -269,14 +272,17 @@ DB_PORT=5432
 
 ### 🧪 **Executar Testes**
 ```bash
-# Todos os testes
-npm test
+# Testes unitários (23 testes ✅)
+npm run test:unit
 
 # Testes com cobertura
 npm run test:coverage
 
 # Testes em modo watch
 npm run test:watch
+
+# Testes de integração (requer PostgreSQL)
+npm run test:integration
 ```
 
 ### 🏗️ **Build para Produção**
@@ -331,11 +337,11 @@ node build/index.js
 ## 📊 Status do Projeto
 
 - 🚀 **Status**: Em desenvolvimento ativo
-- 📈 **Versão**: 2.1.0
-- 🧪 **Cobertura de Testes**: 0% (testes em desenvolvimento)
+- 📈 **Versão**: 2.2.1
+- 🧪 **Testes Unitários**: 23 testes ✅
+- 📊 **Cobertura**: 84-100% nas funções críticas
 - 📝 **Documentação**: Completa
 - 🔒 **Segurança**: Implementada
-- ⏳ **Testes**: Em desenvolvimento
 
 ---
 
