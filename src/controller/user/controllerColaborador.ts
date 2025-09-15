@@ -1,4 +1,4 @@
-import * as Model from "../../model/user/modelUser.js";
+import * as Model from "../../model/user/colaborador/modelColaborador.js";
 import * as modelVaga from "../../model/vaga/modelVaga.js";
 import * as modelEvento from "../../model/event/modelEvent.js";
 import * as modelCalendar from "../../model/calendar/modelCalendar.js";
@@ -19,10 +19,13 @@ export let controllerColaborador = async (
   },
   id_empresa: string
 ) => {
-  console.log("🚀 Passando ao createColaborador()");
-  let response = Model.createColaborador(user, id_empresa);
-  console.log("✔️ Resposta da criação do colaborador recebida");
-  return response;
+  console.log("[POST / CONTROLLER Colaborador]");
+  try {
+    let [status, message] = await Model.createColaborador(user, id_empresa);
+    return [status, message];
+  } catch (error) {
+    return [500, String(process.env.STATUS_500)];
+  }
 };
 
 /**
@@ -32,14 +35,13 @@ export let controllerColaborador = async (
  * @returns lista de colaboradores encontrados
  */
 export let controllerGetColaborador = async (table: string, id: string) => {
-  console.log("🚀 Passando ao getColaborador()");
-  let response = await Model.getColaborador(table, id);
-  console.log(
-    `✔️ Colaboradores encontrados: ${
-      response.length || response.rows?.length || 0
-    }`
-  );
-  return response;
+  console.log("[POST / CONTROLLER Colaborador]");
+  try {
+    let [status, message] = await Model.getColaborador(table, id);
+    return [status, message];
+  } catch (error) {
+    return [500, String(process.env.STATUS_500)];
+  }
 };
 
 /**
@@ -64,11 +66,14 @@ export let postVaga = async (
     acessibilidade: string;
   },
   id_empresa: string
-) => {
-  console.log("🚀 Passando ao createVaga()");
-  let result = await modelVaga.createVaga(vaga, id_empresa);
-  console.log("✔️ Resposta da criação da vaga recebida");
-  return result;
+): Promise<any> => {
+  console.log("[POST / CONTROLLER Vaga]");
+  try {
+    let [status, message] = await modelVaga.createVaga(vaga, id_empresa);
+    return [status, message];
+  } catch (error) {
+    return;
+  }
 };
 
 /**
@@ -77,15 +82,12 @@ export let postVaga = async (
  * @throws Erro caso a consulta falhe.
  */
 export let getVaga = async () => {
+  console.log("[GET / CONTROLLER Vaga]");
   try {
-    console.log("🚀 Passando ao getVaga()");
-    let response = await modelVaga.getVagaModel();
-    console.log(
-      `✔️ Vagas encontradas: ${response.length || response.rows?.length || 0}`
-    );
-    return response;
+    let [staus, messgae] = await modelVaga.getVagaModel();
+    return [staus, messgae];
   } catch (error) {
-    console.log(error);
+    return [400, String(error)];
   }
 };
 
@@ -96,15 +98,12 @@ export let getVaga = async () => {
  * @throws Erro caso a consulta falhe.
  */
 export let getVagaById = async (id: string) => {
+  console.log("[GET / CONTROLLER Vaga]");
   try {
-    console.log("🚀 Passando ao getVaga()");
-    let response = await modelVaga.getVagaById(id);
-    console.log(
-      `✔️ Vagas encontradas: ${response.length || response.rows?.length || 0}`
-    );
-    return response;
+    let [status, message] = await modelVaga.getVagaById(id);
+    return [status, message];
   } catch (error) {
-    console.log(error);
+    return [400, String(error)];
   }
 };
 
@@ -115,15 +114,12 @@ export let getVagaById = async (id: string) => {
  * @throws Erro caso a deleção falhe.
  */
 export let deleteVaga = async (id: string) => {
+  console.log("[DELETE / CONTROLLER Vaga]");
   try {
-    console.log("🚀 Passando ao deleteVaga()");
-    let response = await modelVaga.deleteVaga(id);
-    console.log(
-      `✔️ Vagas encontradas: ${response.length || response.rows?.length || 0}`
-    );
-    return response;
+    let [status, message] = await modelVaga.deleteVaga(id);
+    return [status, message];
   } catch (error) {
-    console.log(error);
+    return [400, String(error)];
   }
 };
 
@@ -143,15 +139,16 @@ export let postEvento = async (
     id_candidato: string;
   },
   id_calendario: string
-): Promise<boolean> => {
+): Promise<any> => {
+  console.log("[POST / CONTROLLER Evento]");
   try {
-    console.log("🚀 Passando ao createEvento()");
-    await modelEvento.createEvento(evento, id_calendario);
-    console.log("✔️ Resposta da criação do evento recebida");
-    return true;
+    let [status, message] = await modelEvento.createEvento(
+      evento,
+      id_calendario
+    );
+    return [status, message];
   } catch (error) {
-    console.error("❌ Erro no postEvento:", error);
-    return false;
+    return [400, String(error)];
   }
 };
 
@@ -161,16 +158,12 @@ export let postEvento = async (
  * @throws Erro caso a consulta falhe.
  */
 export let getEvento = async (id: string) => {
+  console.log("[GET / CONTROLLER Evento]");
   try {
-    console.log("🚀 Passando ao getEvento()");
-    let response = await modelEvento.getEvento(id);
-    console.log(
-      `✔️ Eventos encontrados: ${response.length || response.rows?.length || 0}`
-    );
-    return response;
+    let [status, message] = await modelEvento.getEvento(id);
+    return [status, message];
   } catch (error) {
-    console.error("❌ Erro no getEvento Controller:", error);
-    throw error;
+    return [400, String(error)];
   }
 };
 
@@ -187,24 +180,15 @@ export let getEvento = async (id: string) => {
  */
 export let deleteEvento = async (id: string) => {
   try {
-    console.log(`📥 [deleteEvento] Iniciando exclusão do evento...`, {
+    console.log(`[DELETE / CONTROLLER Evento]`, {
       eventoId: id,
     });
 
-    const response = await modelEvento.deleteEvento(id);
+    const [status, messgae] = await modelEvento.deleteEvento(id);
 
-    console.log(`✅ [deleteEvento] Evento excluído com sucesso.`, {
-      eventoId: id,
-      quantidadeAfetada: response.rowCount || 0,
-    });
-
-    return response;
+    return [status, messgae];
   } catch (error) {
-    console.error(`❌ [deleteEvento] Erro ao excluir evento.`, {
-      eventoId: id,
-      error,
-    });
-    throw error;
+    return [400, String(error)];
   }
 };
 
@@ -213,18 +197,15 @@ export let deleteEvento = async (id: string) => {
  * @param id - Identificador associado ao calendário.
  * @returns Retorna a resposta da criação do calendário.
  */
-export let postCalendario = async (id: string) => {
-  console.log(`📥 [postCalendario] Iniciando criação de calendário...`, {
-    calendarioId: id,
-  });
+export let postCalendario = async (id: string): Promise<any> => {
+  console.log(`[POST / CONTROLLER Calendario]`);
 
-  const result = await modelCalendar.createCalendario(id);
-
-  console.log(`✅ [postCalendario] Calendário criado com sucesso.`, {
-    calendarioId: id,
-  });
-
-  return result;
+  try {
+    const [status, message] = await modelCalendar.createCalendario(id);
+    return [status, message]
+  } catch (error) {
+    return [400, String(error)];
+  }
 };
 
 /**
@@ -233,40 +214,22 @@ export let postCalendario = async (id: string) => {
  * @returns Retorna a lista de calendários e eventos encontrados.
  */
 export let getCalendario = async (id: string) => {
+  console.log(`[GET / CONTROLLER Calendario]`);
   try {
-    console.log(
-      `📥 [getCalendario] Buscando eventos relacionados ao ID informado...`,
-      { referenciaId: id }
-    );
 
     let eventos = await modelEvento.getEvento(id);
-    console.log(`✅ [getCalendario] Eventos encontrados.`, {
-      quantidadeEventos: eventos?.length || 0,
-    });
 
     const mesAtual = new Date().getMonth() + 1;
     const anoAtual = new Date().getFullYear();
 
-    console.log(`📅 [getCalendario] Consultando calendário...`, {
-      mes: mesAtual,
-      ano: anoAtual,
-    });
-
-    const calendario = await modelCalendar.getCalendario(
+    let [status, message] = await modelCalendar.getCalendario(
       mesAtual,
       anoAtual,
       eventos
     );
 
-    console.log(`✅ [getCalendario] Calendário recuperado com sucesso.`, {
-      quantidadeRegistros: calendario?.length || 0,
-    });
-
-    return calendario;
+    return [status, message] ;
   } catch (error) {
-    console.error(`❌ [getCalendario] Erro ao recuperar calendário.`, {
-      referenciaId: id,
-      error,
-    });
+
   }
 };

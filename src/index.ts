@@ -1,5 +1,7 @@
 import * as Server from "./utils/logger.js";
+import dotenv from 'dotenv';
+dotenv.config();
 
-let PORT = process.env.PORT || "3000";
+let PORT:number = Number(process.env.PORT);
 
 Server.conectServ(PORT);

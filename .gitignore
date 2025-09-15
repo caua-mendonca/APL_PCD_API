@@ -1,4 +1,9 @@
 .env
+.env.routes
+.env.status
+
 node_modules/
+
 /build/
+
 coverage/

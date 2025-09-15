@@ -2,10 +2,10 @@ import * as DB from "../../repositories/queryTools.js";
 
 /**
  * Valida um CPF conforme as regras oficiais da Receita Federal.
- * 
+ *
  * Remove caracteres não numéricos, verifica tamanho e sequências repetidas,
  * e calcula os dígitos verificadores para autenticar o CPF.
- * 
+ *
  * @param cpf - String contendo o CPF a ser validado.
  * @returns Boolean indicando se o CPF é válido (true) ou inválido (false).
  */
@@ -40,21 +40,23 @@ export let validateCpf = (cpf: string): boolean => {
 /**
  * Verifica no banco de dados se um determinado valor existe numa coluna específica de uma tabela.
  * Utilizado para validar, por exemplo, se um CPF já está cadastrado.
- * 
+ *
  * @param value - Valor a ser verificado no banco (ex: CPF).
  * @param data - Nome da coluna na tabela onde será feita a busca.
  * @param table - Nome da tabela onde será feita a consulta.
  * @returns Promise<boolean> - true se o valor NÃO existe (válido para cadastro), false caso contrário.
  */
-export let validateCpfToDB = async (value: string, data: string, table: string): Promise<boolean> => {
+export let validateCpfToDB = async (
+  value: string,
+  data: string,
+  table: string
+): Promise<boolean> => {
   // Consulta no banco a quantidade de registros com o valor informado
   let result: any = Number(await DB.validateData(value, data, table));
 
   // Se resultado > 0, valor já existe => retorna false (não válido para novo cadastro)
   // Caso contrário, retorna true
-  result > 0 ? result = false : result = true;
-
-  console.log("RESULTADO DA FUNÇÃO validateCpfToDB:", result);
+  result > 0 ? (result = false) : (result = true);
 
   return result;
 };

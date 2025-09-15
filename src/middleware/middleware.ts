@@ -1,48 +1,50 @@
-import { Request, Response, NextFunction } from "express";
-import { validateIdCandidato, validateIdContratante } from "../validation/validateId/validateId";
+import JWT from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
-export  let idIsValid = async (req: Request, res: Response, next: NextFunction) => {
-    const id = String(req.params.id);
+export let authenticateTokenCand = (req: any, res: any, next: any) => {
+  const authHeader = req.headers["authorization"];
+  console.log("Auth Header:", authHeader);
+  const secretCand = process.env.SECRET_CAND as string;
+  const token = JWT.sign(
+    { id: 321, role: "candidato" }, 
+    secretCand,
+    { expiresIn: "1h" } 
+  );
+  console.log("Secret EMP:", secretCand);
+  if (!token) {
+    return res.status(401).json({ msg: "Não autorizado!" });
+  }
+  try {
+    const payload = JWT.verify(token, secretCand
 
-    console.log(`🔍 Validando ID contratante: ${id}`);
-
-    let isValid: boolean = await validateIdContratante(id);
-    console.log(`Resultado validação: ${isValid}`);
-
-    if (isValid === false) {
-      console.warn(
-        "❌ ID inválido - apenas empresas ou colaboradores podem criar vagas."
-      );
-      res
-        .status(400)
-        .send({ message: "ID inválido, Apenas Empresas podem criar vagas!" });
-    } else {
-      console.log("✔️ ID validado, prosseguindo...");
-      next();
-    }
-  };
-
-export  let idIsValidVaga = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    const id = String(req.params.id);
-
-    console.log(`🔍 Validando ID candidato: ${id}`);
-
-    let isValid: any = validateIdCandidato(id);
-    console.log(`Resultado validação: ${isValid}`);
-
-    if (isValid === false) {
-      console.warn("❌ ID inválido - apenas candidatos podem se inscrever.");
-      res
-        .status(400)
-        .send({
-          message: "ID inválido, Apenas Candidatos podem se inscrever à vagas!",
-        });
-    } else {
-      console.log("✔️ ID validado, prosseguindo...");
-      next();
-    }
-  };
+    );
+    console.log("Payload decodificado:", payload);
+    next();
+  } catch (error) {
+    console.error("Erro JWT:", error);
+    res.status(403).json({ msg: "Token inválido!" });
+  }
+};
+export let authenticateTokenEmp = (req: any, res: any, next: any) => {
+  const authHeader = req.headers["authorization"];
+  console.log("Auth Header:", authHeader);
+  const secretEmp = process.env.SECRET_EMP as string;
+  const token = JWT.sign(
+    { id: 123, role: "empresa" },
+    secretEmp, 
+    { expiresIn: "1h" }
+  );
+  console.log("Secret EMP:", secretEmp);
+  if (!token) {
+    return res.status(401).json({ msg: "Não autorizado!" });
+  }
+  try {
+    const payload = JWT.verify(token, secretEmp);
+    console.log("Payload decodificado:", payload);
+    next();
+  } catch (error) {
+    console.error("Erro JWT:", error);
+    res.status(403).json({ msg: "Token inválido!" });
+  }
+};

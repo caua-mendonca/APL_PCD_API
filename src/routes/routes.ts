@@ -1,41 +1,41 @@
+import dotenv from "dotenv";
+dotenv.config({path: ".env.routes"});
+
 /**
  * Definição das rotas da aplicação para as operações CRUD
  * e funcionalidades específicas, organizadas por entidade.
  */
 
 // Rotas para o recurso Candidato
-export let createCanditado: string = "/createCanditado";
-export let getCanditado: string = "/getCanditado";
-export let getCanditadoById: string = "/getCanditadoById/:id";
-export let deleteCanditado: string = "/deleteCanditado/:id";
-export let updateCanditado: string = "/updateCanditado/:id";
+export let createCanditado: string = String(process.env.CREATE_CANDIDATO);
+export let getCanditado: string = String(process.env.GET_CANDIDATO);
+export let getCanditadoById: string = String(process.env.GET_CANDIDATO_BY_ID);
+export let deleteCanditado: string = String(process.env.DELETE_CANDIDATO);
+export let updateCanditado: string = String(process.env.UPDATE_CANDIDATO);
 
 // Rotas para o recurso Contratante
-export let createContratante: string = "/createContratante";
-export let getContratante: string = "/getContratante";
-export let getContratanteById: string = "/getContratanteById/:id";
-export let deleteContratante: string = "/deleteContratante/:id";
-export let updateContratante: string = "/updateContratante/:id";
-
-// Rota para formulário IFBR, com parâmetro id para identificação
-export let formIFBR: string = "/formIFBR/:id";
+export let createContratante: string = String(process.env.CREATE_CONTRATANTE);
+export let getContratante: string = String(process.env.GET_CONTRATANTE);
+export let getContratanteById: string = String(process.env.GET_CONTRATANTE_BY_ID);
+export let deleteContratante: string = String(process.env.DELETE_CONTRATANTE);
+export let updateContratante: string = String(process.env.UPDATE_CONTRATANTE);
 
 // Rotas para o recurso Colaborador, com ID como parâmetro
-export let createColaborador: string = "/createColaborador/:id";
-export let getColaborador: string = "/getColaborador/:id";
+export let createColaborador: string = String(process.env.CREATE_COLABORADOR);
+export let getColaborador: string = String(process.env.GET_COLABORADOR);
 
 // Rotas para o recurso Vaga, com ID como parâmetro
-export let createVaga: string = "/createVaga/:id";
-export let candidatarVaga: string = "/registerVaga/:id";
-export let getVagas: string = "/getVagas";
-export let getVagasById: string = "/getVagasById/:id";
-export let deleteVaga: string = "/deleteVaga/:id";
+export let createVaga: string = String(process.env.CREATE_VAGA);
+export let candidatarVaga: string = String(process.env.REGISTER_VAGA);
+export let getVagas: string = String(process.env.GET_VAGAS);
+export let getVagasById: string = String(process.env.GET_VAGAS_BY_ID);
+export let deleteVaga: string = String(process.env.DELETE_VAGA);
 
 // Rotas para o recurso Evento, com ID como parâmetro
-export let createEvento: string = "/createEvento/:id";
-export let getEvento: string = "/getEvento/:id";
-export let deleteEvento: string = "/deleteEvento/:id";
+export let createEvento: string = String(process.env.CREATE_EVENTO);
+export let getEvento: string = String(process.env.GET_EVENTO);
+export let deleteEvento: string = String(process.env.DELETE_EVENTO);
 
 // Rotas para o recurso Calendario, com ID como parâmetro
-export let createCalendario: string = "/createCalendario/:id";
-export let getCalendario: string = "/getCalendario/:id";
+export let createCalendario: string = String(process.env.CREATE_CALENDARIO);
+export let getCalendario: string = String(process.env.GET_CALENDARIO)

@@ -1,6 +1,6 @@
 {
   "name": "apl-web-pcd",
-  "version": "2.0.0",
+  "version": "2.2.1",
   "description": "Aplicativo para PCD na WEB",
   "main": "index.js",
   "type": "module",
@@ -9,7 +9,9 @@
     "start": "tsc && cross-env node --watch build/index.js",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
@@ -22,9 +24,11 @@
   },
   "homepage": "https://github.com/cMendoncaaa/APL-WEB-PCD#readme",
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/jest": "^29.5.12",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.2.1",
     "@types/pg": "^8.15.4",
     "@types/supertest": "^6.0.2",
@@ -32,6 +36,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
+    "gh-pages": "^6.3.0",
     "jest": "^29.7.0",
     "pg": "^8.16.3",
     "prompt-sync": "^4.2.0",
@@ -39,5 +44,9 @@
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "jsonwebtoken": "^9.0.2"
   }
 }

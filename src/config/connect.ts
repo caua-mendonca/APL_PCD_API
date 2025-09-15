@@ -18,7 +18,7 @@ export const pool = new Pool({
  * Evento disparado quando a conexão com o banco é estabelecida com sucesso.
  */
 pool.on("connect", () => {
-  console.log("✅ Conectado ao PostgreSQL via Pool!");
+  console.log("Conectado ao PostgreSQL via Pool!");
 });
 
 /**
@@ -27,5 +27,5 @@ pool.on("connect", () => {
  * @param err - Objeto de erro retornado pelo pool
  */
 pool.on("error", (err) => {
-  console.error("❌ Erro inesperado no pool de conexões:", err);
+  console.error("Erro inesperado no pool de conexões:", err);
 });
