@@ -781,8 +781,7 @@ export let insertCalendario = async (
     let result = await DB.pool.query(query, [id_calendar, nome, id_empresa]);
 
     console.log(`[QUERY] Success`);
-    return [201, result]
-
+    return [201, result];
   } catch (error) {
     console.error("[QUERY] Failed");
     return [500, String(process.env.STATUS_500)];
@@ -817,4 +816,23 @@ export let selectEmpbyCalendar = async (id_empresa: string): Promise<any> => {
     );
     throw error;
   }
+};
+
+export let login = async (email: string, table: string): Promise<any> => {
+  try {
+    console.log("[QUERY] Buscando dados de login...");
+    let result = await DB.pool.query(
+      `SELECT * FROM ${table} WHERE email = $1`,
+      [email]
+    );
+      if (result.rows.length > 0) {
+    return [200, result];
+  } else {
+    return [400, { message: "Dados invalidos" }];
+  }
+  } catch (error) {
+    console.error("[QUERY] Failed");
+    return [500, String(error)];
+  }
+
 };

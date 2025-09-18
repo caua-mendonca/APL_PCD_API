@@ -5,6 +5,7 @@ import * as controllerContratante from "../controller/user/controllerContratante
 import * as controllerColaborador from "../controller/user/controllerColaborador.js";
 import * as Middleware from "../middleware/middleware.js";
 import cors from "cors";
+import * as Login from "../controller/login/login.js";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
 
@@ -429,9 +430,44 @@ export let conectServ = (PORT: number) => {
     console.log(`[GET / calendario] Solicitando calendários...`);
 
     try {
-      const result = await controllerColaborador.getCalendario(id) ?? [];
+      const result = (await controllerColaborador.getCalendario(id)) ?? [];
       const [status, message] = result;
 
+      res.status(status).json({ message: message });
+    } catch (error) {
+      res.status(500).send({ message: String(process.env.STATUS_500) });
+    }
+  });
+
+  // -----------------------------------
+  // Rotas CRUD Login
+  // -----------------------------------
+
+  APP.post(Routes.loginEmp, async (req, res) => {
+    const body = req.body;
+    console.log(`[POST / login] Solicitando login de candidato...`);
+    try {
+      const [status, message] = await Login.loginEmp(body);
+      res.status(status).json({ message: message });
+    } catch (error) {
+      res.status(500).send({ message: String(process.env.STATUS_500) });
+    }
+  });
+  APP.post(Routes.loginCand, async (req, res) => {
+    const body = req.body;
+    console.log(`[POST / login] Solicitando login de candidato...`);
+    try {
+      const [status, message] = await Login.loginCand(body);
+      res.status(status).json({ message: message });
+    } catch (error) {
+      res.status(500).send({ message: String(process.env.STATUS_500) });
+    }
+  });
+  APP.post(Routes.loginAdm, async (req, res) => {
+    const body = req.body;
+    console.log(`[POST / login] Solicitando login de candidato...`);
+    try {
+      const [status, message] = await Login.loginAdm(body);
       res.status(status).json({ message: message });
     } catch (error) {
       res.status(500).send({ message: String(process.env.STATUS_500) });

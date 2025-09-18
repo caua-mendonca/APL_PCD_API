@@ -39,3 +39,8 @@ export let deleteEvento: string = String(process.env.DELETE_EVENTO);
 // Rotas para o recurso Calendario, com ID como parâmetro
 export let createCalendario: string = String(process.env.CREATE_CALENDARIO);
 export let getCalendario: string = String(process.env.GET_CALENDARIO)
+
+// Rotas para o recurso de login
+export let loginCand:string = String(process.env.LOGIN_CAND);
+export let loginEmp:string = String(process.env.LOGIN_EMP);
+export let loginAdm:string = String(process.env.LOGIN_ADM);
