@@ -137,11 +137,11 @@ export let getUser = async (
 /**
  * Busca um registro por ID.
  */
-export let getUserByID = async (table: string, id: string): Promise<any> => {
+export let getUserByID = async (table: string, name: string): Promise<any> => {
   console.log("[GET / MODEL Candidato]");
 
   try {
-    let [status, message] = await DB.selectFromIdWhere(table, id);
+    let [status, message] = await DB.selectFromIdWhere(table, name);
     return [status, message];
   } catch (error) {
     return [500, String(process.env.STATUS_500)];

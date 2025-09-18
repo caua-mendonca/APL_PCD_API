@@ -68,19 +68,19 @@ export let conectServ = (PORT: number) => {
   );
 
   APP.get(
-    Routes.getCanditadoById,
+    Routes.getCanditadoByName,
     Middleware.authenticateTokenCand,
     async (req, res) => {
-      console.log(`Requisição recebida em ${Routes.getCanditadoById}`);
+      console.log(`Requisição recebida em ${Routes.getCanditadoByName}`);
 
       try {
-        const id = String(req.params.id);
+        const name = String(req.body.name);
         console.log(
-          `[GET ${Routes.getCanditadoById}] Requisição recebida, corpo:`,
-          id
+          `[GET ${Routes.getCanditadoByName}] Requisição recebida, corpo:`,
+          name
         );
         let [status, message] =
-          await controllerCandidate.controllerGetCandidatoById(id);
+          await controllerCandidate.controllerGetCandidatoById(name);
         res.status(status).send({ message: message });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });

@@ -377,12 +377,12 @@ export let selectFromTable = async (
  */
 export let selectFromIdWhere = async (
   table: string,
-  id: string
+  name: string
 ): Promise<any> => {
-  console.log(`[QUERY] Resgatando registro ID ${id} da tabela ${table}`);
+  console.log(`[QUERY] Resgatando registro ID ${name} da tabela ${table}`);
   try {
-    const query = `SELECT * FROM ${table} WHERE id = $1`;
-    const result = await DB.pool.query(query, [id]);
+    const query = `SELECT * FROM ${table} WHERE nome = $1`;
+    const result = await DB.pool.query(query, [name]);
 
     console.log(`[QUERY] Success`);
 

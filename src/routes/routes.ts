@@ -9,7 +9,7 @@ dotenv.config({path: ".env.routes"});
 // Rotas para o recurso Candidato
 export let createCanditado: string = String(process.env.CREATE_CANDIDATO);
 export let getCanditado: string = String(process.env.GET_CANDIDATO);
-export let getCanditadoById: string = String(process.env.GET_CANDIDATO_BY_ID);
+export let getCanditadoByName: string = String(process.env.GET_CANDIDATO_BY_ID);
 export let deleteCanditado: string = String(process.env.DELETE_CANDIDATO);
 export let updateCanditado: string = String(process.env.UPDATE_CANDIDATO);
 

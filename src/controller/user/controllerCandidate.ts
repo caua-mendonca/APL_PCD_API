@@ -62,11 +62,11 @@ export let controllerGetCandidato = async (): Promise<
  * @param id - ID do candidato
  * @returns objeto candidato ou mensagem de erro
  */
-export let controllerGetCandidatoById = async (id: string) => {
+export let controllerGetCandidatoById = async (name: string) => {
   console.log("[GET / CONTROLLER Candidato]");
 
   try {
-    let [status, message] = await Model.getUserByID("tb_candidato", id);
+    let [status, message] = await Model.getUserByID("tb_candidato", name);
     return [status, message];
   } catch (error) {
     return [400, String(error)];
