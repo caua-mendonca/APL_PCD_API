@@ -375,7 +375,7 @@ export let selectFromTable = async (
  * @param id ID do registro.
  * @returns Resultado da consulta.
  */
-export let selectFromIdWhere = async (
+export let selectFromNameWhere = async (
   table: string,
   name: string
 ): Promise<any> => {
@@ -383,6 +383,25 @@ export let selectFromIdWhere = async (
   try {
     const query = `SELECT * FROM ${table} WHERE nome = $1`;
     const result = await DB.pool.query(query, [name]);
+
+    console.log(`[QUERY] Success`);
+
+    return [200, result.rows];
+  } catch (error) {
+    console.log(`[QUERY] Failed`);
+    return [500, String(error)];
+  }
+};
+
+export let selectFromIdWhere = async (
+  table: string,
+  id: string
+): Promise<any> => {
+  console.log(`[QUERY] Resgatando registro ID ${id} da tabela ${table}`);
+  try {
+    const query = `SELECT * FROM ${table} WHERE tb_candidato_id = $1`;
+    const result = await DB.pool.query(query, [id]);
+    console.log(result)
 
     console.log(`[QUERY] Success`);
 
@@ -634,8 +653,8 @@ export let getEmpByColab = async (id_colaborador: string) => {
  * @returns Promise<boolean> - Retorna true se a inserção for bem-sucedida, false em caso de falha.
  */
 export const insertCandidateVaga = async (
-  id_vaga: string,
   id_candidate: string,
+  id_vaga: string,
   hora: Date
 ): Promise<any> => {
   console.log("[QUERY] Inserindo candidato na vaga...");

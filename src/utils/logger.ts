@@ -325,6 +325,24 @@ export let conectServ = (PORT: number) => {
     }
   );
 
+  APP.get(
+    Routes.getVagasByCandidato,
+    Middleware.authenticateTokenCand,
+    async (req, res) => {
+      let id = String(req.params.id);
+
+      console.log(`[GET / vaga] Requisição recebida`);
+
+      try {
+        let [status, message] = await controllerCandidate.getVagaInsert(id)
+
+        res.status(status).json(message)
+      } catch (error) {
+        res.status(500).json(error)
+      }
+    }
+  );
+
   APP.delete(
     Routes.deleteVaga,
     Middleware.authenticateTokenEmp,
@@ -350,7 +368,10 @@ export let conectServ = (PORT: number) => {
       try {
         let body = req.body;
         let id = String(req.params.id);
-        let [status, message] = await controllerColaborador.updateVaga(body, id);
+        let [status, message] = await controllerColaborador.updateVaga(
+          body,
+          id
+        );
         res.status(status).send({ message: message });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });

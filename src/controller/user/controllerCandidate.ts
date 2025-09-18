@@ -66,7 +66,7 @@ export let controllerGetCandidatoById = async (name: string) => {
   console.log("[GET / CONTROLLER Candidato]");
 
   try {
-    let [status, message] = await Model.getUserByID("tb_candidato", name);
+    let [status, message] = await Model.getUserByName("tb_candidato", name);
     return [status, message];
   } catch (error) {
     return [400, String(error)];
@@ -126,3 +126,15 @@ export let candidatarVaga = async (id_candidate: string, id_vaga: string) => {
     return [400, String(error)];
   }
 };
+
+
+export let getVagaInsert = async (id:string):Promise<any> =>{
+  console.log("[GET / CONTROLLER Vaga]")
+
+  try {
+    let [status, message] = await Model.getUserById(id)
+    return [status, message]
+  } catch (error) {
+    return [400, error]
+  }
+}

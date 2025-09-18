@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config({path: ".env.routes"});
+dotenv.config({ path: ".env.routes" });
 
 /**
  * Definição das rotas da aplicação para as operações CRUD
@@ -16,7 +16,9 @@ export let updateCanditado: string = String(process.env.UPDATE_CANDIDATO);
 // Rotas para o recurso Contratante
 export let createContratante: string = String(process.env.CREATE_CONTRATANTE);
 export let getContratante: string = String(process.env.GET_CONTRATANTE);
-export let getContratanteById: string = String(process.env.GET_CONTRATANTE_BY_ID);
+export let getContratanteById: string = String(
+  process.env.GET_CONTRATANTE_BY_ID
+);
 export let deleteContratante: string = String(process.env.DELETE_CONTRATANTE);
 export let updateContratante: string = String(process.env.UPDATE_CONTRATANTE);
 
@@ -29,6 +31,9 @@ export let createVaga: string = String(process.env.CREATE_VAGA);
 export let candidatarVaga: string = String(process.env.REGISTER_VAGA);
 export let getVagas: string = String(process.env.GET_VAGAS);
 export let getVagasById: string = String(process.env.GET_VAGAS_BY_ID);
+export let getVagasByCandidato: string = String(
+  process.env.GET_VAGA_BY_CANDIDATE
+);
 export let deleteVaga: string = String(process.env.DELETE_VAGA);
 export let updateVaga: string = String(process.env.UPDATE_VAGA);
 
@@ -39,12 +44,12 @@ export let deleteEvento: string = String(process.env.DELETE_EVENTO);
 
 // Rotas para o recurso Calendario, com ID como parâmetro
 export let createCalendario: string = String(process.env.CREATE_CALENDARIO);
-export let getCalendario: string = String(process.env.GET_CALENDARIO)
+export let getCalendario: string = String(process.env.GET_CALENDARIO);
 
 // Rotas para o recurso de login
-export let loginCand:string = String(process.env.LOGIN_CAND);
-export let loginEmp:string = String(process.env.LOGIN_EMP);
-export let loginAdm:string = String(process.env.LOGIN_ADM);
+export let loginCand: string = String(process.env.LOGIN_CAND);
+export let loginEmp: string = String(process.env.LOGIN_EMP);
+export let loginAdm: string = String(process.env.LOGIN_ADM);
 
 // Rora para mudar senha
-export let changePassword:string = String(process.env.CHANGE_PASSWORD);
+export let changePassword: string = String(process.env.CHANGE_PASSWORD);
