@@ -853,3 +853,21 @@ export let changePass = async (
     return [500, String(error)];
   }
 };
+
+export let getAcess = async (id:string): Promise<any> => {
+  console.log("[QUERY] Buscando dados de acesso...");
+  try {
+    let result = await DB.pool.query(
+      `SELECT acessibilidade FROM tb_empresa WHERE id = $1`,
+      [id]
+    );
+    if (result.rows.length > 0) {
+      return [200, result.rows];
+    } else {
+      return [400, { message: "Dados invalidos" }];
+    }
+  } catch (error) {
+    console.error("[QUERY] Failed");
+    return [500, String(error)];
+  }
+}

@@ -31,7 +31,7 @@ export let deleteVaga = async (id: string) => {
   console.log("[DELETE / MODEL Vaga]");
   try {
     let [status, message] = await DB.deleteFromTable("tb_vaga", id);
-    return [status, message]
+    return [status, message];
   } catch (error) {
     return [400, String(error)];
   }
@@ -62,13 +62,14 @@ export let createVaga = async (
   try {
     let errorLog: string[] = [];
     // Instancia um novo objeto Vaga com os dados recebidos
+    let acessibilidade = await DB.getAcess(id_empresa);
     let newVaga = new Vaga(
       new Date(vaga.data_fim),
       vaga.titulo,
       vaga.descricao,
       vaga.salario,
       vaga.localidade,
-      vaga.acessibilidade
+      acessibilidade[1][0].acessibilidade
     );
 
     // Geração do ID da vaga, com retry para garantir não ser vazio
@@ -96,6 +97,7 @@ export let createVaga = async (
       id_empresa
     );
     // Verifica se o id_empresa refere-se a um colaborador para obter a empresa mãe
+
     if (id_empresa.toUpperCase().startsWith("COLAB")) {
       let empresaId = await DB.getEmpByColab(id_empresa);
 
