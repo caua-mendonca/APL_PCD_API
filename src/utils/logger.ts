@@ -341,6 +341,23 @@ export let conectServ = (PORT: number) => {
     }
   );
 
+  APP.put(
+    Routes.updateVaga,
+    Middleware.authenticateTokenEmp,
+    async (req, res) => {
+      console.log(`[PUT / Vaga] Requisição recebida`);
+
+      try {
+        let body = req.body;
+        let id = String(req.params.id);
+        let [status, message] = await controllerColaborador.updateVaga(body, id);
+        res.status(status).send({ message: message });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
+      }
+    }
+  );
+
   // -----------------------------------
   // Rotas CRUD Evento
   // -----------------------------------

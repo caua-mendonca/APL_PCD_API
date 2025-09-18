@@ -490,6 +490,7 @@ export const insertVaga = async (
   salario: number,
   localidade: string,
   acess: string,
+  tipo: string,
   id_creator: string
 ): Promise<boolean> => {
   try {
@@ -508,9 +509,10 @@ export const insertVaga = async (
         salario,
         localidade,
         acess,
+        tipo,
         id_creator
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
       )
     `;
 
@@ -524,6 +526,7 @@ export const insertVaga = async (
       salario,
       localidade,
       acess,
+      tipo,
       id_creator,
     ]);
 
@@ -632,12 +635,13 @@ export let getEmpByColab = async (id_colaborador: string) => {
  */
 export const insertCandidateVaga = async (
   id_vaga: string,
-  id_candidate: string
+  id_candidate: string,
+  hora: Date
 ): Promise<any> => {
   console.log("[QUERY] Inserindo candidato na vaga...");
   try {
-    const query = `INSERT INTO tb_candidato_vaga (tb_vaga_id, tb_candidato_id) VALUES ($1, $2);`;
-    await DB.pool.query(query, [id_vaga, id_candidate]);
+    const query = `INSERT INTO tb_candidato_vaga (tb_vaga_id, tb_candidato_id, hora_candidatura) VALUES ($1, $2, $3);`;
+    await DB.pool.query(query, [id_vaga, id_candidate, hora]);
 
     return [200, String(process.env.STATUS_200)];
   } catch (error) {
@@ -854,7 +858,7 @@ export let changePass = async (
   }
 };
 
-export let getAcess = async (id:string): Promise<any> => {
+export let getAcess = async (id: string): Promise<any> => {
   console.log("[QUERY] Buscando dados de acesso...");
   try {
     let result = await DB.pool.query(
@@ -870,4 +874,27 @@ export let getAcess = async (id:string): Promise<any> => {
     console.error("[QUERY] Failed");
     return [500, String(error)];
   }
-}
+};
+export let updateVaga = async (
+  table: string,
+  id: String,
+  sets: string,
+  values: any[]
+): Promise<any> => {
+  console.log(`[QUERY] Atulizando usuario ${id}`);
+  try {
+    const query = `UPDATE ${table} SET ${sets} WHERE id = $${
+      values.length + 1
+    }`;
+    values.push(id);
+
+    const result = await DB.pool.query(query, values);
+
+    console.log(`[QUERY] Success`);
+    return [200, result];
+  } catch (error) {
+    console.log(`[QUERY] Failed`);
+    return [500, String(error)];
+  }
+};
+

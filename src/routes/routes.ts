@@ -30,6 +30,7 @@ export let candidatarVaga: string = String(process.env.REGISTER_VAGA);
 export let getVagas: string = String(process.env.GET_VAGAS);
 export let getVagasById: string = String(process.env.GET_VAGAS_BY_ID);
 export let deleteVaga: string = String(process.env.DELETE_VAGA);
+export let updateVaga: string = String(process.env.UPDATE_VAGA);
 
 // Rotas para o recurso Evento, com ID como parâmetro
 export let createEvento: string = String(process.env.CREATE_EVENTO);

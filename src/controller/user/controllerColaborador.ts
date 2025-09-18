@@ -63,7 +63,7 @@ export let postVaga = async (
     descricao: string;
     salario: number;
     localidade: string;
-    acessibilidade: string;
+    tipo:string
   },
   id_empresa: string
 ): Promise<any> => {
@@ -122,6 +122,16 @@ export let deleteVaga = async (id: string) => {
     return [400, String(error)];
   }
 };
+
+export let updateVaga = async (body:any, id:string):Promise<any>=>{
+  console.log("[UPDATE / CONTROLLER Vaga]");
+  try {
+    let [status, message] = await modelVaga.updateVaga(body, id);
+    return [status, message];
+  } catch (error) {
+    return [400, String(error)];
+  }
+}
 
 /**
  * Insere um novo evento associado a um calendário e candidato.
