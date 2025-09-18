@@ -825,14 +825,31 @@ export let login = async (email: string, table: string): Promise<any> => {
       `SELECT * FROM ${table} WHERE email = $1`,
       [email]
     );
-      if (result.rows.length > 0) {
-    return [200, result];
-  } else {
-    return [400, { message: "Dados invalidos" }];
-  }
+    if (result.rows.length > 0) {
+      return [200, result];
+    } else {
+      return [400, { message: "Dados invalidos" }];
+    }
   } catch (error) {
     console.error("[QUERY] Failed");
     return [500, String(error)];
   }
+};
 
+export let changePass = async (
+  email: string,
+  newPass: string,
+  id: string,
+  table: string
+): Promise<any> => {
+  console.log("[QUERY]Trocando senha");
+  try {
+    const query = `UPDATE ${table} SET senha = $1 WHERE email = $2 AND id = $3 RETURNING *`;
+    const values = [newPass, email, id];
+    const result = await DB.pool.query(query, values);
+
+    return [200, result];
+  } catch (error) {
+    return [500, String(error)];
+  }
 };

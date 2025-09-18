@@ -44,3 +44,6 @@ export let getCalendario: string = String(process.env.GET_CALENDARIO)
 export let loginCand:string = String(process.env.LOGIN_CAND);
 export let loginEmp:string = String(process.env.LOGIN_EMP);
 export let loginAdm:string = String(process.env.LOGIN_ADM);
+
+// Rora para mudar senha
+export let changePassword:string = String(process.env.CHANGE_PASSWORD);

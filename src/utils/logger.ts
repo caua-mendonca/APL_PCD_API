@@ -6,6 +6,7 @@ import * as controllerColaborador from "../controller/user/controllerColaborador
 import * as Middleware from "../middleware/middleware.js";
 import cors from "cors";
 import * as Login from "../controller/login/login.js";
+import { changePassword } from "../controller/login/changePass.js";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
 
@@ -453,6 +454,7 @@ export let conectServ = (PORT: number) => {
       res.status(500).send({ message: String(process.env.STATUS_500) });
     }
   });
+
   APP.post(Routes.loginCand, async (req, res) => {
     const body = req.body;
     console.log(`[POST / login] Solicitando login de candidato...`);
@@ -463,11 +465,29 @@ export let conectServ = (PORT: number) => {
       res.status(500).send({ message: String(process.env.STATUS_500) });
     }
   });
+
   APP.post(Routes.loginAdm, async (req, res) => {
     const body = req.body;
     console.log(`[POST / login] Solicitando login de candidato...`);
     try {
       const [status, message] = await Login.loginAdm(body);
+      res.status(status).json({ message: message });
+    } catch (error) {
+      res.status(500).send({ message: String(process.env.STATUS_500) });
+    }
+  });
+
+  // -----------------------------------
+  // Rotas Change Password
+  // -----------------------------------
+
+  APP.post(Routes.changePassword, async (req, res) => {
+    console.log(`[POST / changePassword] Solicitando troca de senha...`);
+    try {
+      const body = req.body;
+      const id = req.params.id;
+
+      const [status, message] = await changePassword(body, id);
       res.status(status).json({ message: message });
     } catch (error) {
       res.status(500).send({ message: String(process.env.STATUS_500) });
