@@ -1,23 +1,44 @@
 import { Event } from "./Event";
 
+/**
+ * =========================================
+ * Classe: Calendar
+ * =========================================
+ * Representa um calendário que pode armazenar múltiplos eventos.
+ * Cada instância possui um ID único, nome e lista de eventos.
+ */
 export class Calendar {
-  nome: string;
-  id: string;
-  eventos: Event[];
+  public nome: string;       // Nome do calendário
+  public id: string;         // ID único do calendário
+  public eventos: Event[];   // Lista de eventos associados
 
+  /**
+   * Construtor da classe Calendar
+   * @param nome - Nome do calendário
+   */
   constructor(nome: string) {
     this.nome = nome;
-    this.id = "";
-    this.eventos = [];
+    this.id = "";           // ID será gerado via setId()
+    this.eventos = [];      // Inicializa a lista de eventos vazia
   }
 
-  setEvents(eventos: Event[]) {
+  /**
+   * setEvents
+   * Define os eventos do calendário.
+   * @param eventos - Array de objetos Event
+   */
+  public setEvents(eventos: Event[]) {
     this.eventos = eventos;
   }
 
-  setId() {
-    let prefix = "CALENDAR-";
-    let sufix = Math.floor(Math.random() * 1000000);
+  /**
+   * setId
+   * Gera um ID único combinando prefixo "CALENDAR-" com número aleatório (0-999999)
+   * Observação: Para ambientes de produção, UUID é mais seguro para evitar colisões.
+   */
+  public setId() {
+    const prefix = "CALENDAR-";
+    const sufix = Math.floor(Math.random() * 1000000);
     this.id = prefix + sufix;
   }
 }

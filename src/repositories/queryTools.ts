@@ -841,6 +841,13 @@ export let selectEmpbyCalendar = async (id_empresa: string): Promise<any> => {
   }
 };
 
+/**
+ * login
+ * Realiza a consulta de login de um usuário em qualquer tabela fornecida.
+ * @param email - Email do usuário a ser autenticado
+ * @param table - Nome da tabela onde buscar o usuário
+ * @returns [status, result] - 200 se encontrado, 400 se não encontrado, 500 se erro de banco
+ */
 export let login = async (email: string, table: string): Promise<any> => {
   try {
     console.log("[QUERY] Buscando dados de login...");
@@ -859,6 +866,15 @@ export let login = async (email: string, table: string): Promise<any> => {
   }
 };
 
+/**
+ * changePass
+ * Atualiza a senha de um usuário na tabela fornecida.
+ * @param email - Email do usuário
+ * @param newPass - Nova senha a ser aplicada
+ * @param id - ID do usuário
+ * @param table - Tabela onde atualizar
+ * @returns [status, result] - 200 se sucesso, 500 se erro
+ */
 export let changePass = async (
   email: string,
   newPass: string,
@@ -870,13 +886,18 @@ export let changePass = async (
     const query = `UPDATE ${table} SET senha = $1 WHERE email = $2 AND id = $3 RETURNING *`;
     const values = [newPass, email, id];
     const result = await DB.pool.query(query, values);
-
     return [200, result];
   } catch (error) {
     return [500, String(error)];
   }
 };
 
+/**
+ * getAcess
+ * Consulta os dados de acessibilidade de uma empresa
+ * @param id - ID da empresa
+ * @returns [status, result] - 200 com dados se sucesso, 400 se não encontrado, 500 se erro
+ */
 export let getAcess = async (id: string): Promise<any> => {
   console.log("[QUERY] Buscando dados de acesso...");
   try {
@@ -894,6 +915,16 @@ export let getAcess = async (id: string): Promise<any> => {
     return [500, String(error)];
   }
 };
+
+/**
+ * updateVaga
+ * Atualiza os campos de uma vaga na tabela especificada.
+ * @param table - Nome da tabela
+ * @param id - ID da vaga
+ * @param sets - String contendo os campos a atualizar (ex: 'nome=$1, descricao=$2')
+ * @param values - Array contendo os valores a serem aplicados
+ * @returns [status, result] - 200 se sucesso, 500 se erro
+ */
 export let updateVaga = async (
   table: string,
   id: String,
@@ -917,6 +948,14 @@ export let updateVaga = async (
   }
 };
 
+/**
+ * createBarreira
+ * Cria uma nova barreira no sistema.
+ * @param id - ID da barreira
+ * @param desc - Descrição da barreira
+ * @param hora - Timestamp da criação/atualização
+ * @returns [status, message] - 201 se sucesso, 500 se erro
+ */
 export let createBarreira = async (
   id: string,
   desc: string,
@@ -935,6 +974,14 @@ export let createBarreira = async (
     return [500, String(error)];
   }
 };
+
+/**
+ * createAcess
+ * Cria uma nova acessibilidade no sistema.
+ * @param id - ID da acessibilidade
+ * @param desc - Descrição da acessibilidade
+ * @param hora - Timestamp da criação/atualização
+ */
 export let createAcess = async (
   id: string,
   desc: string,
@@ -956,6 +1003,16 @@ export let createAcess = async (
   }
 };
 
+/**
+ * createSubTipo
+ * Cria um novo subtipo de deficiência e relaciona com barreira e acessibilidade.
+ * @param id - ID do subtipo
+ * @param desc - Nome/descrição do subtipo
+ * @param hora - Timestamp da criação/atualização
+ * @param tipo - ID do tipo de deficiência
+ * @param barreira - ID da barreira
+ * @param acessibilidade - ID da acessibilidade
+ */
 export let createSubTipo = async (
   id: string,
   desc: string,
@@ -967,6 +1024,7 @@ export let createSubTipo = async (
   console.log("[QUERY]");
 
   try {
+    // Inserção do subtipo
     let insertSubTipo = `INSERT INTO tb_sub_tipo_deficiencia (id, nome, tipo_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5);`;
     const resultSubTipo = await DB.pool.query(insertSubTipo, [
       id,
@@ -979,9 +1037,9 @@ export let createSubTipo = async (
       return [400, String(`Erro ao inserir sub-tipo de deficiência.`)];
     }
 
+    // Relacionamento com barreira
     let insertSubBarr = `INSERT INTO tb_sub_tipo_barreira (sub_tipo_id, barreira_id) VALUES ($1, $2);`;
     const resultSubBarr = await DB.pool.query(insertSubBarr, [id, barreira]);
-
     if (resultSubBarr.rowCount === 0) {
       return [
         400,
@@ -989,6 +1047,7 @@ export let createSubTipo = async (
       ];
     }
 
+    // Relacionamento barreira <-> acessibilidade
     let insertBarrAces = `INSERT INTO tb_barreira_acessibilidade (barreira_id, acessibilidade_id) VALUES ($1, $2);`;
     const resultBarrAces = await DB.pool.query(insertBarrAces, [
       barreira,

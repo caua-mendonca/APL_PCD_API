@@ -48,7 +48,56 @@ A API utiliza **JWT (JSON Web Tokens)** para autenticação. Existem dois tipos 
 - **Empresa**: Para operações relacionadas a empresas/contratantes
 
 ### 🔑 Como Obter Tokens
-Os tokens são gerados automaticamente pelo middleware. Para desenvolvimento, você pode usar tokens de teste.
+
+#### Login de Candidato
+```http
+POST /loginCandidato
+```
+
+**Body**:
+```json
+{
+  "email": "candidato@email.com",
+  "senha": "senha123"
+}
+```
+
+**Resposta**:
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "CAND-123456",
+    "name": "João Silva",
+    "email": "candidato@email.com"
+  }
+}
+```
+
+#### Login de Empresa
+```http
+POST /loginEmpresa
+```
+
+**Body**:
+```json
+{
+  "email": "empresa@email.com",
+  "senha": "senha123"
+}
+```
+
+**Resposta**:
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "EMP-123456",
+    "nome_fantasia": "Tech Solutions",
+    "email": "empresa@email.com"
+  }
+}
+```
 
 ---
 
@@ -532,6 +581,34 @@ GET /getVagasById/:id
 
 ---
 
+### ✏️ Atualizar Vaga
+```http
+PUT /updateVaga/:id
+```
+
+**Autenticação**: ✅ Token de Empresa
+
+**Parâmetros**:
+- `id` (string): ID da vaga
+
+**Body** (campos opcionais):
+```json
+{
+  "titulo": "Desenvolvedor Full Stack Sênior",
+  "salario": 7000.00,
+  "descricao": "Vaga atualizada com novos requisitos"
+}
+```
+
+**Resposta de Sucesso** (200):
+```json
+{
+  "message": "Vaga atualizada com sucesso"
+}
+```
+
+---
+
 ### 🗑️ Deletar Vaga
 ```http
 DELETE /deleteVaga/:id
@@ -547,6 +624,32 @@ DELETE /deleteVaga/:id
 {
   "message": "Vaga deletada com sucesso"
 }
+```
+
+---
+
+### 📋 Listar Vagas do Candidato
+```http
+GET /getVagasByCandidato/:id
+```
+
+**Autenticação**: ✅ Token de Candidato
+
+**Parâmetros**:
+- `id` (string): ID do candidato
+
+**Resposta de Sucesso** (200):
+```json
+[
+  {
+    "id": "VAGA-123456",
+    "titulo": "Desenvolvedor Full Stack",
+    "descricao": "Vaga para desenvolvedor com experiência em Node.js e React",
+    "salario": 5000.00,
+    "localidade": "São Paulo, SP",
+    "status_inscricao": "inscrito"
+  }
+]
 ```
 
 ---
@@ -863,9 +966,15 @@ const useAPI = () => {
     atualizarCandidato: (id, data) => api.put(`/updateCanditado/${id}`, data),
     deletarCandidato: (id) => api.delete(`/deleteCanditado/${id}`),
     
+    // Autenticação
+    loginCandidato: (data) => api.post('/loginCandidato', data),
+    loginEmpresa: (data) => api.post('/loginEmpresa', data),
+    
     // Vagas
     criarVaga: (empresaId, data) => api.post(`/createVaga/${empresaId}`, data),
     buscarVagas: () => api.get('/getVagas'),
+    buscarVagasPorCandidato: (candidatoId) => api.get(`/getVagasByCandidato/${candidatoId}`),
+    atualizarVaga: (vagaId, data) => api.put(`/updateVaga/${vagaId}`, data),
     candidatarVaga: (candidatoId, data) => api.post(`/registerVaga/${candidatoId}`, data),
     
     // Eventos
@@ -929,8 +1038,9 @@ export default CandidatosList;
 ### 🔐 Segurança
 - Sempre use HTTPS em produção
 - Armazene tokens de forma segura (localStorage/sessionStorage)
-- Implemente refresh tokens para sessões longas
+- Implemente logout para limpar tokens
 - Valide dados no front-end antes de enviar
+- Trate erros 401/403 redirecionando para login
 
 ### 📊 Performance
 - Use loading states durante requisições

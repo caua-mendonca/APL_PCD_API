@@ -28,6 +28,8 @@ A **APL PCD API** é uma solução completa para gestão de inclusão profission
 - ♿ Gestão de acessibilidade e barreiras
 - 📅 Sistema de calendário e eventos
 - 🔐 Autenticação JWT segura
+- 🎯 Sistema de inscrições candidato-vaga
+- 🏢 Gestão completa de empresas
 
 ### Stack Tecnológico
 - **Backend**: Node.js 18+, TypeScript 5.0+, Express.js
@@ -213,11 +215,23 @@ GET    /api/empresas/:id        # Buscar empresa
 PUT    /api/empresas/:id        # Atualizar empresa
 ```
 
+### Calendário
+```http
+GET    /api/calendario/:id      # Buscar calendário por empresa
+POST   /api/calendario/:id      # Criar calendário para empresa
+```
+
+### Eventos
+```http
+GET    /api/evento/:id          # Listar eventos por empresa
+POST   /api/evento/:id          # Criar evento
+DELETE /api/evento/:id          # Excluir evento
+```
+
 ### Autenticação
 ```http
-POST   /api/auth/login          # Login
-POST   /api/auth/register       # Registro
-POST   /api/auth/refresh        # Refresh token
+POST   /api/login/candidato     # Login candidato
+POST   /api/login/empresa       # Login empresa
 ```
 
 ### Exemplos de Requisições
@@ -271,9 +285,10 @@ npm run test:watch
 ```
 
 ### Cobertura de Testes
-- **Validações**: 100% cobertura
-- **Entidades**: 84-100% cobertura
+- **Validações**: 100% cobertura (CPF, email, idade)
+- **Entidades**: 84-100% cobertura (Candidate class)
 - **Total**: 23 testes unitários ✅
+- **Frameworks**: Jest + Supertest
 
 ### Exemplo de Teste
 ```typescript
@@ -439,6 +454,11 @@ Todos os IDs usam prefixos semânticos:
 - `CAND-123456` - Candidatos
 - `VAGA-123456` - Vagas
 - `COLAB-123456` - Colaboradores
+- `CALENDAR-123456` - Calendários
+- `EVENT-123456` - Eventos
+- `DMOTO-123456` - Deficiência Motora
+- `DVISU-123456` - Deficiência Visual
+- `DAUDI-123456` - Deficiência Auditiva
 
 ### Posso usar sem PostgreSQL?
 Não, o sistema foi projetado especificamente para PostgreSQL com prepared statements para segurança.
