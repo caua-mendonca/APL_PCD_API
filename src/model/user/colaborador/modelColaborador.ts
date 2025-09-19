@@ -1,5 +1,5 @@
 import { validateIdByRelation } from "../../../validation/validateId/validateId.js";
-import { Colaborador } from "../../entities/class/colaborador.js";
+import { Colaborador } from "../../entities/class/Colaborador.js";
 import * as DB from "../../../repositories/queryTools.js";
 import { error } from "console";
 

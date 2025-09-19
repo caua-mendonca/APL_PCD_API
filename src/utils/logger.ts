@@ -7,6 +7,7 @@ import * as Middleware from "../middleware/middleware.js";
 import cors from "cors";
 import * as Login from "../controller/login/login.js";
 import { changePassword } from "../controller/login/changePass.js";
+import * as ADM from "../controller/adm/controllerAdm.js";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
 
@@ -334,11 +335,11 @@ export let conectServ = (PORT: number) => {
       console.log(`[GET / vaga] Requisição recebida`);
 
       try {
-        let [status, message] = await controllerCandidate.getVagaInsert(id)
+        let [status, message] = await controllerCandidate.getVagaInsert(id);
 
-        res.status(status).json(message)
+        res.status(status).json(message);
       } catch (error) {
-        res.status(500).json(error)
+        res.status(500).json(error);
       }
     }
   );
@@ -531,4 +532,53 @@ export let conectServ = (PORT: number) => {
       res.status(500).send({ message: String(process.env.STATUS_500) });
     }
   });
+
+  // -----------------------------------
+  // Rotas ADM
+  // -----------------------------------
+
+  APP.post(
+    Routes.createBarreira,
+    Middleware.authenticateTokenADM,
+    async (req, res) => {
+      console.log(`[POST / createBarreira] Solicitando criação de barreira...`);
+      try {
+        const body = req.body;
+
+        const [status, message] = await ADM.createBarreira(body);
+        res.status(status).json({ message: message });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
+      }
+    }
+  );
+
+  APP.post(
+    Routes.createAcessibilidade,
+    Middleware.authenticateTokenADM,
+    async (req, res) => {
+      console.log(`[POST / createAcessibilidade] Solicitando criação de barreira...`);
+      try {
+        const body = req.body;
+
+        const [status, message] = await ADM.createAcess(body);
+        res.status(status).json({ message: message });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
+      }
+    }
+  );
+
+  APP.post(Routes.createSubTipo, Middleware.authenticateTokenADM, async (req, res) => {
+    console.log(`[POST / createSubTipo] Solicitando criação de subtipo...`);
+    try {
+      const body = req.body;
+
+      const [status, message] = await ADM.createSubTipo(body);
+      res.status(status).json({ message: message });
+    } catch (error) {
+      res.status(500).send({ message: String(process.env.STATUS_500) });
+    }
+  })
+  
 };

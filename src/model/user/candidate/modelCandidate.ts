@@ -5,7 +5,7 @@ import {
 import { validateAge } from "../../../validation/validateData/validateAge.js";
 import { validateEmailToDB } from "../../../validation/validateData/validateEmail.js";
 import { validateId } from "../../../validation/validateId/validateId.js";
-import { Candidate } from "../../entities/class/candidate.js";
+import { Candidate } from "../../entities/class/Candidate.js";
 import bcrypt from "bcrypt";
 import * as DB from "../../../repositories/queryTools.js";
 import dotenv from "dotenv";

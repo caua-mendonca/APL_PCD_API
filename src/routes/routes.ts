@@ -51,5 +51,12 @@ export let loginCand: string = String(process.env.LOGIN_CAND);
 export let loginEmp: string = String(process.env.LOGIN_EMP);
 export let loginAdm: string = String(process.env.LOGIN_ADM);
 
-// Rora para mudar senha
+// Rota para mudar senha
 export let changePassword: string = String(process.env.CHANGE_PASSWORD);
+
+// Rota para criar Barreira, acessibilidade e subtipo
+export let createBarreira: string = String(process.env.CREATE_BARREIRA);
+export let createAcessibilidade: string = String(
+  process.env.CREATE_ACESSIBILIDADE
+);
+export let createSubTipo: string = String(process.env.CREATE_SUBTIPO);

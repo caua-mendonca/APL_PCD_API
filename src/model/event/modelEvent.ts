@@ -1,6 +1,6 @@
 import * as Validation from "../../validation/validateId/validateId.js";
 import * as DB from "../../repositories/queryTools.js";
-import { Event } from "../entities/class/event.js";
+import { Event } from "../entities/class/Event.js";
 
 /**
  * Cria um novo evento e insere no banco de dados.

@@ -401,7 +401,7 @@ export let selectFromIdWhere = async (
   try {
     const query = `SELECT * FROM ${table} WHERE tb_candidato_id = $1`;
     const result = await DB.pool.query(query, [id]);
-    console.log(result)
+    console.log(result);
 
     console.log(`[QUERY] Success`);
 
@@ -917,3 +917,91 @@ export let updateVaga = async (
   }
 };
 
+export let createBarreira = async (
+  id: string,
+  desc: string,
+  hora: Date
+): Promise<any> => {
+  console.log("[QUERY]");
+
+  try {
+    let query = `INSERT INTO tb_barreira (id, descricao, created_at, updated_at) VALUES ($1, $2, $3, $4);`;
+    const result = await DB.pool.query(query, [id, desc, hora, hora]);
+
+    console.log(`[QUERY] Success`);
+    return [201, String(process.env.STATUS_201)];
+  } catch (error) {
+    console.log(`[QUERY] Failed`);
+    return [500, String(error)];
+  }
+};
+export let createAcess = async (
+  id: string,
+  desc: string,
+  hora: Date
+): Promise<any> => {
+  console.log("[QUERY]");
+
+  console.log(id, desc, hora);
+
+  try {
+    let query = `INSERT INTO tb_acessibilidade (id, descricao, created_at, updated_at) VALUES ($1, $2, $3, $4);`;
+    const result = await DB.pool.query(query, [id, desc, hora, hora]);
+
+    console.log(`[QUERY] Success`);
+    return [201, String(process.env.STATUS_201)];
+  } catch (error) {
+    console.log(`[QUERY] Failed`);
+    return [500, String(error)];
+  }
+};
+
+export let createSubTipo = async (
+  id: string,
+  desc: string,
+  hora: Date,
+  tipo: string,
+  barreira: string,
+  acessibilidade: string
+) => {
+  console.log("[QUERY]");
+
+  try {
+    let insertSubTipo = `INSERT INTO tb_sub_tipo_deficiencia (id, nome, tipo_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5);`;
+    const resultSubTipo = await DB.pool.query(insertSubTipo, [
+      id,
+      desc,
+      tipo,
+      hora,
+      hora,
+    ]);
+    if (resultSubTipo.rowCount === 0) {
+      return [400, String(`Erro ao inserir sub-tipo de deficiência.`)];
+    }
+
+    let insertSubBarr = `INSERT INTO tb_sub_tipo_barreira (sub_tipo_id, barreira_id) VALUES ($1, $2);`;
+    const resultSubBarr = await DB.pool.query(insertSubBarr, [id, barreira]);
+
+    if (resultSubBarr.rowCount === 0) {
+      return [
+        400,
+        String(`Erro ao relacionar sub-tipo de deficiência com barreira.`),
+      ];
+    }
+
+    let insertBarrAces = `INSERT INTO tb_barreira_acessibilidade (barreira_id, acessibilidade_id) VALUES ($1, $2);`;
+    const resultBarrAces = await DB.pool.query(insertBarrAces, [
+      barreira,
+      acessibilidade,
+    ]);
+    if (resultBarrAces.rowCount === 0) {
+      return [400, String(`Erro ao relacionar barreira com acessibilidade.`)];
+    }
+
+    console.log(`[QUERY] Success`);
+    return [201, String(process.env.STATUS_201)];
+  } catch (error) {
+    console.log(`[QUERY] Failed`);
+    return [500, String(error)];
+  }
+};
