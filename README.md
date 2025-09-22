@@ -117,7 +117,13 @@ Banco de dados **PostgreSQL** com estrutura normalizada e relacionamentos bem de
 - [x] ♿ Sistema de acessibilidade
 - [x] 🚧 Identificação de barreiras
 - [x] 🚧 Gestão de subtipos de barreiras
-- [x] 📅 Sistema de calendário e eventos
+
+### 📅 **Sistema de Calendário e Eventos**
+- [x] 📅 Criação de calendários por empresa
+- [x] 📋 Gestão de eventos
+- [x] 🔗 Vinculação calendário-evento
+- [x] ✏️ CRUD completo de eventos
+- [x] 🗑️ Exclusão de eventos
 
 ### 🛡️ **Qualidade e Segurança**
 - [x] ✅ Validações centralizadas de dados
@@ -337,11 +343,13 @@ node build/index.js
 ## 📊 Status do Projeto
 
 - 🚀 **Status**: Em desenvolvimento ativo
-- 📈 **Versão**: 2.2.1
+- 📈 **Versão**: 2.3.0
 - 🧪 **Testes Unitários**: 23 testes ✅
 - 📊 **Cobertura**: 84-100% nas funções críticas
-- 📝 **Documentação**: Completa
-- 🔒 **Segurança**: Implementada
+- 📝 **Documentação**: Completa com WIKI e Guia Frontend
+- 🔒 **Segurança**: JWT + bcrypt implementados
+- 📅 **Sistema de Calendário**: Implementado
+- 📋 **Sistema de Eventos**: Implementado
 
 ---
 
@@ -353,7 +361,9 @@ node build/index.js
 
 ### 🔗 **Links Úteis**
 - 📧 **Issues**: [GitHub Issues](https://github.com/cMendoncaaa/APL-WEB-PCD/issues)
-- 📖 **Documentação**: [Wiki do Projeto](https://github.com/cMendoncaaa/APL-WEB-PCD/wiki)
+- 📖 **Documentação**: [WIKI.md](./WIKI.md)
+- 🎨 **Guia Frontend**: [API_FRONTEND_GUIDE.md](./API_FRONTEND_GUIDE.md)
+- 🧪 **Resumo de Testes**: [TESTING_SUMMARY.md](./TESTING_SUMMARY.md)
 - 💼 **LinkedIn**: [Dev Melo](https://www.linkedin.com/in/devmelo/)
 - 🐙 **GitHub**: [DiegoHenriqueMelo](https://github.com/DiegoHenriqueMelo)
 

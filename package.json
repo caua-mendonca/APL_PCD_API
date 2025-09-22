@@ -1,6 +1,6 @@
 {
   "name": "apl-web-pcd",
-  "version": "2.2.1",
+  "version": "2.3.1",
   "description": "Aplicativo para PCD na WEB",
   "main": "index.js",
   "type": "module",

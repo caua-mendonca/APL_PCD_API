@@ -1,6 +1,6 @@
 import { validateEmailToDB } from "../../../validation/validateData/validateEmail.js";
 import bcrypt from "bcrypt";
-import { Contratante } from "../../entities/class/contratante.js";
+import { Contratante } from "../../entities/class/Contratante.js";
 import {
   validateCNPJ,
   validateCNPJToDB,

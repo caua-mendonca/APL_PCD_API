@@ -375,14 +375,33 @@ export let selectFromTable = async (
  * @param id ID do registro.
  * @returns Resultado da consulta.
  */
+export let selectFromNameWhere = async (
+  table: string,
+  name: string
+): Promise<any> => {
+  console.log(`[QUERY] Resgatando registro ID ${name} da tabela ${table}`);
+  try {
+    const query = `SELECT * FROM ${table} WHERE nome = $1`;
+    const result = await DB.pool.query(query, [name]);
+
+    console.log(`[QUERY] Success`);
+
+    return [200, result.rows];
+  } catch (error) {
+    console.log(`[QUERY] Failed`);
+    return [500, String(error)];
+  }
+};
+
 export let selectFromIdWhere = async (
   table: string,
   id: string
 ): Promise<any> => {
   console.log(`[QUERY] Resgatando registro ID ${id} da tabela ${table}`);
   try {
-    const query = `SELECT * FROM ${table} WHERE id = $1`;
+    const query = `SELECT * FROM ${table} WHERE tb_candidato_id = $1`;
     const result = await DB.pool.query(query, [id]);
+    console.log(result);
 
     console.log(`[QUERY] Success`);
 
@@ -490,6 +509,7 @@ export const insertVaga = async (
   salario: number,
   localidade: string,
   acess: string,
+  tipo: string,
   id_creator: string
 ): Promise<boolean> => {
   try {
@@ -508,9 +528,10 @@ export const insertVaga = async (
         salario,
         localidade,
         acess,
+        tipo,
         id_creator
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
       )
     `;
 
@@ -524,6 +545,7 @@ export const insertVaga = async (
       salario,
       localidade,
       acess,
+      tipo,
       id_creator,
     ]);
 
@@ -631,13 +653,14 @@ export let getEmpByColab = async (id_colaborador: string) => {
  * @returns Promise<boolean> - Retorna true se a inserção for bem-sucedida, false em caso de falha.
  */
 export const insertCandidateVaga = async (
+  id_candidate: string,
   id_vaga: string,
-  id_candidate: string
+  hora: Date
 ): Promise<any> => {
   console.log("[QUERY] Inserindo candidato na vaga...");
   try {
-    const query = `INSERT INTO tb_candidato_vaga (tb_vaga_id, tb_candidato_id) VALUES ($1, $2);`;
-    await DB.pool.query(query, [id_vaga, id_candidate]);
+    const query = `INSERT INTO tb_candidato_vaga (tb_vaga_id, tb_candidato_id, hora_candidatura) VALUES ($1, $2, $3);`;
+    await DB.pool.query(query, [id_vaga, id_candidate, hora]);
 
     return [200, String(process.env.STATUS_200)];
   } catch (error) {
@@ -781,8 +804,7 @@ export let insertCalendario = async (
     let result = await DB.pool.query(query, [id_calendar, nome, id_empresa]);
 
     console.log(`[QUERY] Success`);
-    return [201, result]
-
+    return [201, result];
   } catch (error) {
     console.error("[QUERY] Failed");
     return [500, String(process.env.STATUS_500)];
@@ -816,5 +838,229 @@ export let selectEmpbyCalendar = async (id_empresa: string): Promise<any> => {
       { calendarioId: id_empresa, error }
     );
     throw error;
+  }
+};
+
+/**
+ * login
+ * Realiza a consulta de login de um usuário em qualquer tabela fornecida.
+ * @param email - Email do usuário a ser autenticado
+ * @param table - Nome da tabela onde buscar o usuário
+ * @returns [status, result] - 200 se encontrado, 400 se não encontrado, 500 se erro de banco
+ */
+export let login = async (email: string, table: string): Promise<any> => {
+  try {
+    console.log("[QUERY] Buscando dados de login...");
+    let result = await DB.pool.query(
+      `SELECT * FROM ${table} WHERE email = $1`,
+      [email]
+    );
+    if (result.rows.length > 0) {
+      return [200, result];
+    } else {
+      return [400, { message: "Dados invalidos" }];
+    }
+  } catch (error) {
+    console.error("[QUERY] Failed");
+    return [500, String(error)];
+  }
+};
+
+/**
+ * changePass
+ * Atualiza a senha de um usuário na tabela fornecida.
+ * @param email - Email do usuário
+ * @param newPass - Nova senha a ser aplicada
+ * @param id - ID do usuário
+ * @param table - Tabela onde atualizar
+ * @returns [status, result] - 200 se sucesso, 500 se erro
+ */
+export let changePass = async (
+  email: string,
+  newPass: string,
+  id: string,
+  table: string
+): Promise<any> => {
+  console.log("[QUERY]Trocando senha");
+  try {
+    const query = `UPDATE ${table} SET senha = $1 WHERE email = $2 AND id = $3 RETURNING *`;
+    const values = [newPass, email, id];
+    const result = await DB.pool.query(query, values);
+    return [200, result];
+  } catch (error) {
+    return [500, String(error)];
+  }
+};
+
+/**
+ * getAcess
+ * Consulta os dados de acessibilidade de uma empresa
+ * @param id - ID da empresa
+ * @returns [status, result] - 200 com dados se sucesso, 400 se não encontrado, 500 se erro
+ */
+export let getAcess = async (id: string): Promise<any> => {
+  console.log("[QUERY] Buscando dados de acesso...");
+  try {
+    let result = await DB.pool.query(
+      `SELECT acessibilidade FROM tb_empresa WHERE id = $1`,
+      [id]
+    );
+    if (result.rows.length > 0) {
+      return [200, result.rows];
+    } else {
+      return [400, { message: "Dados invalidos" }];
+    }
+  } catch (error) {
+    console.error("[QUERY] Failed");
+    return [500, String(error)];
+  }
+};
+
+/**
+ * updateVaga
+ * Atualiza os campos de uma vaga na tabela especificada.
+ * @param table - Nome da tabela
+ * @param id - ID da vaga
+ * @param sets - String contendo os campos a atualizar (ex: 'nome=$1, descricao=$2')
+ * @param values - Array contendo os valores a serem aplicados
+ * @returns [status, result] - 200 se sucesso, 500 se erro
+ */
+export let updateVaga = async (
+  table: string,
+  id: String,
+  sets: string,
+  values: any[]
+): Promise<any> => {
+  console.log(`[QUERY] Atulizando usuario ${id}`);
+  try {
+    const query = `UPDATE ${table} SET ${sets} WHERE id = $${
+      values.length + 1
+    }`;
+    values.push(id);
+
+    const result = await DB.pool.query(query, values);
+
+    console.log(`[QUERY] Success`);
+    return [200, result];
+  } catch (error) {
+    console.log(`[QUERY] Failed`);
+    return [500, String(error)];
+  }
+};
+
+/**
+ * createBarreira
+ * Cria uma nova barreira no sistema.
+ * @param id - ID da barreira
+ * @param desc - Descrição da barreira
+ * @param hora - Timestamp da criação/atualização
+ * @returns [status, message] - 201 se sucesso, 500 se erro
+ */
+export let createBarreira = async (
+  id: string,
+  desc: string,
+  hora: Date
+): Promise<any> => {
+  console.log("[QUERY]");
+
+  try {
+    let query = `INSERT INTO tb_barreira (id, descricao, created_at, updated_at) VALUES ($1, $2, $3, $4);`;
+    const result = await DB.pool.query(query, [id, desc, hora, hora]);
+
+    console.log(`[QUERY] Success`);
+    return [201, String(process.env.STATUS_201)];
+  } catch (error) {
+    console.log(`[QUERY] Failed`);
+    return [500, String(error)];
+  }
+};
+
+/**
+ * createAcess
+ * Cria uma nova acessibilidade no sistema.
+ * @param id - ID da acessibilidade
+ * @param desc - Descrição da acessibilidade
+ * @param hora - Timestamp da criação/atualização
+ */
+export let createAcess = async (
+  id: string,
+  desc: string,
+  hora: Date
+): Promise<any> => {
+  console.log("[QUERY]");
+
+  console.log(id, desc, hora);
+
+  try {
+    let query = `INSERT INTO tb_acessibilidade (id, descricao, created_at, updated_at) VALUES ($1, $2, $3, $4);`;
+    const result = await DB.pool.query(query, [id, desc, hora, hora]);
+
+    console.log(`[QUERY] Success`);
+    return [201, String(process.env.STATUS_201)];
+  } catch (error) {
+    console.log(`[QUERY] Failed`);
+    return [500, String(error)];
+  }
+};
+
+/**
+ * createSubTipo
+ * Cria um novo subtipo de deficiência e relaciona com barreira e acessibilidade.
+ * @param id - ID do subtipo
+ * @param desc - Nome/descrição do subtipo
+ * @param hora - Timestamp da criação/atualização
+ * @param tipo - ID do tipo de deficiência
+ * @param barreira - ID da barreira
+ * @param acessibilidade - ID da acessibilidade
+ */
+export let createSubTipo = async (
+  id: string,
+  desc: string,
+  hora: Date,
+  tipo: string,
+  barreira: string,
+  acessibilidade: string
+) => {
+  console.log("[QUERY]");
+
+  try {
+    // Inserção do subtipo
+    let insertSubTipo = `INSERT INTO tb_sub_tipo_deficiencia (id, nome, tipo_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5);`;
+    const resultSubTipo = await DB.pool.query(insertSubTipo, [
+      id,
+      desc,
+      tipo,
+      hora,
+      hora,
+    ]);
+    if (resultSubTipo.rowCount === 0) {
+      return [400, String(`Erro ao inserir sub-tipo de deficiência.`)];
+    }
+
+    // Relacionamento com barreira
+    let insertSubBarr = `INSERT INTO tb_sub_tipo_barreira (sub_tipo_id, barreira_id) VALUES ($1, $2);`;
+    const resultSubBarr = await DB.pool.query(insertSubBarr, [id, barreira]);
+    if (resultSubBarr.rowCount === 0) {
+      return [
+        400,
+        String(`Erro ao relacionar sub-tipo de deficiência com barreira.`),
+      ];
+    }
+
+    // Relacionamento barreira <-> acessibilidade
+    let insertBarrAces = `INSERT INTO tb_barreira_acessibilidade (barreira_id, acessibilidade_id) VALUES ($1, $2);`;
+    const resultBarrAces = await DB.pool.query(insertBarrAces, [
+      barreira,
+      acessibilidade,
+    ]);
+    if (resultBarrAces.rowCount === 0) {
+      return [400, String(`Erro ao relacionar barreira com acessibilidade.`)];
+    }
+
+    console.log(`[QUERY] Success`);
+    return [201, String(process.env.STATUS_201)];
+  } catch (error) {
+    console.log(`[QUERY] Failed`);
+    return [500, String(error)];
   }
 };

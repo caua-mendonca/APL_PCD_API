@@ -31,7 +31,7 @@ export let deleteVaga = async (id: string) => {
   console.log("[DELETE / MODEL Vaga]");
   try {
     let [status, message] = await DB.deleteFromTable("tb_vaga", id);
-    return [status, message]
+    return [status, message];
   } catch (error) {
     return [400, String(error)];
   }
@@ -53,7 +53,7 @@ export let createVaga = async (
     descricao: string;
     salario: number;
     localidade: string;
-    acessibilidade: string;
+    tipo: string;
   },
   id_empresa: string
 ): Promise<any> => {
@@ -62,13 +62,15 @@ export let createVaga = async (
   try {
     let errorLog: string[] = [];
     // Instancia um novo objeto Vaga com os dados recebidos
+    let acessibilidade = await DB.getAcess(id_empresa);
     let newVaga = new Vaga(
       new Date(vaga.data_fim),
       vaga.titulo,
       vaga.descricao,
       vaga.salario,
       vaga.localidade,
-      vaga.acessibilidade
+      acessibilidade[1][0].acessibilidade,
+      vaga.tipo
     );
 
     // Geração do ID da vaga, com retry para garantir não ser vazio
@@ -93,9 +95,11 @@ export let createVaga = async (
       newVaga.salario,
       newVaga.localidade,
       newVaga.acessibilidade,
+      newVaga.tipo,
       id_empresa
     );
     // Verifica se o id_empresa refere-se a um colaborador para obter a empresa mãe
+
     if (id_empresa.toUpperCase().startsWith("COLAB")) {
       let empresaId = await DB.getEmpByColab(id_empresa);
 
@@ -133,9 +137,47 @@ export let registerCandidateToVaga = async (
     );
     if (id_candidateValid === false) errorLog.push(`Candidato inválido`);
 
-    let [status, message] = await DB.insertCandidateVaga(id_candidate, id_vaga);
+    let hora = new Date();
+
+    let [status, message] = await DB.insertCandidateVaga(
+      id_candidate,
+      id_vaga,
+      hora
+    );
     return [status, message];
   } catch (error) {
     return [500, errorLog];
+  }
+};
+
+export let updateVaga = async (body: any, id: string): Promise<any> => {
+  console.log("[PUT / MODEL vaga]");
+  try {
+    let errorLog: string[] = [];
+    // Monta os pares chave = valor para o UPDATE
+    const keys = Object.keys(body);
+    const values = Object.values(body);
+
+    const sets = keys.map((key, index) => `${key} = $${index + 1}`).join(", ");
+
+    // Valida CPF se presente
+    if (keys.includes("data_fim")) {
+      const index = keys.indexOf("data_fim");
+      if (!validateDate(body.data_fim)===false) {
+        errorLog.push("Data de fim inválida");
+      }
+    }
+
+    // Executa atualização
+    const [status, message] = await DB.updateUserColumn(
+      "tb_vaga",
+      id,
+      sets,
+      values
+    );
+    if (errorLog.length > 0) return [400, errorLog];
+    return [status, message];
+  } catch (error) {
+    return [500, String(process.env.STATUS_500)];
   }
 };
