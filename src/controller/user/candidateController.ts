@@ -1,7 +1,10 @@
-import * as Model from "../../model/user/candidate/candidateModel.js";
-import { registerCandidateToVaga } from "../../model/job/jobModel.js";
+import { CandidateService } from "../../services/CandidateService.js";
+import { container } from "../../container/DIContainer.js";
 import * as dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
+
+// Register service in container
+container.register('CandidateService', CandidateService, true);
 
 /**
  * Controlador para criação de candidato.
@@ -25,8 +28,8 @@ export const createCandidateController = async (body: {
   barrier: string;
   accessibility: string;
 }): Promise<[number, string]> => {
-  console.log("[POST / CONTROLLER Candidate]");
   try {
+    const candidateService = container.resolve<CandidateService>('CandidateService');
     const mappedBody = {
       name: body.name,
       email: body.email,
@@ -43,8 +46,7 @@ export const createCandidateController = async (body: {
       barreira: body.barrier,
       acessbilidade: body.accessibility,
     };
-    const [status, message] = await Model.createCandidate(mappedBody);
-    return [status, message];
+    return await candidateService.create(mappedBody);
   } catch (error) {
     return [400, String(error)];
   }
@@ -58,11 +60,9 @@ export const createCandidateController = async (body: {
 export const getCandidatesController = async (): Promise<
   [number, string[] | string]
 > => {
-  console.log("[GET / CONTROLLER Candidate]");
-
   try {
-    const [status, message] = await Model.getUser("tb_candidato");
-    return [status, message];
+    const candidateService = container.resolve<CandidateService>('CandidateService');
+    return await candidateService.getAll();
   } catch (error) {
     return [400, String(error)];
   }
@@ -75,11 +75,9 @@ export const getCandidatesController = async (): Promise<
  * @returns objeto candidato ou mensagem de erro
  */
 export const getCandidateByNameController = async (name: string) => {
-  console.log("[GET / CONTROLLER Candidate]");
-
   try {
-    const [status, message] = await Model.getUserByName("tb_candidato", name);
-    return [status, message];
+    const candidateService = container.resolve<CandidateService>('CandidateService');
+    return await candidateService.getByName(name);
   } catch (error) {
     return [400, String(error)];
   }
@@ -127,13 +125,9 @@ export const updateCandidateController = async (id: string, body: object): Promi
  * @returns resultado do registro da candidatura
  */
 export const applyToJobController = async (candidate_id: string, job_id: string) => {
-  console.log(`[POST / CONTROLLER Job]`);
   try {
-    const [status, message] = await registerCandidateToVaga(
-      candidate_id,
-      job_id
-    );
-    return [status, message];
+    const candidateService = container.resolve<CandidateService>('CandidateService');
+    return await candidateService.applyToJob(candidate_id, job_id);
   } catch (error) {
     return [400, String(error)];
   }
