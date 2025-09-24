@@ -15,7 +15,7 @@ export let authenticateTokenCand = (req: any, res: any, next: any) => {
   try {
     const payload = JWT.verify(token, secretCand);
     req.user = payload; // Adiciona informações do usuário ao request
-    console.log("Payload decodificado:", payload);
+    console.log("Payload decodificado:");
     next();
   } catch (error) {
     console.error("Erro JWT:", error);
@@ -36,7 +36,7 @@ export let authenticateTokenEmp = (req: any, res: any, next: any) => {
   try {
     const payload = JWT.verify(token, secretEmp);
     req.user = payload;
-    console.log("Payload decodificado:", payload);
+    console.log("Payload decodificado:");
     next();
   } catch (error) {
     console.error("Erro JWT:", error);
@@ -57,7 +57,7 @@ export let authenticateTokenADM = (req: any, res: any, next: any) => {
   try {
     const payload = JWT.verify(token, secretADM);
     req.user = payload;
-    console.log("Payload decodificado:", payload);
+    console.log("Payload decodificado:");
     next();
   } catch (error) {
     console.error("Erro JWT:", error);

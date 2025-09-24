@@ -30,12 +30,17 @@ http://localhost:3000
 ```javascript
 {
   "Content-Type": "application/json",
-  "Authorization": "Bearer <token>" // Para rotas protegidas
+  "Authorization": "Bearer <token>", // Para rotas protegidas
+  "X-Requested-With": "XMLHttpRequest" // Recomendado para segurança
 }
 ```
 
-### CORS
-A API possui CORS habilitado para todas as origens.
+### 🔒 Segurança e Rate Limiting
+- **Rate Limit Geral**: 100 requisições por 15 minutos por IP
+- **Rate Limit Login**: 5 tentativas por 15 minutos por IP
+- **CORS**: Configurado para `https://localhost:3333`
+- **Security Headers**: Helmet ativado
+- **Input Sanitization**: Automática em todas as rotas
 
 ---
 
@@ -868,6 +873,7 @@ GET /getCalendario/:id
 - **401**: Unauthorized - Token não fornecido
 - **403**: Forbidden - Token inválido
 - **404**: Not Found - Recurso não encontrado
+- **429**: Too Many Requests - Rate limit excedido
 
 ### 💥 Erro do Servidor
 - **500**: Internal Server Error - Erro interno do servidor
@@ -1035,12 +1041,15 @@ export default CandidatosList;
 
 ## 🛡️ Boas Práticas
 
-### 🔐 Segurança
-- Sempre use HTTPS em produção
-- Armazene tokens de forma segura (localStorage/sessionStorage)
-- Implemente logout para limpar tokens
-- Valide dados no front-end antes de enviar
-- Trate erros 401/403 redirecionando para login
+### 🔐 Segurança Enterprise
+- **HTTPS obrigatório** em produção
+- **Tokens seguros**: httpOnly cookies > localStorage
+- **Logout completo**: Limpe todos os tokens
+- **Validação dupla**: Front-end + back-end
+- **Rate limiting**: Implemente retry com backoff
+- **Erro 429**: Trate rate limit exceeded
+- **Headers de segurança**: Verifique CSP
+- **Input validation**: Sempre valide antes de enviar
 
 ### 📊 Performance
 - Use loading states durante requisições

@@ -1,4 +1,4 @@
-import * as DB from "../../../repositories/queryTools.js";
+import * as DB from "../../../repositories/shared/commonRepository";
 
 /**
  * Classe que representa um Candidato no sistema,

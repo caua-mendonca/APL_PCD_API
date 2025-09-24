@@ -1,4 +1,4 @@
-import * as DB from "../../../repositories/queryTools.js";
+import {changePass}from "../../../repositories/shared/commonRepository.js";
 import bcrypt from "bcrypt";
 
 /**
@@ -12,7 +12,7 @@ import bcrypt from "bcrypt";
  * @returns [status, message]
  */
 export let changePassword = async (body: any, id: string): Promise<any> => {
-  console.log(`[POST / CONTROLLER changePassword] Iniciando troca de senha para ${id}`);
+  console.log(`[POST / CONTROLLER changePassword]`);
 
   try {
     // Verifica se as senhas conferem
@@ -42,7 +42,7 @@ export let changePassword = async (body: any, id: string): Promise<any> => {
     const hashedPass = await bcrypt.hash(body.newSenha, 10);
 
     // Atualiza a senha no banco
-    const [status, message] = await DB.changePass(body.email, hashedPass, id, table);
+    const [status, message] = await changePass(body.email, hashedPass, id, table);
     return [status, message];
   } catch (error) {
     console.error(`[ERROR / changePassword]`, error);

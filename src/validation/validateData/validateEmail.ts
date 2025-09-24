@@ -1,4 +1,5 @@
-import * as DB from "../../repositories/queryTools.js";
+import * as DB from "../../repositories/shared/commonRepository.js";
+
 
 /**
  * Verifica no banco de dados se um determinado e-mail já está cadastrado.
@@ -14,7 +15,7 @@ export let validateEmailToDB = async (value: string, data: string, table: string
   let result: any = Number(await DB.validateData(value, data, table));
   result > 0 ? result = false : result = true;
 
-  console.log("RESULTADO DA FUNÇÃO validateEmailToDB:", result);
+  console.log("RESULTADO DA FUNÇÃO validateEmailToDB:");
 
   return result;
 };
