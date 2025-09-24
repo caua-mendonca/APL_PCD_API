@@ -13,7 +13,11 @@ dotenv.config({ path: ".env.status" });
 
 const APP = express();
 APP.use(express.json());
-APP.use(cors());
+APP.use(
+  cors({
+    origin: "https://localhost:3333",
+  })
+);
 
 /**
  * Função responsável por inicializar o servidor HTTP e configurar todas as rotas
@@ -59,9 +63,7 @@ export let conectServ = (PORT: number) => {
     console.log(`Requisição recebida em ${Routes.createCanditado}`);
     try {
       let body = req.body;
-      console.log(
-        `[POST ${Routes.createCanditado}] Requisição recebida`
-      );
+      console.log(`[POST ${Routes.createCanditado}] Requisição recebida`);
 
       let [status, message] = await controllerCandidate.controllerPostCandadate(
         body
@@ -137,9 +139,7 @@ APP.delete(
     console.log(`Requisição recebida em ${Routes.deleteCanditado}`);
     try {
       const id = String(req.params.id);
-      console.log(
-        `[GET ${Routes.deleteCanditado}] Requisição recebida, corpo`
-      );
+      console.log(`[GET ${Routes.deleteCanditado}] Requisição recebida, corpo`);
       let [status, message] =
         await controllerCandidate.controllerDeleteCandidato(id);
       res.status(status).send({ message: message });
@@ -380,7 +380,6 @@ APP.get(
   }
 );
 
-
 // -----------------------------------
 // Rotas CRUD Vaga
 // -----------------------------------
@@ -583,7 +582,6 @@ APP.put(
   }
 );
 
-
 // -----------------------------------
 // Rotas CRUD Evento
 // -----------------------------------
@@ -682,9 +680,9 @@ APP.delete(
 // -----------------------------------
 /**
  * Rota responsável pela criação de um calendário.
- * 
+ *
  * 🔒 Autenticada via Middleware.authenticateTokenEmp
- * 
+ *
  * @route POST /calendario
  * @param {string} req.params.id - ID da empresa vinculada ao calendário.
  * @param {Request} req - Objeto de requisição Express contendo informações da chamada HTTP.
@@ -710,9 +708,9 @@ APP.post(
 
 /**
  * Rota responsável pela consulta de calendários existentes.
- * 
+ *
  * 🔓 Endpoint público (sem autenticação).
- * 
+ *
  * @route GET /calendario
  * @param {string} req.params.id - ID de referência para buscar os calendários vinculados.
  * @param {Request} req - Objeto de requisição Express contendo informações da chamada HTTP.
@@ -732,7 +730,6 @@ APP.get(Routes.getCalendario, async (req, res) => {
     res.status(500).send({ message: String(process.env.STATUS_500) });
   }
 });
-
 
 // -----------------------------------
 // Rotas CRUD Login
@@ -798,7 +795,6 @@ APP.post(Routes.loginAdm, async (req, res) => {
   }
 });
 
-
 // -----------------------------------
 // Rotas Change Password
 // -----------------------------------
@@ -824,7 +820,6 @@ APP.post(Routes.changePassword, async (req, res) => {
     res.status(500).send({ message: String(process.env.STATUS_500) });
   }
 });
-
 
 // -----------------------------------
 // Rotas ADM
@@ -912,4 +907,3 @@ APP.post(
     }
   }
 );
-

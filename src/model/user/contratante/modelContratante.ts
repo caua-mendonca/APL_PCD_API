@@ -6,7 +6,14 @@ import {
   validateCNPJToDB,
 } from "../../../validation/validateData/validateCNPJ.js";
 import { validateAge } from "../../../validation/validateData/validateAge.js";
-import * as DB from "../../../repositories/queryTools.js";
+import * as DB from "../../../repositories/user/empresaRepository.js";
+import {
+  selectFromTable,
+  selectFromNameWhere,
+  deleteFromTable,
+  selectFromIdWhere,
+  updateUserColumn,
+} from "../../../repositories/shared/commonRepository.js";
 import { stat } from "fs";
 
 /**
@@ -106,7 +113,7 @@ export let getUser = async (
 ): Promise<[number, string[] | string]> => {
   console.log("[POST / MODEL Candidato]");
   try {
-    let [status, message] = await DB.selectFromTable(table);
+    let [status, message] = await selectFromTable(table);
     return [status, message];
   } catch (error) {
     return [500, String(process.env.STATUS_500)];
@@ -116,7 +123,7 @@ export let getUser = async (
 export let getUserByID = async (table: string, id: string): Promise<any> => {
   console.log(`[GET / MODEL Contratante]`);
   try {
-    let [status, message] = await DB.selectFromIdWhere(table, id);
+    let [status, message] = await selectFromIdWhere(table, id);
     return [status, message];
   } catch (error) {
     return [500, String(process.env.STATUS_500)];
@@ -130,7 +137,7 @@ export let deleteUser = async (table: string, id: string) => {
   console.log("[DELETE / MODEL Contratante]");
 
   try {
-    const [status, message] = await DB.deleteFromTable(table, id);
+    const [status, message] = await deleteFromTable(table, id);
     return [status, message];
   } catch (error) {
     return [500, String(process.env.STATUS_500)];
@@ -160,7 +167,7 @@ export let updateUser = async (table: string, id: string, body: object) => {
     }
 
     // Executa atualização
-    const [status, message] = await DB.updateUserColumn(
+    const [status, message] = await updateUserColumn(
       table,
       id,
       sets,

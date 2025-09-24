@@ -65,7 +65,7 @@ export let controllerGetContratanteById = async (id: string) => {
  * @param id - ID do contratante a ser deletado
  * @returns true se deletado, false caso contrário
  */
-export let controllerDeleteContratante = async (id: string) => {
+export let controllerDeleteContratante = async (id: string):Promise<any> => {
   console.log("[DELETE / CONTROLLER Contratante]");
 
   try {
@@ -82,7 +82,7 @@ export let controllerDeleteContratante = async (id: string) => {
  * @param body - Objeto com os dados a serem atualizados
  * @returns resultado da atualização ou false em caso de falha
  */
-export let controllerUpdateContratante = async (id: string, body: object) => {
+export let controllerUpdateContratante = async (id: string, body: object):Promise<any> => {
   console.log("[PUT / CNTROLLER Contratante]");
 
   try {

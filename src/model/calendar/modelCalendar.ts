@@ -1,6 +1,6 @@
 import * as Validations from "../../validation/validateId/validateId.js";
 import { Calendar } from "../entities/class/calendar.js";
-import * as DB from "../../repositories/queryTools.js";
+import * as DB from "../../repositories/calendar/calendarRepository.js";
 /**
  * Cria um calendário para uma empresa específica.
  * @param id - Identificador único da empresa (tb_empresa).

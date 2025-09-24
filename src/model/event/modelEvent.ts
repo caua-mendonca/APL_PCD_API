@@ -1,6 +1,7 @@
 import * as Validation from "../../validation/validateId/validateId.js";
-import * as DB from "../../repositories/queryTools.js";
+import * as DB from "../../repositories/event/eventRepository.js";
 import { Event } from "../entities/class/Event.js";
+import {deleteFromTable} from "../../repositories/shared/commonRepository.js";
 
 /**
  * Cria um novo evento e insere no banco de dados.
@@ -93,7 +94,7 @@ export let deleteEvento = async (id: string) => {
   console.log("[DELETE / MODEL Evento]");
 
   try {
-    let response = await DB.deleteFromTable("tb_evento", id);
+    let response = await deleteFromTable("tb_evento", id);
     return [200, response];
   } catch (error) {
     return [400, String(error)];

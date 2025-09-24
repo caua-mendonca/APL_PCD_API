@@ -7,7 +7,7 @@
  * Todas as funções retornam [status, message] seguindo padrão REST.
  */
 
-import * as DB from "../../repositories/queryTools.js";
+import * as DB from "../../repositories/admin/adminRepository.js";
 import { Acessibilidade } from "../entities/class/Acessibilidade.js";
 import { Barreira } from "../entities/class/Barreira.js";
 import { SubTipo } from "../entities/class/SubTipo.js";

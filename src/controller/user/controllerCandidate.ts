@@ -79,7 +79,7 @@ export let controllerGetCandidatoById = async (name: string) => {
  * @param id - ID do candidato a ser deletado
  * @returns resultado do delete ou false se não encontrado
  */
-export let controllerDeleteCandidato = async (id: string) => {
+export let controllerDeleteCandidato = async (id: string):Promise<any> => {
   console.log("[DELETE / CONTROLLER Candidato]");
 
   try {
@@ -97,7 +97,7 @@ export let controllerDeleteCandidato = async (id: string) => {
  * @param body - Dados para atualização
  * @returns resultado da atualização
  */
-export let controllerUpdateCandidato = async (id: string, body: object) => {
+export let controllerUpdateCandidato = async (id: string, body: object):Promise<any> => {
   console.log("[PUT / CONTROLLER Candidato]");
   try {
     let [status, message] = await Model.updateUser("tb_candidato", id, body);

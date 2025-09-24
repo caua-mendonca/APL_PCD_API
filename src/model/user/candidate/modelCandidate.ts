@@ -7,9 +7,15 @@ import { validateEmailToDB } from "../../../validation/validateData/validateEmai
 import { validateId } from "../../../validation/validateId/validateId.js";
 import { Candidate } from "../../entities/class/Candidate.js";
 import bcrypt from "bcrypt";
-import * as DB from "../../../repositories/queryTools.js";
+import * as DB from "../../../repositories/user/candidateRepository.js";
 import dotenv from "dotenv";
-import { error } from "console";
+import {
+  selectFromTable,
+  selectFromNameWhere,
+  deleteFromTable,
+  selectFromIdWhere,
+  updateUserColumn,
+} from "../../../repositories/shared/commonRepository.js";
 dotenv.config({ path: ".env.status" });
 
 /**
@@ -127,7 +133,7 @@ export let getUser = async (
 ): Promise<[number, string[] | string]> => {
   console.log("[GET / MODEL Candidato]");
   try {
-    let [status, message] = await DB.selectFromTable(table);
+    let [status, message] = await selectFromTable(table);
     return [status, message];
   } catch (error) {
     return [500, String(process.env.STATUS_500)];
@@ -137,11 +143,14 @@ export let getUser = async (
 /**
  * Busca um registro por ID.
  */
-export let getUserByName = async (table: string, name: string): Promise<any> => {
+export let getUserByName = async (
+  table: string,
+  name: string
+): Promise<any> => {
   console.log("[GET / MODEL Candidato]");
 
   try {
-    let [status, message] = await DB.selectFromNameWhere(table, name);
+    let [status, message] = await selectFromNameWhere(table, name);
     return [status, message];
   } catch (error) {
     return [500, String(process.env.STATUS_500)];
@@ -155,7 +164,7 @@ export let deleteUser = async (table: string, id: string) => {
   console.log("[DELETE / MODEL Candidato]");
 
   try {
-    const [status, message] = await DB.deleteFromTable(table, id);
+    const [status, message] = await deleteFromTable(table, id);
     return [status, message];
   } catch (error) {
     return [500, String(process.env.STATUS_500)];
@@ -189,25 +198,24 @@ export let updateUser = async (table: string, id: string, body: object) => {
       const index = keys.indexOf("data_nascimento");
       const dateIsValid: boolean = validateAge(new Date(values[index]));
       if (!dateIsValid) {
-         errorlog.push("Data de nascimento inválida");
+        errorlog.push("Data de nascimento inválida");
       }
     }
 
     // Executa atualização
-    const [status, message] = await DB.updateUserColumn(table, id, sets, values);
-    if(errorlog.length > 0) return [400, errorlog];
+    const [status, message] = await updateUserColumn(table, id, sets, values);
+    if (errorlog.length > 0) return [400, errorlog];
     return [status, message];
   } catch (error) {
     return [500, String(process.env.STATUS_500)];
   }
 };
 
-
 export let getUserById = async (id: string): Promise<any> => {
   console.log("[GET / MODEL Candidato]");
 
   try {
-    let [status, message] = await DB.selectFromIdWhere("tb_candidato_vaga", id);
+    let [status, message] = await selectFromIdWhere("tb_candidato_vaga", id);
     return [status, message];
   } catch (error) {
     return [500, String(process.env.STATUS_500)];

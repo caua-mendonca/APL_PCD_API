@@ -97,7 +97,7 @@ export let getVaga = async () => {
  * @returns Vaga correspondente ao ID informado.
  * @throws Erro caso a consulta falhe.
  */
-export let getVagaById = async (id: string) => {
+export let getVagaById = async (id: string):Promise<any> => {
   console.log("[GET / CONTROLLER Vaga]");
   try {
     let [status, message] = await modelVaga.getVagaById(id);
@@ -113,7 +113,7 @@ export let getVagaById = async (id: string) => {
  * @returns Resultado da operação de deleção.
  * @throws Erro caso a deleção falhe.
  */
-export let deleteVaga = async (id: string) => {
+export let deleteVaga = async (id: string):Promise<any> => {
   console.log("[DELETE / CONTROLLER Vaga]");
   try {
     let [status, message] = await modelVaga.deleteVaga(id);
@@ -188,7 +188,7 @@ export let getEvento = async (id: string) => {
  * @param id - Identificador único do evento a ser deletado.
  * @returns Retorna a resposta da exclusão do evento.
  */
-export let deleteEvento = async (id: string) => {
+export let deleteEvento = async (id: string):Promise<any> => {
   try {
     console.log(`[DELETE / CONTROLLER Evento]`, {
       eventoId: id,

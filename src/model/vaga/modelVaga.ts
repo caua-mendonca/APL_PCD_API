@@ -1,15 +1,25 @@
-import * as DB from "../../repositories/queryTools.js";
+import * as DB from "../../repositories/vaga/vagaRepository.js";
 import { validateDate } from "../../validation/validateData/validateDataVaga.js";
 import { validateIdByRelation } from "../../validation/validateId/validateId.js";
 import { Vaga } from "../entities/class/Vaga.js";
 import jwt from "jsonwebtoken";
 import dotevn from "dotenv";
+import { getAcess } from "../../repositories/user/empresaRepository.js";
+import { getEmpByColab } from "../../repositories/user/colaboradorRepository.js";
+import { insertCandidateVaga } from "../../repositories/user/candidateRepository.js";
+import {
+  selectFromTable,
+  selectFromNameWhere,
+  deleteFromTable,
+  selectFromIdWhere,
+  updateUserColumn,
+} from "../../repositories/shared/commonRepository.js";
 dotevn.config();
 
 export let getVagaModel = async (): Promise<any> => {
   console.log("[GET / CONTROLLER Vaga]");
   try {
-    let [status, message] = await DB.selectFromTable("tb_vaga");
+    let [status, message] = await selectFromTable("tb_vaga");
 
     return [status, message];
   } catch (error) {
@@ -20,7 +30,7 @@ export let getVagaModel = async (): Promise<any> => {
 export let getVagaById = async (id: string) => {
   console.log("[GET / MODEL Vaga]");
   try {
-    let [status, message] = await DB.selectFromIdWhere("tb_vaga", id);
+    let [status, message] = await selectFromIdWhere("tb_vaga", id);
     return [status, message];
   } catch (error) {
     return [400, String(error)];
@@ -30,7 +40,7 @@ export let getVagaById = async (id: string) => {
 export let deleteVaga = async (id: string) => {
   console.log("[DELETE / MODEL Vaga]");
   try {
-    let [status, message] = await DB.deleteFromTable("tb_vaga", id);
+    let [status, message] = await deleteFromTable("tb_vaga", id);
     return [status, message];
   } catch (error) {
     return [400, String(error)];
@@ -62,7 +72,7 @@ export let createVaga = async (
   try {
     let errorLog: string[] = [];
     // Instancia um novo objeto Vaga com os dados recebidos
-    let acessibilidade = await DB.getAcess(id_empresa);
+    let acessibilidade = await getAcess(id_empresa);
     let newVaga = new Vaga(
       new Date(vaga.data_fim),
       vaga.titulo,
@@ -101,7 +111,7 @@ export let createVaga = async (
     // Verifica se o id_empresa refere-se a um colaborador para obter a empresa mãe
 
     if (id_empresa.toUpperCase().startsWith("COLAB")) {
-      let empresaId = await DB.getEmpByColab(id_empresa);
+      let empresaId = await getEmpByColab(id_empresa);
 
       let [status, message] = await DB.insertEmpVaga(newVaga, empresaId);
       return [status, message];
@@ -139,7 +149,7 @@ export let registerCandidateToVaga = async (
 
     let hora = new Date();
 
-    let [status, message] = await DB.insertCandidateVaga(
+    let [status, message] = await insertCandidateVaga(
       id_candidate,
       id_vaga,
       hora
@@ -163,13 +173,13 @@ export let updateVaga = async (body: any, id: string): Promise<any> => {
     // Valida CPF se presente
     if (keys.includes("data_fim")) {
       const index = keys.indexOf("data_fim");
-      if (!validateDate(body.data_fim)===false) {
+      if (!validateDate(body.data_fim) === false) {
         errorLog.push("Data de fim inválida");
       }
     }
 
     // Executa atualização
-    const [status, message] = await DB.updateUserColumn(
+    const [status, message] = await updateUserColumn(
       "tb_vaga",
       id,
       sets,

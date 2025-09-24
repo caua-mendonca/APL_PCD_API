@@ -1,4 +1,4 @@
-import * as DB from "../../../repositories/queryTools.js";
+import * as DB from "../../../repositories/shared/commonRepository.js";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 dotenv.config();

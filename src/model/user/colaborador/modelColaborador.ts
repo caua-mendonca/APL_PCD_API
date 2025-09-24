@@ -1,6 +1,7 @@
 import { validateIdByRelation } from "../../../validation/validateId/validateId.js";
 import { Colaborador } from "../../entities/class/Colaborador.js";
-import * as DB from "../../../repositories/queryTools.js";
+import * as DB from "../../../repositories/user/colaboradorRepository.js";
+import { selectFromIdWhere } from "../../../repositories/shared/commonRepository.js";
 import { error } from "console";
 
 export let createColaborador = async (
@@ -21,20 +22,23 @@ export let createColaborador = async (
       user.senha,
       user.setor
     );
-      colaborador.setId()
-      await DB.insertIntoColaborador(
-        colaborador.id,
-        colaborador.name,
-        colaborador.email,
-        colaborador.senha,
-        colaborador.setor
-      );
-      await DB.updateColaboradorEmpresa(colaborador.id, id_empresa);
-      let [status, message]=await DB.insertEmpresaColaborador(colaborador.id, id_empresa);
-      return [status, message];
-    } catch (error) {
-      return [500, String(process.env.STATUS_500)];
-    }
+    colaborador.setId();
+    await DB.insertIntoColaborador(
+      colaborador.id,
+      colaborador.name,
+      colaborador.email,
+      colaborador.senha,
+      colaborador.setor
+    );
+    await DB.updateColaboradorEmpresa(colaborador.id, id_empresa);
+    let [status, message] = await DB.insertEmpresaColaborador(
+      colaborador.id,
+      id_empresa
+    );
+    return [status, message];
+  } catch (error) {
+    return [500, String(process.env.STATUS_500)];
+  }
 };
 
 /**
@@ -43,7 +47,7 @@ export let createColaborador = async (
 export let getColaborador = async (table: string, id: string): Promise<any> => {
   console.log("[GET / MODEL Colaborador]");
   try {
-    let [status, message] = await DB.selectFromIdWhere(table, id);
+    let [status, message] = await selectFromIdWhere(table, id);
     return [status, message];
   } catch (error) {
     return [500, String(process.env.STATUS_500)];
