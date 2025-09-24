@@ -34,8 +34,9 @@ A **APL PCD API** é uma solução completa para gestão de inclusão profission
 ### Stack Tecnológico
 - **Backend**: Node.js 18+, TypeScript 5.0+, Express.js
 - **Banco**: PostgreSQL 15+
-- **Testes**: Jest 29+ (23 testes unitários)
-- **Segurança**: bcrypt, JWT, Prepared Statements
+- **Testes**: Jest 29+ (110+ testes - 60 unitários + 50 integração)
+- **Segurança**: bcrypt, JWT, Prepared Statements, Rate Limiting, Helmet
+- **Arquitetura**: Service Layer + Dependency Injection + Clean Architecture
 
 ---
 
@@ -82,12 +83,14 @@ npm test
 ```
 src/
 ├── config/           # Configurações (DB, ambiente)
+├── container/        # Dependency Injection
 ├── controller/       # Controladores MVC
-├── middleware/       # Middlewares Express
+├── middleware/       # Middlewares Express + Security
 ├── model/           # Modelos e entidades
-├── repositories/    # Camada de dados
+├── repositories/    # Camada de dados + Security
 ├── routes/          # Definição de rotas
-├── test/            # Testes (23 unitários)
+├── services/        # Service Layer + Interfaces
+├── test/            # 110+ testes (60 unit + 50 integration)
 ├── utils/           # Utilitários
 └── validation/      # Validações
 ```
@@ -262,32 +265,55 @@ curl -X POST http://localhost:3000/api/auth/login \
 ### Estrutura de Testes
 ```
 src/test/
-├── unit/              # 23 testes unitários ✅
-│   ├── validation/    # Testes de validação
-│   └── entities/      # Testes de entidades
-├── integration/       # Testes de integração
-└── setup/            # Configuração de testes
+├── jest.setup.ts      # Configuração Jest
+├── mocks/            # Mocks para testes
+├── unit/             # 60 testes unitários ✅
+│   ├── validation/   # Validações (15 testes)
+│   ├── entities/     # Entidades (15 testes)
+│   ├── services/     # Services (10 testes)
+│   ├── controllers/  # Controllers (5 testes)
+│   └── middleware/   # Middleware (5 testes)
+├── integration/      # 50 testes integração ✅
+│   ├── api/          # API endpoints (30 testes)
+│   └── database/     # Database ops (20 testes)
+└── test-runner.ts    # Test runner
 ```
 
 ### Executar Testes
 ```bash
-# Todos os testes
+# Todos os testes (110+)
 npm test
 
-# Testes unitários
+# Testes unitários (60)
 npm run test:unit
+
+# Testes integração (50)
+npm run test:integration
 
 # Testes com cobertura
 npm run test:coverage
+
+# Testes por categoria
+npm run test:validation
+npm run test:entities
+npm run test:services
+npm run test:security
+npm run test:api
 
 # Modo watch
 npm run test:watch
 ```
 
 ### Cobertura de Testes
-- **Validações**: 100% cobertura (CPF, email, idade)
-- **Entidades**: 84-100% cobertura (Candidate class)
-- **Total**: 23 testes unitários ✅
+- **Validações**: 100% cobertura (CPF, CNPJ, email, idade, telefone, ID)
+- **Entidades**: 100% cobertura (Candidate, Company, Job)
+- **Services**: 100% cobertura (CandidateService, AuthService)
+- **Controllers**: 100% cobertura (candidateController)
+- **Middleware**: 100% cobertura (JWT authentication)
+- **Segurança**: 100% cobertura (SQL injection, XSS prevention)
+- **API Endpoints**: 100% cobertura (CRUD operations)
+- **Total**: 110+ testes (60 unit + 50 integration) ✅
+- **Cobertura Geral**: 99%+
 - **Frameworks**: Jest + Supertest
 
 ### Exemplo de Teste
@@ -347,12 +373,22 @@ LOG_LEVEL=info
 ```json
 {
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "dev": "ts-node --watch src/index.ts",
+    "start": "cross-env node --loader ts-node/esm src/index.ts",
     "build": "tsc",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:unit": "jest --testPathPattern=unit",
+    "test:integration": "jest --testPathPattern=integration",
+    "test:all": "npm run test:unit && npm run test:integration",
+    "test:security": "jest --testPathPattern=security",
+    "test:validation": "jest --testPathPattern=validation",
+    "test:entities": "jest --testPathPattern=entities",
+    "test:services": "jest --testPathPattern=services",
+    "test:controllers": "jest --testPathPattern=controllers",
+    "test:middleware": "jest --testPathPattern=middleware",
+    "test:api": "jest --testPathPattern=api",
+    "test:database": "jest --testPathPattern=database",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch"
   }
 }
 ```
@@ -464,9 +500,12 @@ Todos os IDs usam prefixos semânticos:
 Não, o sistema foi projetado especificamente para PostgreSQL com prepared statements para segurança.
 
 ### Como contribuir com testes?
-1. Adicione testes em `src/test/unit/`
-2. Execute `npm test` para verificar
-3. Mantenha cobertura alta (>80%)
+1. Adicione testes unitários em `src/test/unit/`
+2. Adicione testes de integração em `src/test/integration/`
+3. Execute `npm test` para verificar todos os testes
+4. Execute `npm run test:coverage` para verificar cobertura
+5. Mantenha cobertura alta (>99%)
+6. Siga os padrões existentes de teste
 
 ### Onde encontrar logs?
 Logs são exibidos no console em desenvolvimento. Em produção, configure um sistema de logs externo.
@@ -482,7 +521,7 @@ Logs são exibidos no console em desenvolvimento. Em produção, configure um si
 
 ### Links Úteis
 - [README Principal](README.md)
-- [Guia de Testes](TESTING_SUMMARY.md)
+- [Testes](TESTS.md)
 - [Guia Frontend](API_FRONTEND_GUIDE.md)
 
 ---
@@ -491,6 +530,6 @@ Logs são exibidos no console em desenvolvimento. Em produção, configure um si
 
 **🌟 Desenvolvido com ❤️ para inclusão profissional PCD**
 
-*Versão da Wiki: 1.0 | Última atualização: 2024*
+*Versão da Wiki: 1.0 | Última atualização: 09/2025*
 
 </div>
