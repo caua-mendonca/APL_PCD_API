@@ -2,6 +2,90 @@ import * as DB from "../config/connect.js";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
 
+
+const ALLOWED_TABLES = new Set([
+  "tb_colaborador",
+  "tb_empresa",
+  "tb_empresa_colaborador",
+  "tb_candidato",
+  "tb_ifbr",
+  "tb_candidato_ifbr",
+  "tb_empresa_vaga",
+  "tb_vaga",
+  "tb_candidato_vaga",
+  "tb_calendario",
+  "tb_evento",
+  "tb_barreira",
+  "tb_acessibilidade",
+  "tb_sub_tipo_deficiencia",
+  "tb_tipo_deficiencia",
+  "tb_sub_tipo_barreira",
+  "tb_barreira_acessibilidade"
+]);
+
+/**
+ * Mapa (por tabela) das colunas permitidas para operações dinâmicas (update).
+ * Expanda conforme o schema real do banco.
+ */
+const ALLOWED_COLUMNS: Record<string, Set<string>> = {
+  tb_colaborador: new Set(["id_colaborador", "nome", "setor", "email", "senha", "status"]),
+  tb_empresa: new Set(["id", "nome_fantasia", "razao_social", "email", "senha", "cnpj", "telefone", "status", "acessibilidade", "id_colaborador"]),
+  tb_empresa_colaborador: new Set(["tb_empresa_id", "tb_colaborador_id_colaborador"]),
+  tb_candidato: new Set(["id", "nome", "email", "senha", "telefone", "cpf", "data_nascimento", "status", "deficiencia", "tipo_deficiencia", "barreira", "acessibilidade", "id_ifbr", "tb_candidato_id"]),
+  tb_vaga: new Set(["id", "data_inicio", "data_fim", "status", "titulo", "descricao", "salario", "localidade", "acess", "tipo", "id_creator"]),
+  tb_empresa_vaga: new Set(["tb_empresa_id", "tb_vaga_id", "tb_vaga_status_vaga", "tb_vaga_data_fim", "tb_vaga_data_inicio"]),
+  tb_calendario: new Set(["id", "nome_calendario", "id_empresa"]),
+  tb_evento: new Set(["id", "nome", "descricao", "data_evento", "hora_ini", "hora_fim", "id_candidato", "id_calendario", "status"]),
+  tb_barreira: new Set(["id", "descricao", "created_at", "updated_at"]),
+  tb_acessibilidade: new Set(["id", "descricao", "created_at", "updated_at"]),
+  tb_sub_tipo_deficiencia: new Set(["id", "nome", "tipo_id", "created_at", "updated_at"]),
+  tb_candidato_vaga: new Set(["tb_vaga_id", "tb_candidato_id", "hora_candidatura"]),
+  tb_sub_tipo_barreira: new Set(["sub_tipo_id", "barreira_id"]),
+  tb_barreira_acessibilidade: new Set(["barreira_id", "acessibilidade_id"])
+};
+
+/**
+ * Valida se o identificador (tabela) é permitido.
+ */
+const safeIdentifier = (table: string) => {
+  if (!table || typeof table !== "string") {
+    throw new Error("Identificador de tabela inválido.");
+  }
+  if (!ALLOWED_TABLES.has(table)) {
+    throw new Error(`Tabela não autorizada: ${table}`);
+  }
+  return table;
+};
+
+/**
+ * Valida que as colunas extraídas existam na whitelist para a tabela.
+ */
+const validateColumnsForTable = (table: string, columns: string[]) => {
+  const allowed = ALLOWED_COLUMNS[table];
+  if (!allowed) {
+    throw new Error(`Não há definição de colunas permitidas para a tabela ${table}`);
+  }
+  for (const col of columns) {
+    if (!allowed.has(col)) {
+      throw new Error(`Coluna não autorizada para atualização: ${col}`);
+    }
+  }
+};
+
+const extractColumnsFromSets = (sets: string): string[] => {
+  // separa por vírgula e captura a parte antes do '='
+  const parts = sets.split(",").map(p => p.trim()).filter(Boolean);
+  const cols: string[] = [];
+  for (const part of parts) {
+    const m = part.match(/^([a-zA-Z0-9_]+)\s*=/);
+    if (!m) {
+      throw new Error(`Formato inválido em sets: "${part}"`);
+    }
+    cols.push(m[1]);
+  }
+  return cols;
+};
+
 /**
  * Insere um novo candidato na tabela tb_candidato.
  * @param user - Objeto com todos os dados do candidato.
@@ -20,37 +104,40 @@ export let insertIntoCandidate = async (user: {
   acessbilidade: string;
   status: boolean;
 }): Promise<[number, string]> => {
+  const table = safeIdentifier("tb_candidato");
   try {
-    console.log(`[POST / QUERY]`);
+    console.log(`[POST / QUERY] insertIntoCandidate -> iniciando inserção em ${table}`);
 
-    await DB.pool.query(
-      `INSERT INTO tb_candidato (
+    const sql = `
+      INSERT INTO ${table} (
         id, nome, email, senha, telefone, cpf, data_nascimento, status, deficiencia, tipo_deficiencia, barreira, acessibilidade
       ) VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8,
         $9, $10, $11, $12
-      )`,
-      [
-        user.id,
-        user.name,
-        user.email,
-        user.senha,
-        user.telefone,
-        user.cpf,
-        user.data_nascimento,
-        user.status,
-        user.def,
-        user.sub_tipo,
-        user.barreira,
-        user.acessbilidade,
-      ]
-    );
-    console.log(`[POST / QUERY] Success`);
+      );
+    `;
 
+    await DB.pool.query(sql, [
+      user.id,
+      user.name,
+      user.email,
+      user.senha,
+      user.telefone,
+      user.cpf,
+      user.data_nascimento,
+      user.status,
+      user.def,
+      user.sub_tipo,
+      user.barreira,
+      user.acessbilidade,
+    ]);
+
+    console.log(`[POST / QUERY] insertIntoCandidate -> success`);
     return [201, String(process.env.STATUS_201)];
-  } catch (error) {
-    console.log(`[POST / QUERY] Failed`);
-    return [400, String(Error)];
+  } catch (error: any) {
+    console.error(`[POST / QUERY] insertIntoCandidate -> failed:`, error?.message ?? error);
+    // retorna código genérico e mensagem ambiente, sem vazar stack/objeto Error
+    return [500, String(process.env.STATUS_500 ?? "Internal Server Error")];
   }
 };
 
@@ -70,33 +157,35 @@ export let insertIntoContratante = async (user: {
   telefone: string;
   acessibilidade: string;
   status: boolean;
-}) => {
-  console.log("[QUERY] Inserindo contratante");
+}): Promise<[number, string]> => {
+  const table = safeIdentifier("tb_empresa");
+  console.log(`[QUERY] Inserindo contratante -> tabela ${table}`);
   try {
-    await DB.pool.query(
-      `INSERT INTO tb_empresa (
+    const sql = `
+      INSERT INTO ${table} (
         id, nome_fantasia, razao_social, email, senha, cnpj, telefone, status, acessibilidade
       ) VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8, $9
-      )`,
-      [
-        user.id,
-        user.nome_fantasia,
-        user.razao_social,
-        user.email,
-        user.senha,
-        user.cnpj,
-        user.telefone,
-        user.status,
-        user.acessibilidade,
-      ]
-    );
+      );
+    `;
 
-    console.log(`[POST / QUERY] Success`);
+    await DB.pool.query(sql, [
+      user.id,
+      user.nome_fantasia,
+      user.razao_social,
+      user.email,
+      user.senha,
+      user.cnpj,
+      user.telefone,
+      user.status,
+      user.acessibilidade,
+    ]);
+
+    console.log(`[POST / QUERY] insertIntoContratante -> success`);
     return [201, String(process.env.STATUS_201)];
-  } catch (error) {
-    console.log(`[POST / QUERY] Failed`);
-    return [400, String(Error)];
+  } catch (error: any) {
+    console.error(`[POST / QUERY] insertIntoContratante -> failed:`, error?.message ?? error);
+    return [500, String(process.env.STATUS_500 ?? "Internal Server Error")];
   }
 };
 
@@ -113,112 +202,18 @@ export let insertIntoContratante = async (user: {
  * @param id ID a ser validado.
  * @returns Booleano indicando existência.
  */
-export const selectId = async (table: string, id: string) => {
+export const selectId = async (table: string, id: string): Promise<boolean> => {
   try {
-    const query = `SELECT id FROM ${table} WHERE id = $1;`;
+    const safeTable = safeIdentifier(table); // valida explicitamente
+    const query = `SELECT id FROM ${safeTable} WHERE id = $1;`;
     const result = await DB.pool.query(query, [id]);
     return result.rows.length > 0;
-  } catch (error) {
-    console.error(
-      `[selectId] ERRO ao validar ID ${id} na tabela ${table}:`,
-      error
-    );
-    throw error;
+  } catch (error: any) {
+    console.error(`[selectId] ERRO ao validar ID ${id} na tabela ${table}:`, error?.message ?? error);
+    throw new Error("Erro ao validar ID"); // lançamento genérico para camada superior tratar
   }
 };
 
-/**
- * Insere um registro na tabela tb_ifbr.
- * @param id ID do domínio IFBR.
- * @param name Nome do domínio.
- * @param data Data da resposta.
- * @param score Pontuação do domínio.
- * @param id_tupla ID da tupla IFBR para vinculação.
- */
-export let insertIntoIFBR = async (
-  id: number,
-  name: string,
-  data: Date,
-  score: number,
-  id_tupla: string
-) => {
-  try {
-
-    await DB.pool.query(
-      `INSERT INTO tb_ifbr (id_dominio, nome, data_resposta, score, id_ifbr) VALUES ($1, $2, $3, $4, $5);`,
-      [id, name, data, score, id_tupla]
-    );
-
-  } catch (error) {
-    console.error(
-      `[insertIntoIFBR] ERRO ao inserir domínio IFBR ${name}:`,
-      error
-    );
-    throw error;
-  }
-};
-
-/**
- * Atualiza o campo id_ifbr no candidato.
- * @param id ID do candidato.
- * @param id_ifbr ID IFBR para atualização.
- */
-export let updateIfbrCandidato = async (id: string, id_ifbr: string) => {
-  try {
-
-    await DB.pool.query(`UPDATE tb_candidato SET id_ifbr = $1 WHERE id = $2;`, [
-      id_ifbr,
-      id,
-    ]);
-  } catch (error) {
-    console.error(
-      `[updateIfbrCandidato] ERRO ao atualizar id_ifbr do candidato ${id}:`,
-      error
-    );
-    throw error;
-  }
-};
-
-/**
- * Insere os dados cruzados entre candidato e IFBR na tabela tb_candidato_ifbr.
- * Executa SELECT com JOIN para garantir dados consistentes.
- */
-export const insertCandidatoIFBRData = async () => {
-  const sql = `
-    INSERT INTO tb_candidato_ifbr (
-      tb_candidato_cpf,
-      tb_candidato_id,
-      tb_ifbr_id_dominio,
-      tb_ifbr_score,
-      tb_ifbr_id_ifbr
-    )
-    SELECT 
-      c.cpf,
-      c.id,
-      i.id_dominio,
-      i.score,
-      c.id_ifbr
-    FROM tb_candidato c
-    JOIN tb_ifbr i
-      ON c.id_ifbr = i.id_ifbr
-    ON CONFLICT DO NOTHING;
-  `;
-
-  try {
-
-    await DB.pool.query(sql);
-
-    (
-      `[insertCandidatoIFBRData] Inserção cruzada concluída com sucesso!`
-    );
-  } catch (error) {
-    console.error(
-      `[insertCandidatoIFBRData] ERRO ao inserir dados na tb_candidato_ifbr:`,
-      error
-    );
-    throw error;
-  }
-};
 
 /**
  * Insere um novo colaborador na tabela tb_colaborador.
@@ -234,24 +229,22 @@ export let insertIntoColaborador = async (
   email: string,
   senha: string,
   setor: string
-) => {
+): Promise<[number, string]> => {
   try {
-
-    await DB.pool.query(
-      `INSERT INTO tb_colaborador (
+    const safeTable = safeIdentifier("tb_colaborador");
+    const sql = `
+      INSERT INTO ${safeTable} (
         id_colaborador, nome, setor, email, senha
-      ) VALUES (
-        $1, $2, $3, $4, $5
-      )`,
-      [id, name, setor, email, senha]
-    );
+      ) VALUES ($1, $2, $3, $4, $5);
+    `;
 
-  } catch (error) {
-    console.error(
-      `[insertIntoColaborador] ERRO ao inserir colaborador ${id}:`,
-      error
-    );
-    throw error;
+    await DB.pool.query(sql, [id, name, setor, email, senha]);
+
+    console.log(`[insertIntoColaborador] Inserção realizada com sucesso (colaborador=${id})`);
+    return [201, String(process.env.STATUS_201)];
+  } catch (error: any) {
+    console.error(`[insertIntoColaborador] ERRO ao inserir colaborador ${id}:`, error?.message ?? error);
+    return [500, String(process.env.STATUS_500 ?? "Internal Server Error")];
   }
 };
 
@@ -263,21 +256,23 @@ export let insertIntoColaborador = async (
 export let insertEmpresaColaborador = async (
   id_colaborador: string,
   id_empresa: string
-): Promise<[number, any]> => {
-  console.log("[QUERY] Inserindo relação colaborador-empresa...");
+): Promise<[number, string]> => {
+  console.log("[insertEmpresaColaborador] Inserindo relação colaborador-empresa...");
   try {
+    const safeTable1 = safeIdentifier("tb_empresa");
     const empresa = await DB.pool.query(
-      `SELECT cnpj, razao_social FROM tb_empresa WHERE id = $1`,
+      `SELECT cnpj, razao_social FROM ${safeTable1} WHERE id = $1`,
       [id_empresa]
     );
 
     if (empresa.rowCount === 0) {
-      throw new Error(`Empresa ${id_empresa} não encontrada`);
+      console.warn(`[insertEmpresaColaborador] Empresa ${id_empresa} não encontrada`);
+      return [404, String(process.env.STATUS_404 ?? "Not Found")];
     }
 
-    // Insere a relação ignorando conflitos (duplicates)
+    const safeTable2 = safeIdentifier("tb_empresa_colaborador");
     const sql = `
-      INSERT INTO tb_empresa_colaborador (
+      INSERT INTO ${safeTable2} (
         tb_empresa_id,
         tb_colaborador_id_colaborador
       )
@@ -285,13 +280,13 @@ export let insertEmpresaColaborador = async (
       ON CONFLICT DO NOTHING;
     `;
 
-    let result = await DB.pool.query(sql, [id_empresa, id_colaborador]);
+    await DB.pool.query(sql, [id_empresa, id_colaborador]);
 
-    console.log(`[POST / QUERY] Success`);
+    console.log(`[insertEmpresaColaborador] Relação criada com sucesso (empresa=${id_empresa}, colaborador=${id_colaborador})`);
     return [201, String(process.env.STATUS_201)];
-  } catch (error) {
-    console.error(`[POST / QUERY] Failed`);
-    return [500, error];
+  } catch (error: any) {
+    console.error(`[insertEmpresaColaborador] ERRO ao inserir relação:`, error?.message ?? error);
+    return [500, String(process.env.STATUS_500 ?? "Internal Server Error")];
   }
 };
 /**
@@ -302,24 +297,17 @@ export let insertEmpresaColaborador = async (
 export let updateColaboradorEmpresa = async (
   id: string,
   id_empresa: string
-) => {
+): Promise<[number, string]> => {
   try {
+    const safeTable = safeIdentifier("tb_empresa");
+    const sql = `UPDATE ${safeTable} SET id_colaborador = $1 WHERE id = $2;`;
+    await DB.pool.query(sql, [id, id_empresa]);
 
-
-    await DB.pool.query(
-      `UPDATE tb_empresa SET id_colaborador = $1 WHERE id = $2;`,
-      [id, id_empresa]
-    );
-
-    (
-      `[updateColaboradorEmpresa] Atualização realizada com sucesso!`
-    );
-  } catch (error) {
-    console.error(
-      `[updateColaboradorEmpresa] ERRO ao atualizar colaborador na empresa:`,
-      error
-    );
-    throw error;
+    console.log(`[updateColaboradorEmpresa] Atualização realizada com sucesso (empresa=${id_empresa}, colaborador=${id})`);
+    return [200, String(process.env.STATUS_200 ?? "OK")];
+  } catch (error: any) {
+    console.error(`[updateColaboradorEmpresa] ERRO ao atualizar colaborador na empresa:`, error?.message ?? error);
+    return [500, String(process.env.STATUS_500 ?? "Internal Server Error")];
   }
 };
 
@@ -330,22 +318,22 @@ export let updateColaboradorEmpresa = async (
  */
 export let selectFromTable = async (
   table: string
-): Promise<[number, string[] | string]> => {
-  console.log(`[GET / QUERY]`);
+): Promise<[number, any]> => {
+  console.log(`[selectFromTable] Executando SELECT ALL em ${table}`);
 
   try {
-    const query = `SELECT * FROM ${table};`;
+    const safeTable = safeIdentifier(table);
+    const query = `SELECT * FROM ${safeTable};`;
     const result = await DB.pool.query(query);
 
-    console.log(`[GET / QUERY] Success`);
-    let response = result.rows;
-
-    return [200, response];
-  } catch (error) {
-    console.log(`[GET / QUERY] Failed`);
-    return [500, String(error)];
+    console.log(`[selectFromTable] Success (${result.rowCount} registros)`);
+    return [200, result.rows];
+  } catch (error: any) {
+    console.error(`[selectFromTable] Failed:`, error?.message ?? error);
+    return [500, String(process.env.STATUS_500 ?? "Internal Server Error")];
   }
 };
+
 
 /**
  * Seleciona um registro de uma tabela pelo ID.
@@ -356,37 +344,36 @@ export let selectFromTable = async (
 export let selectFromNameWhere = async (
   table: string,
   name: string
-): Promise<any> => {
-  console.log(`[QUERY]}`);
+): Promise<[number, any]> => {
+  console.log(`[selectFromNameWhere] Executando SELECT WHERE nome=... em ${table}`);
   try {
-    const query = `SELECT * FROM ${table} WHERE nome = $1`;
+    const safeTable = safeIdentifier(table);
+    const query = `SELECT * FROM ${safeTable} WHERE nome = $1;`;
     const result = await DB.pool.query(query, [name]);
 
-    console.log(`[QUERY] Success`);
-
+    console.log(`[selectFromNameWhere] Success (${result.rowCount} registros)`);
     return [200, result.rows];
-  } catch (error) {
-    console.log(`[QUERY] Failed`);
-    return [500, String(error)];
+  } catch (error: any) {
+    console.error(`[selectFromNameWhere] Failed:`, error?.message ?? error);
+    return [500, String(process.env.STATUS_500 ?? "Internal Server Error")];
   }
 };
 
 export let selectFromIdWhere = async (
   table: string,
   id: string
-): Promise<any> => {
-  console.log(`[QUERY]`);
+): Promise<[number, { success: boolean; message: string; data: any }]> => {
+  const func = "selectFromIdWhere";
   try {
-    const query = `SELECT * FROM ${table} WHERE tb_candidato_id = $1`;
-    const result = await DB.pool.query(query, [id]);
+    const safeTable = safeIdentifier(table);
+    const sql = `SELECT * FROM ${safeTable} WHERE tb_candidato_id = $1;`;
+    const result = await DB.pool.query(sql, [id]);
 
-
-    console.log(`[QUERY] Success`);
-
-    return [200, result.rows];
-  } catch (error) {
-    console.log(`[QUERY] Failed`);
-    return [500, String(error)];
+    console.log(`[${func}] Success: ${result.rowCount} rows (table=${safeTable}, tb_candidato_id=${id})`);
+    return [200, { success: true, message: "Registros encontrados", data: result.rows }];
+  } catch (err: any) {
+    console.error(`[${func}] Error:`, err?.message ?? err);
+    return [500, { success: false, message: "Erro ao executar consulta", data: null }];
   }
 };
 
@@ -406,18 +393,18 @@ export let selectFromIdWhere = async (
 export let deleteFromTable = async (
   table: string,
   id: string
-): Promise<any> => {
-  console.log(`[QUERY]`);
+): Promise<[number, { success: boolean; message: string; data: any }]> => {
+  const func = "deleteFromTable";
   try {
-    let result = await DB.pool.query(
-      `UPDATE ${table} SET status = $1 WHERE id = $2;`,
-      [false, id]
-    );
-    console.log(`[QUERY] Success`);
-    return [200, result];
-  } catch (error) {
-    console.log(`[QUERY] Failed`);
-    return [500, String(error)];
+    const safeTable = safeIdentifier(table);
+    const sql = `UPDATE ${safeTable} SET status = $1 WHERE id = $2;`;
+    const result = await DB.pool.query(sql, [false, id]);
+
+    console.log(`[${func}] Success (table=${safeTable}, id=${id}, rowCount=${result.rowCount})`);
+    return [200, { success: true, message: "Registro marcado como inativo (delete lógico)", data: { rowCount: result.rowCount } }];
+  } catch (err: any) {
+    console.error(`[${func}] Error:`, err?.message ?? err);
+    return [500, { success: false, message: "Erro ao executar delete lógico", data: null }];
   }
 };
 
@@ -431,24 +418,41 @@ export let deleteFromTable = async (
  */
 export let updateUserColumn = async (
   table: string,
-  id: String,
+  id: string,
   sets: string,
   values: any[]
-): Promise<any> => {
-  console.log(`[QUERY]`);
+): Promise<[number, { success: boolean; message: string; data: any }]> => {
+  const func = "updateUserColumn";
   try {
-    const query = `UPDATE ${table} SET ${sets} WHERE id = $${
-      values.length + 1
-    }`;
-    values.push(id);
+    const safeTable = safeIdentifier(table);
 
-    const result = await DB.pool.query(query, values);
+    // extrair colunas e validar
+    const columns = extractColumnsFromSets(sets);
+    validateColumnsForTable(safeTable, columns);
 
-    console.log(`[QUERY] Success`);
-    return [200, result];
-  } catch (error) {
-    console.log(`[QUERY] Failed`);
-    return [500, String(error)];
+    // garantimos que values.length corresponda ao número de colunas detectadas
+    if (columns.length !== values.length) {
+      throw new Error(`Quantidade de valores (${values.length}) não corresponde ao número de colunas (${columns.length}).`);
+    }
+
+    // reconstruct sets to ensure normalized placeholders $1..$N
+    const normalizedSets = columns.map((col, idx) => `${col} = $${idx + 1}`).join(", ");
+
+    // id será o último placeholder
+    const finalQuery = `UPDATE ${safeTable} SET ${normalizedSets} WHERE id = $${values.length + 1};`;
+    const finalValues = [...values, id];
+
+    const result = await DB.pool.query(finalQuery, finalValues);
+
+    console.log(`[${func}] Success (table=${safeTable}, id=${id}, updated=${result.rowCount})`);
+    return [200, { success: true, message: "Registro atualizado com sucesso", data: { rowCount: result.rowCount } }];
+  } catch (err: any) {
+    console.error(`[${func}] Error:`, err?.message ?? err);
+    // se erro de validação do desenvolvedor, devolve 400
+    if (err.message && /não corresponde|inválido|não autorizada|formato inválido/i.test(err.message)) {
+      return [400, { success: false, message: err.message, data: null }];
+    }
+    return [500, { success: false, message: "Erro ao executar atualização", data: null }];
   }
 };
 /**
@@ -489,11 +493,10 @@ export const insertVaga = async (
   acess: string,
   tipo: string,
   id_creator: string
-): Promise<boolean> => {
+): Promise<[number, { success: boolean; message: string; data: any }]> => {
+  const func = "insertVaga";
   try {
-
-
-    const query = `
+    const sql = `
       INSERT INTO tb_vaga (
         id,
         data_inicio,
@@ -508,10 +511,10 @@ export const insertVaga = async (
         id_creator
       ) VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
-      )
+      );
     `;
 
-    await DB.pool.query(query, [
+    await DB.pool.query(sql, [
       id,
       data_inicio,
       data_fim,
@@ -525,11 +528,11 @@ export const insertVaga = async (
       id_creator,
     ]);
 
-    console.log(`[insertVaga] Vaga ${id} inserida com sucesso!`);
-    return true;
-  } catch (error) {
-    console.error(`[insertVaga] ERRO ao inserir vaga ${id}:`, error);
-    return false;
+    console.log(`[${func}] Vaga ${id} inserida com sucesso`);
+    return [201, { success: true, message: "Vaga inserida", data: { id } }];
+  } catch (err: any) {
+    console.error(`[${func}] Error ao inserir vaga ${id}:`, err?.message ?? err);
+    return [500, { success: false, message: "Erro ao inserir vaga", data: null }];
   }
 };
 
@@ -551,8 +554,8 @@ export let insertEmpVaga = async (
     acessibilidade: string;
   },
   id_empresa: string
-) => {
-  console.log("[QUERY] Inserindo relação vaga-empresa...");
+): Promise<[number, { success: boolean; message: string; data: any }]> => {
+  const func = "insertEmpVaga";
   try {
     const { id, data_inicio, data_fim, status } = vaga;
     const query = `
@@ -565,7 +568,7 @@ export let insertEmpVaga = async (
       ) VALUES ($1, $2, $3, $4, $5);
     `;
 
-    let result = await DB.pool.query(query, [
+    const result = await DB.pool.query(query, [
       id_empresa,
       id,
       status,
@@ -573,11 +576,11 @@ export let insertEmpVaga = async (
       data_inicio,
     ]);
 
-    console.log(`[QUERY] Success`);
-    return [201, String(process.env.STATUS_201)];
-  } catch (error) {
-    console.log(`[QUERY] Failed`);
-    return [500, String(error)];
+    console.log(`[${func}] Relação vaga-empresa inserida (empresa=${id_empresa}, vaga=${id})`);
+    return [201, { success: true, message: "Relação vaga-empresa criada", data: { rowCount: result.rowCount } }];
+  } catch (err: any) {
+    console.error(`[${func}] Error:`, err?.message ?? err);
+    return [500, { success: false, message: "Erro ao inserir relação vaga-empresa", data: null }];
   }
 };
 
@@ -588,9 +591,8 @@ export let insertEmpVaga = async (
  */
 export let getEmpByColab = async (id_colaborador: string) => {
   try {
-
-
-    const query = `SELECT tb_empresa_id FROM tb_empresa_colaborador WHERE tb_colaborador_id_colaborador = $1;`;
+    const safeTable = safeIdentifier("tb_empresa_colaborador");
+    const query = `SELECT tb_empresa_id FROM ${safeTable} WHERE tb_colaborador_id_colaborador = $1;`;
     const result = await DB.pool.query(query, [id_colaborador]);
 
     if (result.rowCount === 0) {
@@ -600,7 +602,6 @@ export let getEmpByColab = async (id_colaborador: string) => {
     }
 
     const emp = result.rows[0].tb_empresa_id;
-
 
     return emp;
   } catch (error) {
@@ -631,7 +632,8 @@ export const insertCandidateVaga = async (
 ): Promise<any> => {
   console.log("[QUERY] Inserindo candidato na vaga...");
   try {
-    const query = `INSERT INTO tb_candidato_vaga (tb_vaga_id, tb_candidato_id, hora_candidatura) VALUES ($1, $2, $3);`;
+    const safeTable = safeIdentifier("tb_candidato_vaga");
+    const query = `INSERT INTO ${safeTable} (tb_vaga_id, tb_candidato_id, hora_candidatura) VALUES ($1, $2, $3);`;
     await DB.pool.query(query, [id_vaga, id_candidate, hora]);
 
     return [200, String(process.env.STATUS_200)];
@@ -654,12 +656,16 @@ export let validateData = async (
   table: string
 ): Promise<any> => {
   try {
-
-    let result = await DB.pool.query(
-      `SELECT ${data} FROM ${table} WHERE ${data} = $1`,
+    const safeTable = safeIdentifier(table);
+    const allowedColumns = ALLOWED_COLUMNS[safeTable];
+    if (!allowedColumns || !allowedColumns.has(data)) {
+      throw new Error(`Coluna não autorizada: ${data}`);
+    }
+    
+    const result = await DB.pool.query(
+      `SELECT ${data} FROM ${safeTable} WHERE ${data} = $1`,
       [value]
     );
-
 
     return result.rows.length;
   } catch (error) {
@@ -695,8 +701,9 @@ export let insertIntoEventos = async (
     const { id, titulo, descricao, data, hora_inicio, hora_fim, id_candidato } =
       evento;
 
+    const safeTable = safeIdentifier("tb_evento");
     const query = `
-      INSERT INTO tb_evento (
+      INSERT INTO ${safeTable} (
         id,
         nome,
         descricao,
@@ -741,7 +748,8 @@ export let getEventosByCalendario = async (
 ): Promise<any> => {
   console.log("[QUERY] Buscando eventos...");
   try {
-    const query = `SELECT * FROM tb_evento WHERE id_calendario = $1;`;
+    const safeTable = safeIdentifier("tb_evento");
+    const query = `SELECT * FROM ${safeTable} WHERE id_calendario = $1;`;
     const result = await DB.pool.query(query, [id_calendario]);
 
     return [200, result.rows];
@@ -765,8 +773,9 @@ export let insertCalendario = async (
 ): Promise<any> => {
   console.log("[QUERY] Inserindo calendário...");
   try {
+    const safeTable = safeIdentifier("tb_calendario");
     const query = `
-      INSERT INTO tb_calendario (id, nome_calendario, id_empresa) VALUES ($1, $2, $3);
+      INSERT INTO ${safeTable} (id, nome_calendario, id_empresa) VALUES ($1, $2, $3);
     `;
     let result = await DB.pool.query(query, [id_calendar, nome, id_empresa]);
 
@@ -786,11 +795,9 @@ export let insertCalendario = async (
  */
 export let selectEmpbyCalendar = async (id_empresa: string): Promise<any> => {
   try {
-
-
-    const query = `SELECT id_empresa FROM tb_calendario WHERE id = $1;`;
+    const safeTable = safeIdentifier("tb_calendario");
+    const query = `SELECT id_empresa FROM ${safeTable} WHERE id = $1;`;
     const result = await DB.pool.query(query, [id_empresa]);
-
 
     return result.rows;
   } catch (error) {
@@ -812,8 +819,9 @@ export let selectEmpbyCalendar = async (id_empresa: string): Promise<any> => {
 export let login = async (email: string, table: string): Promise<any> => {
   try {
     console.log("[QUERY] Buscando dados de login...");
-    let result = await DB.pool.query(
-      `SELECT * FROM ${table} WHERE email = $1`,
+    const safeTable = safeIdentifier(table);
+    const result = await DB.pool.query(
+      `SELECT * FROM ${safeTable} WHERE email = $1`,
       [email]
     );
     if (result.rows.length > 0) {
@@ -844,7 +852,8 @@ export let changePass = async (
 ): Promise<any> => {
   console.log("[QUERY]Trocando senha");
   try {
-    const query = `UPDATE ${table} SET senha = $1 WHERE email = $2 AND id = $3 RETURNING *`;
+    const safeTable = safeIdentifier(table);
+    const query = `UPDATE ${safeTable} SET senha = $1 WHERE email = $2 AND id = $3 RETURNING *`;
     const values = [newPass, email, id];
     const result = await DB.pool.query(query, values);
     return [200, result];
@@ -862,8 +871,9 @@ export let changePass = async (
 export let getAcess = async (id: string): Promise<any> => {
   console.log("[QUERY] Buscando dados de acesso...");
   try {
-    let result = await DB.pool.query(
-      `SELECT acessibilidade FROM tb_empresa WHERE id = $1`,
+    const safeTable = safeIdentifier("tb_empresa");
+    const result = await DB.pool.query(
+      `SELECT acessibilidade FROM ${safeTable} WHERE id = $1`,
       [id]
     );
     if (result.rows.length > 0) {
@@ -893,9 +903,12 @@ export let updateVaga = async (
   values: any[]
 ): Promise<any> => {
   try {
-    const query = `UPDATE ${table} SET ${sets} WHERE id = $${
-      values.length + 1
-    }`;
+    const safeTable = safeIdentifier(table);
+    const columns = extractColumnsFromSets(sets);
+    validateColumnsForTable(safeTable, columns);
+    
+    const normalizedSets = columns.map((col, idx) => `${col} = $${idx + 1}`).join(", ");
+    const query = `UPDATE ${safeTable} SET ${normalizedSets} WHERE id = $${values.length + 1}`;
     values.push(id);
 
     const result = await DB.pool.query(query, values);
@@ -924,7 +937,8 @@ export let createBarreira = async (
   console.log("[QUERY]");
 
   try {
-    let query = `INSERT INTO tb_barreira (id, descricao, created_at, updated_at) VALUES ($1, $2, $3, $4);`;
+    const safeTable = safeIdentifier("tb_barreira");
+    const query = `INSERT INTO ${safeTable} (id, descricao, created_at, updated_at) VALUES ($1, $2, $3, $4);`;
     const result = await DB.pool.query(query, [id, desc, hora, hora]);
 
     console.log(`[QUERY] Success`);
@@ -949,9 +963,9 @@ export let createAcess = async (
 ): Promise<any> => {
   console.log("[QUERY]");
 
-
   try {
-    let query = `INSERT INTO tb_acessibilidade (id, descricao, created_at, updated_at) VALUES ($1, $2, $3, $4);`;
+    const safeTable = safeIdentifier("tb_acessibilidade");
+    const query = `INSERT INTO ${safeTable} (id, descricao, created_at, updated_at) VALUES ($1, $2, $3, $4);`;
     const result = await DB.pool.query(query, [id, desc, hora, hora]);
 
     console.log(`[QUERY] Success`);
@@ -984,7 +998,8 @@ export let createSubTipo = async (
 
   try {
     // Inserção do subtipo
-    let insertSubTipo = `INSERT INTO tb_sub_tipo_deficiencia (id, nome, tipo_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5);`;
+    const safeTable1 = safeIdentifier("tb_sub_tipo_deficiencia");
+    const insertSubTipo = `INSERT INTO ${safeTable1} (id, nome, tipo_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5);`;
     const resultSubTipo = await DB.pool.query(insertSubTipo, [
       id,
       desc,
@@ -997,7 +1012,8 @@ export let createSubTipo = async (
     }
 
     // Relacionamento com barreira
-    let insertSubBarr = `INSERT INTO tb_sub_tipo_barreira (sub_tipo_id, barreira_id) VALUES ($1, $2);`;
+    const safeTable2 = safeIdentifier("tb_sub_tipo_barreira");
+    const insertSubBarr = `INSERT INTO ${safeTable2} (sub_tipo_id, barreira_id) VALUES ($1, $2);`;
     const resultSubBarr = await DB.pool.query(insertSubBarr, [id, barreira]);
     if (resultSubBarr.rowCount === 0) {
       return [
@@ -1007,7 +1023,8 @@ export let createSubTipo = async (
     }
 
     // Relacionamento barreira <-> acessibilidade
-    let insertBarrAces = `INSERT INTO tb_barreira_acessibilidade (barreira_id, acessibilidade_id) VALUES ($1, $2);`;
+    const safeTable3 = safeIdentifier("tb_barreira_acessibilidade");
+    const insertBarrAces = `INSERT INTO ${safeTable3} (barreira_id, acessibilidade_id) VALUES ($1, $2);`;
     const resultBarrAces = await DB.pool.query(insertBarrAces, [
       barreira,
       acessibilidade,
