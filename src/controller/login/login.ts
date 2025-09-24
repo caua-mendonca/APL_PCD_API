@@ -9,11 +9,11 @@ dotenv.config();
  * @returns [status, message] - Status HTTP e mensagem de resultado
  */
 const loginController = async (body: any, table: string): Promise<[number, any]> => {
-  console.log(`[POST / CONTROLLER Login] Tentativa de login na tabela: ${table}, email: ${body.email}`);
+  console.log(`[POST / CONTROLLER Login]`);
 
   try {
     const [status, message] = await Model.login(body, table);
-    console.log(`[POST / CONTROLLER Login] Resultado: ${status} - ${message}`);
+    console.log(`[POST / CONTROLLER Login]`);
     return [status, message];
   } catch (error) {
     console.error(`[POST / CONTROLLER Login] Erro ao realizar login:`, error);

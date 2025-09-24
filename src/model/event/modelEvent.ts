@@ -50,16 +50,12 @@ export let createEvento = async (
       evento.id_candidato,
       "tb_candidato"
     );
-    console.log(`ID do candidato válido: ${idCandidateIsValis}`);
     if (idCandidateIsValis === false || idCandidateIsValis === null) {
-      console.log("❌ ID do candidato inválido.");
       errorLog.push("ID do candidato inválido.");
     }
 
     // Gera um ID único para o evento.
     newEvent.setId();
-    console.log("🚀 Evento criado com sucesso");
-    console.log("🚀 Inserindo evento no banco de dados");
 
     // Insere o evento na tabela relacionada, vinculando ao calendário.
     let [status, message] = await DB.insertIntoEventos(newEvent, id_calendario);
@@ -77,7 +73,7 @@ export let createEvento = async (
  * @returns Retorna a lista de eventos encontrados no banco.
  */
 export let getEvento = async (id: string) => {
-  console.log("[GOT / MODEL Evento");
+  console.log("[GET / MODEL Evento");
   try {
     let [status, message] = await DB.getEventosByCalendario(id);
     return [status, message];

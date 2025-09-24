@@ -19,15 +19,12 @@ import { SubTipo } from "../entities/class/SubTipo.js";
  * @returns [status, message] - 201 se sucesso, 400 se erro
  */
 export let createBarreira = async (body: any): Promise<any> => {
-  console.log("[POST / MODEL ADM] Iniciando criação de barreira...");
+  console.log("[POST / MODEL ADM]");
 
   try {
     // Instancia objeto Barreira
     let barreira = new Barreira(body.descricao, new Date());
     barreira.setId(); // Gera ID único
-    let t = barreira.toString();
-
-    console.log("[MODEL] Objeto criado:", t);
 
     // Chamada à camada de query para inserir no DB
     let [status, message] = await DB.createBarreira(
@@ -50,7 +47,7 @@ export let createBarreira = async (body: any): Promise<any> => {
  * @returns [status, message] - 201 se sucesso, 400 se erro
  */
 export let createAcess = async (body: any): Promise<any> => {
-  console.log("[POST / MODEL ADM] Iniciando criação de acessibilidade...");
+  console.log("[POST / MODEL ADM]");
 
   try {
     let acess = new Acessibilidade(body.descricao, new Date());
@@ -76,7 +73,7 @@ export let createAcess = async (body: any): Promise<any> => {
  * @returns [status, message] - 201 se sucesso, 400 se erro
  */
 export let createSubTipo = async (body: any): Promise<any> => {
-  console.log("[POST / MODEL ADM] Iniciando criação de subtipo...");
+  console.log("[POST / MODEL ADM]");
 
   try {
     // Cria instância do SubTipo

@@ -47,12 +47,9 @@ export let createContratante = async (user: {
 
     // Gera ID único
     newContratante.setId();
-    console.log("ID inicial criado:", newContratante.id);
     while (newContratante.id == "") {
       newContratante.setId();
-      console.log("Gerando novo ID para contratante:", newContratante.id);
     }
-    console.log("ID validado para contratante:", newContratante.id);
 
     // Valida e-mail
     let emailIsValid: boolean =
@@ -64,10 +61,8 @@ export let createContratante = async (user: {
         "tb_empresa"
       );
       if (emailIsValid == false) {
-        console.log("Email inválido:", newContratante.email);
         errorLog.push("Email inválido");
       } else {
-        console.log("Email validado:", newContratante.email);
       }
     }
 
@@ -90,10 +85,7 @@ export let createContratante = async (user: {
         "tb_empresa"
       );
       if (!cnpjIsValid) {
-        console.log("CNPJ inválido:", newContratante.cnpj);
         errorLog.push("CNPJ inválido");
-      } else {
-        console.log("CNPJ validado:", newContratante.cnpj);
       }
     }
 

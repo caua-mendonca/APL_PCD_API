@@ -65,7 +65,7 @@ export let createCanditado = async (user: {
       cpfIsValid = await validateCpfToDB(newUser.cpf, "cpf", "tb_candidato");
       console.log("[POST / VALIDATE CPF NO BANCO]");
       if (!cpfIsValid) {
-        console.log("[POST / VALIDATE CPF NO BANCO]", newUser.cpf);
+        console.log("[POST / VALIDATE CPF NO BANCO]");
         errorLog.push("CPF ja inserido no banco");
       }
     } else {
@@ -88,7 +88,7 @@ export let createCanditado = async (user: {
         "tb_candidato"
       );
       if (!emailIsValid) {
-        console.log("[POST / VALIDATE EMAIL]", newUser.email);
+        console.log("[POST / VALIDATE EMAIL]");
         errorLog.push("Email ja inserido no banco");
       }
     } else {

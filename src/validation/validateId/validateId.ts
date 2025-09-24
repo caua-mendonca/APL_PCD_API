@@ -9,13 +9,11 @@ import * as Db from "../../repositories/queryTools.js";
  */
 export let validateId = async (id: string, table: string): Promise<any> => {
   // Log inicial para rastrear a execução da validação.
-  console.log(`🚀 Iniciando validação de ID ${id} na tabela ${table}`);
   
   // Consulta ao banco para verificar a existência do ID na tabela informada.
   let validId = await Db.selectId(table, id);
   
   // Exibe o resultado da validação no console.
-  console.log("✔️ Resultado da validação:", validId);
   return validId;
 };
 
@@ -26,7 +24,7 @@ export let validateId = async (id: string, table: string): Promise<any> => {
  * @returns Retorna true se o ID começa com EMP ou COLAB; false caso contrário.
  */
 export let validateIdContratante = async (id: string): Promise<boolean> => {
-  console.log(`🚀 Validando se ID é Contratante ou Colaborador: ${id}`);
+ 
   
   // Quebra o ID no separador "-" para analisar o prefixo.
   let arr: string[] = id.toUpperCase().split("-");
@@ -35,8 +33,7 @@ export let validateIdContratante = async (id: string): Promise<boolean> => {
   let isValid: boolean;
   arr[0] === "EMP" || arr[0] === "COLAB" ? (isValid = true) : (isValid = false);
   
-  // Log do resultado final.
-  console.log(`✔️ Resultado da validação: ${isValid}`);
+  
   return isValid;
 };
 
@@ -47,7 +44,6 @@ export let validateIdContratante = async (id: string): Promise<boolean> => {
  * @returns Retorna true se o ID começa com CAND; false caso contrário.
  */
 export let validateIdCandidato = async (id: string): Promise<boolean> => {
-  console.log(`🚀 Validando se ID é Candidato: ${id}`);
   
   // Quebra o ID no separador "-" para analisar o prefixo.
   let arr: string[] = id.toUpperCase().split("-");
@@ -56,7 +52,6 @@ export let validateIdCandidato = async (id: string): Promise<boolean> => {
   let isValid = arr[0] === "CAND";
   
   // Log do resultado final.
-  console.log(`✔️ Resultado da validação: ${isValid}`);
   return isValid;
 };
 
@@ -73,7 +68,6 @@ export let validateIdByRelation = async (
   data: string,
   table: string
 ): Promise<boolean> => {
-  console.log(`🚀 Validando se o valor '${value}' existe na tabela ${table}`);
   
   // Consulta ao banco para validar se o valor existe na relação especificada.
   let result = await Db.validateData(value, table, data);

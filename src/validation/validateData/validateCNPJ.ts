@@ -59,7 +59,7 @@ export let validateCNPJToDB = async (
   // Se encontrar registros, retorna false para impedir cadastro duplicado
   result > 0 ? (result = false) : (result = true);
 
-  console.log("RESULTADO DA FUNÇÃO validateCNPJToDB:", result);
+  console.log("RESULTADO DA FUNÇÃO validateCNPJToDB");
 
   return result;
 };

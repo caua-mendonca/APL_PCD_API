@@ -12,7 +12,7 @@ dotenv.config();
  * @returns [status, message] - Status HTTP e mensagem
  */
 export let login = async (body: any, table: string): Promise<[number, any]> => {
-  console.log(`[MODEL Login] Tentando autenticar usuário ${body.email} na tabela ${table}`);
+  console.log(`[MODEL Login]`);
 
   try {
     // Busca usuário pelo email

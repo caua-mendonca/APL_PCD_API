@@ -1,5 +1,5 @@
 import * as Validations from "../../validation/validateId/validateId.js";
-import { Calendar } from "../entities/class/Calendar.js";
+import { Calendar } from "../entities/class/calendar.js";
 import * as DB from "../../repositories/queryTools.js";
 /**
  * Cria um calendário para uma empresa específica.
@@ -70,9 +70,6 @@ export let getCalendario = (
     // Filtra apenas eventos com uma data válida
     const validEvents = (events || []).filter(
       (e) => e && (e.date || e.data_evento || e.data)
-    );
-    console.log(
-      `🔍 [getCalendario] Eventos válidos para processamento: ${validEvents.length}`
     );
 
     let output = `📅 Calendário de ${monthName} / ${year}\n`;

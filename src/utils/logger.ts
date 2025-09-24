@@ -60,8 +60,7 @@ export let conectServ = (PORT: number) => {
     try {
       let body = req.body;
       console.log(
-        `[POST ${Routes.createCanditado}] Requisição recebida, corpo:`,
-        body
+        `[POST ${Routes.createCanditado}] Requisição recebida`
       );
 
       let [status, message] = await controllerCandidate.controllerPostCandadate(
@@ -113,8 +112,7 @@ APP.get(
     try {
       const name = String(req.body.name);
       console.log(
-        `[GET ${Routes.getCanditadoByName}] Requisição recebida, corpo:`,
-        name
+        `[GET ${Routes.getCanditadoByName}] Requisição recebida, corpo`
       );
       let [status, message] =
         await controllerCandidate.controllerGetCandidatoById(name);
@@ -140,8 +138,7 @@ APP.delete(
     try {
       const id = String(req.params.id);
       console.log(
-        `[GET ${Routes.deleteCanditado}] Requisição recebida, corpo:`,
-        id
+        `[GET ${Routes.deleteCanditado}] Requisição recebida, corpo`
       );
       let [status, message] =
         await controllerCandidate.controllerDeleteCandidato(id);
@@ -166,7 +163,7 @@ APP.put(
   async (req, res) => {
     const id = String(req.params.id);
     const body = req.body;
-    console.log(`🚀 [PUT / Candidato] Requisição recebida com dados:`, body);
+    console.log(`[PUT / Candidato] Requisição recebida com dados`);
 
     try {
       const [status, message] =
@@ -194,7 +191,7 @@ APP.put(
  */
 APP.post(Routes.createContratante, async (req, res) => {
   let body = req.body;
-  console.log("[POST /contratante] Requisição recebida, corpo:", body);
+  console.log("[POST /contratante] Requisição recebida, corpo");
   try {
     let [status, messagem] = await controllerContratante.controllerContratante(
       body
@@ -276,7 +273,7 @@ APP.delete(
   Middleware.authenticateTokenEmp,
   async (req, res) => {
     const id = String(req.params.id);
-    console.log(`🚀 [DELETE / contratante] Requisição recebida`);
+    console.log(`[DELETE / contratante] Requisição recebida`);
     try {
       let [status, message] =
         await controllerContratante.controllerDeleteContratante(id);
@@ -306,7 +303,7 @@ APP.put(
   async (req, res) => {
     const id = String(req.params.id);
     const body = req.body;
-    console.log(`🚀 [PUT / contratante] Requisição recebida com dados:`, body);
+    console.log(`[PUT / contratante] Requisição recebida com dados`);
 
     try {
       let [status, message] =
@@ -338,7 +335,7 @@ APP.post(
   Routes.createColaborador,
   Middleware.authenticateTokenEmp,
   async (req, res) => {
-    console.log(`🚀 [POST /colaborador] Requisição recebida`);
+    console.log(`[POST /colaborador] Requisição recebida`);
     try {
       let body = req.body;
       let id = req.params.id;
@@ -371,7 +368,7 @@ APP.get(
   Middleware.authenticateTokenEmp,
   async (req, res) => {
     const id = String(req.params.id);
-    console.log(`🚀 [GET / colaborador] Requisição recebida`);
+    console.log(`[GET / colaborador] Requisição recebida`);
 
     try {
       let [status, message] =
@@ -408,7 +405,7 @@ APP.post(
     let body = req.body;
     let id = req.params.id;
 
-    console.log(`🚀 [POST / vaga] Requisição recebida, corpo`);
+    console.log(`[POST / vaga] Requisição recebida, corpo`);
     try {
       let [status, message] = await controllerColaborador.postVaga(body, id);
       res.status(status).send({ message: message });
@@ -435,7 +432,7 @@ APP.post(
   Routes.candidatarVaga,
   Middleware.authenticateTokenCand,
   async (req, res) => {
-    console.log(`🚀 [POST / vaga candidatar]`);
+    console.log(`[POST / vaga candidatar]`);
     try {
       let id_vaga = String(Object.values(req.body));
       let id_candidate = req.params.id;
@@ -611,9 +608,7 @@ APP.post(
     const body = req.body;
     const id = req.params.id;
 
-    console.log(`[POST / Evento] Iniciando criação de evento...`, {
-      payload: body,
-    });
+    console.log(`[POST / Evento] Iniciando criação de evento`);
 
     try {
       const [status, message] = await controllerColaborador.postEvento(

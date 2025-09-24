@@ -6,11 +6,11 @@ import * as Model from "../../model/adm/modelAdm.js";
  * @returns [status, message] - Status HTTP e mensagem de resultado
  */
 export let createBarreira = async (body: any): Promise<[number, any]> => {
-  console.log("[POST / CONTROLLER ADM] Iniciando criação de barreira...");
+  console.log("[POST / CONTROLLER ADM]");
 
   try {
     const [status, message] = await Model.createBarreira(body);
-    console.log(`[POST / CONTROLLER ADM] Resultado: ${status} - ${message}`);
+    console.log(`[POST / CONTROLLER ADM]`);
     return [status, message];
   } catch (error) {
     console.error("[POST / CONTROLLER ADM] Erro ao criar barreira:", error);
@@ -24,11 +24,11 @@ export let createBarreira = async (body: any): Promise<[number, any]> => {
  * @returns [status, message] - Status HTTP e mensagem de resultado
  */
 export let createAcess = async (body: any): Promise<[number, any]> => {
-  console.log("[POST / CONTROLLER ADM] Iniciando criação de acessibilidade...");
+  console.log("[POST / CONTROLLER ADM]");
 
   try {
     const [status, message] = await Model.createAcess(body);
-    console.log(`[POST / CONTROLLER ADM] Resultado: ${status} - ${message}`);
+    console.log(`[POST / CONTROLLER ADM]`);
     return [status, message];
   } catch (error) {
     console.error("[POST / CONTROLLER ADM] Erro ao criar acessibilidade:", error);
@@ -42,11 +42,11 @@ export let createAcess = async (body: any): Promise<[number, any]> => {
  * @returns [status, message] - Status HTTP e mensagem de resultado
  */
 export let createSubTipo = async (body: any): Promise<[number, any]> => {
-  console.log("[POST / CONTROLLER ADM] Iniciando criação de subtipo...");
+  console.log("[POST / CONTROLLER ADM]");
 
   try {
     const [status, message] = await Model.createSubTipo(body);
-    console.log(`[POST / CONTROLLER ADM] Resultado: ${status} - ${message}`);
+    console.log(`[POST / CONTROLLER ADM]`);
     return [status, message];
   } catch (error) {
     console.error("[POST / CONTROLLER ADM] Erro ao criar subtipo:", error);

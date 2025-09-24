@@ -12,7 +12,7 @@ import bcrypt from "bcrypt";
  * @returns [status, message]
  */
 export let changePassword = async (body: any, id: string): Promise<any> => {
-  console.log(`[POST / CONTROLLER changePassword] Iniciando troca de senha para ${id}`);
+  console.log(`[POST / CONTROLLER changePassword]`);
 
   try {
     // Verifica se as senhas conferem
