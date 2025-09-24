@@ -1,10 +1,10 @@
 import { validateIdByRelation } from "../../../validation/validateId/validateId.js";
-import { Colaborador } from "../../entities/class/Colaborador.js";
-import * as DB from "../../../repositories/user/colaboradorRepository.js";
+import { Colaborador } from "../../entities/class/Employee.js";
+import * as DB from "../../../repositories/user/employeeRepository.js";
 import { selectFromIdWhere } from "../../../repositories/shared/commonRepository.js";
 import { error } from "console";
 
-export let createColaborador = async (
+export let createEmployee = async (
   user: { name: string; email: string; senha: string; setor: string },
   id_empresa: string
 ): Promise<[number, any]> => {
@@ -23,15 +23,15 @@ export let createColaborador = async (
       user.setor
     );
     colaborador.setId();
-    await DB.insertIntoColaborador(
+    await DB.insertEmployee(
       colaborador.id,
       colaborador.name,
       colaborador.email,
       colaborador.senha,
       colaborador.setor
     );
-    await DB.updateColaboradorEmpresa(colaborador.id, id_empresa);
-    let [status, message] = await DB.insertEmpresaColaborador(
+    await DB.updateEmployeeCompany(colaborador.id, id_empresa);
+    let [status, message] = await DB.insertCompanyEmployee(
       colaborador.id,
       id_empresa
     );
@@ -44,7 +44,7 @@ export let createColaborador = async (
 /**
  * Busca um colaborador específico.
  */
-export let getColaborador = async (table: string, id: string): Promise<any> => {
+export let getEmployee = async (table: string, id: string): Promise<any> => {
   console.log("[GET / MODEL Colaborador]");
   try {
     let [status, message] = await selectFromIdWhere(table, id);

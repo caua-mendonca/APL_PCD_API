@@ -1,7 +1,7 @@
-import * as Model from "../../model/user/colaborador/modelColaborador.js";
-import * as modelVaga from "../../model/vaga/modelVaga.js";
-import * as modelEvento from "../../model/event/modelEvent.js";
-import * as modelCalendar from "../../model/calendar/modelCalendar.js";
+import * as Model from "../../model/user/employee/employeeModel.js";
+import * as modelJob from "../../model/job/jobModel.js";
+import * as modelEvent from "../../model/event/eventModel.js";
+import * as modelCalendar from "../../model/calendar/calendarModel.js";
 
 /**
  * Controller para criação de um novo colaborador.
@@ -10,18 +10,24 @@ import * as modelCalendar from "../../model/calendar/modelCalendar.js";
  * @param id_empresa - ID da empresa associada ao colaborador
  * @returns resposta da criação (sucesso ou erro)
  */
-export let controllerColaborador = async (
+export const createEmployeeController = async (
   user: {
     name: string;
     email: string;
-    senha: string;
-    setor: string;
+    password: string;
+    department: string;
   },
-  id_empresa: string
+  company_id: string
 ) => {
-  console.log("[POST / CONTROLLER Colaborador]");
+  console.log("[POST / CONTROLLER Employee]");
   try {
-    let [status, message] = await Model.createColaborador(user, id_empresa);
+    const mappedUser = {
+      name: user.name,
+      email: user.email,
+      senha: user.password,
+      setor: user.department,
+    };
+    const [status, message] = await Model.createEmployee(mappedUser, company_id);
     return [status, message];
   } catch (error) {
     return [500, String(process.env.STATUS_500)];
@@ -34,10 +40,10 @@ export let controllerColaborador = async (
  * @param id - ID associado para filtro
  * @returns lista de colaboradores encontrados
  */
-export let controllerGetColaborador = async (table: string, id: string) => {
-  console.log("[POST / CONTROLLER Colaborador]");
+export const getEmployeeController = async (table: string, id: string) => {
+  console.log("[GET / CONTROLLER Employee]");
   try {
-    let [status, message] = await Model.getColaborador(table, id);
+    const [status, message] = await Model.getEmployee(table, id);
     return [status, message];
   } catch (error) {
     return [500, String(process.env.STATUS_500)];
@@ -56,23 +62,31 @@ export let controllerGetColaborador = async (table: string, id: string) => {
  * @param id_empresa - Identificador da empresa que está cadastrando a vaga.
  * @returns Resultado da criação da vaga, conforme resposta do model.
  */
-export let postVaga = async (
-  vaga: {
-    data_fim: Date;
-    titulo: string;
-    descricao: string;
-    salario: number;
-    localidade: string;
-    tipo:string
+export const createJobController = async (
+  job: {
+    end_date: Date;
+    title: string;
+    description: string;
+    salary: number;
+    location: string;
+    type: string
   },
-  id_empresa: string
+  company_id: string
 ): Promise<any> => {
-  console.log("[POST / CONTROLLER Vaga]");
+  console.log("[POST / CONTROLLER Job]");
   try {
-    let [status, message] = await modelVaga.createVaga(vaga, id_empresa);
+    const mappedJob = {
+      data_fim: job.end_date,
+      titulo: job.title,
+      descricao: job.description,
+      salario: job.salary,
+      localidade: job.location,
+      tipo: job.type
+    };
+    const [status, message] = await modelJob.createJob(mappedJob, company_id);
     return [status, message];
   } catch (error) {
-    return;
+    return [500, String(error)];
   }
 };
 
@@ -81,11 +95,11 @@ export let postVaga = async (
  * @returns Array com as vagas encontradas.
  * @throws Erro caso a consulta falhe.
  */
-export let getVaga = async () => {
-  console.log("[GET / CONTROLLER Vaga]");
+export const getJobsController = async () => {
+  console.log("[GET / CONTROLLER Job]");
   try {
-    let [staus, messgae] = await modelVaga.getVagaModel();
-    return [staus, messgae];
+    const [status, message] = await modelJob.getJobsModel();
+    return [status, message];
   } catch (error) {
     return [400, String(error)];
   }
@@ -97,10 +111,10 @@ export let getVaga = async () => {
  * @returns Vaga correspondente ao ID informado.
  * @throws Erro caso a consulta falhe.
  */
-export let getVagaById = async (id: string):Promise<any> => {
-  console.log("[GET / CONTROLLER Vaga]");
+export const getJobByIdController = async (id: string): Promise<any> => {
+  console.log("[GET / CONTROLLER Job]");
   try {
-    let [status, message] = await modelVaga.getVagaById(id);
+    const [status, message] = await modelJob.getJobById(id);
     return [status, message];
   } catch (error) {
     return [400, String(error)];
@@ -113,20 +127,20 @@ export let getVagaById = async (id: string):Promise<any> => {
  * @returns Resultado da operação de deleção.
  * @throws Erro caso a deleção falhe.
  */
-export let deleteVaga = async (id: string):Promise<any> => {
-  console.log("[DELETE / CONTROLLER Vaga]");
+export const deleteJobController = async (id: string): Promise<any> => {
+  console.log("[DELETE / CONTROLLER Job]");
   try {
-    let [status, message] = await modelVaga.deleteVaga(id);
+    const [status, message] = await modelJob.deleteJob(id);
     return [status, message];
   } catch (error) {
     return [400, String(error)];
   }
 };
 
-export let updateVaga = async (body:any, id:string):Promise<any>=>{
-  console.log("[UPDATE / CONTROLLER Vaga]");
+export const updateJobController = async (body: any, id: string): Promise<any> => {
+  console.log("[UPDATE / CONTROLLER Job]");
   try {
-    let [status, message] = await modelVaga.updateVaga(body, id);
+    const [status, message] = await modelJob.updateJob(body, id);
     return [status, message];
   } catch (error) {
     return [400, String(error)];
@@ -139,22 +153,30 @@ export let updateVaga = async (body:any, id:string):Promise<any>=>{
  * @param id_calendario - Identificador do calendário ao qual o evento será vinculado.
  * @returns Resultado da criação do evento conforme resposta do model.
  */
-export let postEvento = async (
-  evento: {
-    titulo: string;
-    descricao: string;
-    data: Date;
-    hora_inicio: string;
-    hora_fim: string;
-    id_candidato: string;
+export const createEventController = async (
+  event: {
+    title: string;
+    description: string;
+    date: Date;
+    start_time: string;
+    end_time: string;
+    candidate_id: string;
   },
-  id_calendario: string
+  calendar_id: string
 ): Promise<any> => {
-  console.log("[POST / CONTROLLER Evento]");
+  console.log("[POST / CONTROLLER Event]");
   try {
-    let [status, message] = await modelEvento.createEvento(
-      evento,
-      id_calendario
+    const mappedEvent = {
+      titulo: event.title,
+      descricao: event.description,
+      data: event.date,
+      hora_inicio: event.start_time,
+      hora_fim: event.end_time,
+      id_candidato: event.candidate_id,
+    };
+    const [status, message] = await modelEvent.createEvent(
+      mappedEvent,
+      calendar_id
     );
     return [status, message];
   } catch (error) {
@@ -167,10 +189,10 @@ export let postEvento = async (
  * @returns Array com os eventos encontrados.
  * @throws Erro caso a consulta falhe.
  */
-export let getEvento = async (id: string) => {
-  console.log("[GET / CONTROLLER Evento]");
+export const getEventController = async (id: string) => {
+  console.log("[GET / CONTROLLER Event]");
   try {
-    let [status, message] = await modelEvento.getEvento(id);
+    const [status, message] = await modelEvent.getEvent(id);
     return [status, message];
   } catch (error) {
     return [400, String(error)];
@@ -188,15 +210,15 @@ export let getEvento = async (id: string) => {
  * @param id - Identificador único do evento a ser deletado.
  * @returns Retorna a resposta da exclusão do evento.
  */
-export let deleteEvento = async (id: string):Promise<any> => {
+export const deleteEventController = async (id: string): Promise<any> => {
   try {
-    console.log(`[DELETE / CONTROLLER Evento]`, {
-      eventoId: id,
+    console.log(`[DELETE / CONTROLLER Event]`, {
+      eventId: id,
     });
 
-    const [status, messgae] = await modelEvento.deleteEvento(id);
+    const [status, message] = await modelEvent.deleteEvent(id);
 
-    return [status, messgae];
+    return [status, message];
   } catch (error) {
     return [400, String(error)];
   }
@@ -207,11 +229,11 @@ export let deleteEvento = async (id: string):Promise<any> => {
  * @param id - Identificador associado ao calendário.
  * @returns Retorna a resposta da criação do calendário.
  */
-export let postCalendario = async (id: string): Promise<any> => {
-  console.log(`[POST / CONTROLLER Calendario]`);
+export const createCalendarController = async (id: string): Promise<any> => {
+  console.log(`[POST / CONTROLLER Calendar]`);
 
   try {
-    const [status, message] = await modelCalendar.createCalendario(id);
+    const [status, message] = await modelCalendar.createCalendar(id);
     return [status, message]
   } catch (error) {
     return [400, String(error)];
@@ -223,23 +245,23 @@ export let postCalendario = async (id: string): Promise<any> => {
  * @param id - Identificador associado aos eventos.
  * @returns Retorna a lista de calendários e eventos encontrados.
  */
-export let getCalendario = async (id: string) => {
-  console.log(`[GET / CONTROLLER Calendario]`);
+export const getCalendarController = async (id: string) => {
+  console.log(`[GET / CONTROLLER Calendar]`);
   try {
 
-    let eventos = await modelEvento.getEvento(id);
+    const events = await modelEvent.getEvent(id);
 
-    const mesAtual = new Date().getMonth() + 1;
-    const anoAtual = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+    const currentYear = new Date().getFullYear();
 
-    let [status, message] = await modelCalendar.getCalendario(
-      mesAtual,
-      anoAtual,
-      eventos
+    const [status, message] = await modelCalendar.getCalendar(
+      currentMonth,
+      currentYear,
+      events
     );
 
-    return [status, message] ;
+    return [status, message];
   } catch (error) {
-
+    return [400, String(error)];
   }
 };

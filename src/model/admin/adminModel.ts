@@ -8,9 +8,9 @@
  */
 
 import * as DB from "../../repositories/admin/adminRepository.js";
-import { Acessibilidade } from "../entities/class/Acessibilidade.js";
-import { Barreira } from "../entities/class/Barreira.js";
-import { SubTipo } from "../entities/class/SubTipo.js";
+import { Acessibilidade } from "../entities/class/Accessibility.js";
+import { Barreira } from "../entities/class/Barrier.js";
+import { SubTipo } from "../entities/class/SubType.js";
 
 /**
  * createBarreira
@@ -18,7 +18,7 @@ import { SubTipo } from "../entities/class/SubTipo.js";
  * @param body - Objeto contendo { descricao: string }
  * @returns [status, message] - 201 se sucesso, 400 se erro
  */
-export let createBarreira = async (body: any): Promise<any> => {
+export let createBarrier = async (body: any): Promise<any> => {
   console.log("[POST / MODEL ADM]");
 
   try {
@@ -46,7 +46,7 @@ export let createBarreira = async (body: any): Promise<any> => {
  * @param body - Objeto contendo { descricao: string }
  * @returns [status, message] - 201 se sucesso, 400 se erro
  */
-export let createAcess = async (body: any): Promise<any> => {
+export let createAccessibility = async (body: any): Promise<any> => {
   console.log("[POST / MODEL ADM]");
 
   try {
@@ -72,7 +72,7 @@ export let createAcess = async (body: any): Promise<any> => {
  * @param body - Objeto contendo { descricao: string, tipo: string, barreira: string, acessibilidade: string }
  * @returns [status, message] - 201 se sucesso, 400 se erro
  */
-export let createSubTipo = async (body: any): Promise<any> => {
+export let createSubType = async (body: any): Promise<any> => {
   console.log("[POST / MODEL ADM]");
 
   try {

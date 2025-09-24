@@ -1,4 +1,5 @@
-import * as Db from "../../repositories/queryTools.js";
+import * as DB from "../../repositories/shared/commonRepository.js";
+
 
 /**
  * Valida a existência de um ID em uma tabela específica.
@@ -11,7 +12,7 @@ export let validateId = async (id: string, table: string): Promise<any> => {
   // Log inicial para rastrear a execução da validação.
   
   // Consulta ao banco para verificar a existência do ID na tabela informada.
-  let validId = await Db.selectId(table, id);
+  let validId = await DB.selectId(table, id);
   
   // Exibe o resultado da validação no console.
   return validId;
@@ -70,7 +71,7 @@ export let validateIdByRelation = async (
 ): Promise<boolean> => {
   
   // Consulta ao banco para validar se o valor existe na relação especificada.
-  let result = await Db.validateData(value, table, data);
+  let result = await DB.validateData(value, table, data);
   
   // Retorna true se encontrou registros, false se não encontrou.
   if (result > 0) {

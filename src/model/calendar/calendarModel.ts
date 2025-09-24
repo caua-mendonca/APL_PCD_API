@@ -7,7 +7,7 @@ import * as DB from "../../repositories/calendar/calendarRepository.js";
  * @returns Retorna o resultado da inserção do calendário no banco de dados.
  * @throws Lança erro se o ID for inválido ou se houver falha na criação do calendário.
  */
-export let createCalendario = async (id: string): Promise<any> => {
+export let createCalendar = async (id: string): Promise<any> => {
   console.log(`[POST / MODEL Calendario]`);
   let errorLog: string[] = [];
   try {
@@ -38,7 +38,7 @@ export let createCalendario = async (id: string): Promise<any> => {
  * @returns Uma string representando o calendário com os eventos.
  * @throws Lança erro se o mês informado for inválido.
  */
-export let getCalendario = (
+export let getCalendar = (
   monthNumber: number,
   year: number,
   events: any[]

@@ -1,4 +1,5 @@
-import * as DB from "../../repositories/queryTools.js";
+import * as DB from "../../repositories/shared/commonRepository.js";
+
 
 /**
  * Valida um CPF conforme as regras oficiais da Receita Federal.

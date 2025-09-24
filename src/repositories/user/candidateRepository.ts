@@ -3,7 +3,7 @@ import { safeIdentifier, validateColumnsForTable, extractColumnsFromSets } from 
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
 
-export const insertIntoCandidate = async (user: {
+export const insertCandidate = async (user: {
   id: string;
   name: string;
   email: string;
@@ -53,7 +53,7 @@ export const insertIntoCandidate = async (user: {
   }
 };
 
-export const insertCandidateVaga = async (
+export const insertCandidateJob = async (
   id_candidate: string,
   id_vaga: string,
   hora: Date

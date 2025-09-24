@@ -16,7 +16,7 @@ const loginController = async (body: any, table: string): Promise<[number, any]>
     console.log(`[POST / CONTROLLER Login]`);
     return [status, message];
   } catch (error) {
-    console.error(`[POST / CONTROLLER Login] Erro ao realizar login:`, error);
+    console.error(`[POST / CONTROLLER Login] Error during login:`, error);
     return [500, String(process.env.STATUS_500)];
   }
 };
@@ -24,20 +24,20 @@ const loginController = async (body: any, table: string): Promise<[number, any]>
 /**
  * Login para candidatos
  */
-export const loginCand = async (body: any): Promise<[number, any]> => {
+export const loginCandidate = async (body: any): Promise<[number, any]> => {
   return await loginController(body, "tb_candidato");
 };
 
 /**
  * Login para empresas
  */
-export const loginEmp = async (body: any): Promise<[number, any]> => {
+export const loginCompany = async (body: any): Promise<[number, any]> => {
   return await loginController(body, "tb_empresa");
 };
 
 /**
  * Login para administradores
  */
-export const loginAdm = async (body: any): Promise<[number, any]> => {
+export const loginAdmin = async (body: any): Promise<[number, any]> => {
   return await loginController(body, "tb_administrador");
 };

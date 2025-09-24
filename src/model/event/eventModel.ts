@@ -11,7 +11,7 @@ import {deleteFromTable} from "../../repositories/shared/commonRepository.js";
  * @returns Retorna o resultado da operação de inserção no banco.
  * @throws Lança um erro caso a inserção falhe.
  */
-export let createEvento = async (
+export let createEvent = async (
   evento: {
     titulo: string;
     descricao: string;
@@ -73,7 +73,7 @@ export let createEvento = async (
  *
  * @returns Retorna a lista de eventos encontrados no banco.
  */
-export let getEvento = async (id: string) => {
+export let getEvent = async (id: string) => {
   console.log("[GET / MODEL Evento");
   try {
     let [status, message] = await DB.getEventosByCalendario(id);
@@ -90,7 +90,7 @@ export let getEvento = async (id: string) => {
  * @returns Retorna o resultado da operação de exclusão.
  * @throws Lança um erro caso o ID seja inválido ou a exclusão falhe.
  */
-export let deleteEvento = async (id: string) => {
+export let deleteEvent = async (id: string) => {
   console.log("[DELETE / MODEL Evento]");
 
   try {

@@ -1,4 +1,4 @@
-import * as DB from "../../repositories/queryTools.js";
+import * as DB from "../../repositories/shared/commonRepository.js";
 
 /**
  * Valida um CNPJ verificando formato, repetição e dígitos verificadores.

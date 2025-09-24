@@ -1,10 +1,10 @@
 // User repositories
 export * from './user/candidateRepository.js';
-export * from './user/empresaRepository.js';
-export * from './user/colaboradorRepository.js';
+export * from './user/companyRepository.js';
+export * from './user/employeeRepository.js';
 
-// Vaga repository
-export * from './vaga/vagaRepository.js';
+// Job repository
+export * from './job/jobRepository.js';
 
 // Calendar repository
 export * from './calendar/calendarRepository.js';

@@ -1,4 +1,5 @@
-import * as DB from "../../repositories/queryTools.js";
+import * as DB from "../../repositories/shared/commonRepository.js";
+
 
 /**
  * Verifica no banco de dados se um determinado e-mail já está cadastrado.

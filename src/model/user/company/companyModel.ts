@@ -1,12 +1,12 @@
 import { validateEmailToDB } from "../../../validation/validateData/validateEmail.js";
 import bcrypt from "bcrypt";
-import { Contratante } from "../../entities/class/Contratante.js";
+import { Contratante } from "../../entities/class/Company.js";
 import {
   validateCNPJ,
   validateCNPJToDB,
 } from "../../../validation/validateData/validateCNPJ.js";
 import { validateAge } from "../../../validation/validateData/validateAge.js";
-import * as DB from "../../../repositories/user/empresaRepository.js";
+import * as DB from "../../../repositories/user/companyRepository.js";
 import {
   selectFromTable,
   selectFromNameWhere,
@@ -25,7 +25,7 @@ import { stat } from "fs";
  * @param user Objeto contendo os dados do contratante.
  * @returns string de sucesso, array de erros ou lança erro em caso de falha.
  */
-export let createContratante = async (user: {
+export let createCompany = async (user: {
   nome_fantasia: string;
   razao_social: string;
   email: string;
@@ -100,7 +100,7 @@ export let createContratante = async (user: {
     if (errorLog.length > 0) {
       return [400, errorLog];
     } else {
-      let [status, message] = await DB.insertIntoContratante(newContratante);
+      let [status, message] = await DB.insertCompany(newContratante);
       return [status, message];
     }
   } catch (error) {

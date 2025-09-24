@@ -3,7 +3,7 @@ import { safeIdentifier } from "../shared/security.js";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
 
-export const insertIntoContratante = async (user: {
+export const insertCompany = async (user: {
   id: string;
   nome_fantasia: string;
   razao_social: string;
@@ -47,7 +47,7 @@ export const insertIntoContratante = async (user: {
   }
 };
 
-export const getAcess = async (id: string): Promise<any> => {
+export const getAccessibility = async (id: string): Promise<any> => {
   console.log("[QUERY] Buscando dados de acesso...");
   try {
     const safeTable = safeIdentifier("tb_empresa");

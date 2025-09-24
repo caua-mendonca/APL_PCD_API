@@ -3,7 +3,7 @@ import { safeIdentifier } from "../shared/security.js";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
 
-export const insertIntoColaborador = async (
+export const insertEmployee = async (
   id: string,
   name: string,
   email: string,
@@ -28,7 +28,7 @@ export const insertIntoColaborador = async (
   }
 };
 
-export const insertEmpresaColaborador = async (
+export const insertCompanyEmployee = async (
   id_colaborador: string,
   id_empresa: string
 ): Promise<[number, string]> => {
@@ -65,7 +65,7 @@ export const insertEmpresaColaborador = async (
   }
 };
 
-export const updateColaboradorEmpresa = async (
+export const updateEmployeeCompany = async (
   id: string,
   id_empresa: string
 ): Promise<[number, string]> => {
@@ -82,15 +82,15 @@ export const updateColaboradorEmpresa = async (
   }
 };
 
-export const getEmpByColab = async (id_colaborador: string) => {
+export const getCompanyByEmployee = async (employee_id: string) => {
   try {
     const safeTable = safeIdentifier("tb_empresa_colaborador");
     const query = `SELECT tb_empresa_id FROM ${safeTable} WHERE tb_colaborador_id_colaborador = $1;`;
-    const result = await DB.pool.query(query, [id_colaborador]);
+    const result = await DB.pool.query(query, [employee_id]);
 
     if (result.rowCount === 0) {
       throw new Error(
-        `Nenhuma empresa encontrada para colaborador ${id_colaborador}`
+        `No company found for employee ${employee_id}`
       );
     }
 
@@ -99,7 +99,7 @@ export const getEmpByColab = async (id_colaborador: string) => {
     return emp;
   } catch (error) {
     console.error(
-      `[getEmpByColab] ERRO ao buscar empresa para colaborador ${id_colaborador}:`,
+      `[getCompanyByEmployee] ERROR searching company for employee ${employee_id}:`,
       error
     );
     throw error;

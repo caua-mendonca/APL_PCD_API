@@ -1,12 +1,11 @@
-import * as DB from "../../repositories/vaga/vagaRepository.js";
-import { validateDate } from "../../validation/validateData/validateDataVaga.js";
+import * as DB from "../../repositories/job/jobRepository.js";
+import { validateAge } from "../../validation/validateData/validateAge.js";
 import { validateIdByRelation } from "../../validation/validateId/validateId.js";
-import { Vaga } from "../entities/class/Vaga.js";
-import jwt from "jsonwebtoken";
+import { Vaga } from "../entities/class/Job.js";
 import dotevn from "dotenv";
-import { getAcess } from "../../repositories/user/empresaRepository.js";
-import { getEmpByColab } from "../../repositories/user/colaboradorRepository.js";
-import { insertCandidateVaga } from "../../repositories/user/candidateRepository.js";
+import { getAccessibility } from "../../repositories/user/companyRepository.js";
+import { getCompanyByEmployee } from "../../repositories/user/employeeRepository.js";
+import { insertCandidateJob } from "../../repositories/user/candidateRepository.js";
 import {
   selectFromTable,
   selectFromNameWhere,
@@ -16,7 +15,7 @@ import {
 } from "../../repositories/shared/commonRepository.js";
 dotevn.config();
 
-export let getVagaModel = async (): Promise<any> => {
+export let getJobsModel = async (): Promise<any> => {
   console.log("[GET / CONTROLLER Vaga]");
   try {
     let [status, message] = await selectFromTable("tb_vaga");
@@ -27,7 +26,7 @@ export let getVagaModel = async (): Promise<any> => {
   }
 };
 
-export let getVagaById = async (id: string) => {
+export let getJobById = async (id: string) => {
   console.log("[GET / MODEL Vaga]");
   try {
     let [status, message] = await selectFromIdWhere("tb_vaga", id);
@@ -37,7 +36,7 @@ export let getVagaById = async (id: string) => {
   }
 };
 
-export let deleteVaga = async (id: string) => {
+export let deleteJob = async (id: string) => {
   console.log("[DELETE / MODEL Vaga]");
   try {
     let [status, message] = await deleteFromTable("tb_vaga", id);
@@ -56,7 +55,7 @@ export let deleteVaga = async (id: string) => {
  * @param id_empresa ID da empresa ou colaborador responsável pela vaga
  * @returns Promise<boolean> Retorna true se sucesso, false em caso de erro
  */
-export let createVaga = async (
+export let createJob = async (
   vaga: {
     data_fim: Date;
     titulo: string;
@@ -72,7 +71,7 @@ export let createVaga = async (
   try {
     let errorLog: string[] = [];
     // Instancia um novo objeto Vaga com os dados recebidos
-    let acessibilidade = await getAcess(id_empresa);
+    let acessibilidade = await getAccessibility(id_empresa);
     let newVaga = new Vaga(
       new Date(vaga.data_fim),
       vaga.titulo,
@@ -90,7 +89,7 @@ export let createVaga = async (
     }
 
     // Validação da data de término da vaga
-    if (!validateDate(newVaga.data_fim)) {
+    if (!validateAge(newVaga.data_fim)) {
       errorLog.push("Data de fim inválida");
     }
 
@@ -111,7 +110,7 @@ export let createVaga = async (
     // Verifica se o id_empresa refere-se a um colaborador para obter a empresa mãe
 
     if (id_empresa.toUpperCase().startsWith("COLAB")) {
-      let empresaId = await getEmpByColab(id_empresa);
+      let empresaId = await getCompanyByEmployee(id_empresa);
 
       let [status, message] = await DB.insertEmpVaga(newVaga, empresaId);
       return [status, message];
@@ -149,7 +148,7 @@ export let registerCandidateToVaga = async (
 
     let hora = new Date();
 
-    let [status, message] = await insertCandidateVaga(
+    let [status, message] = await insertCandidateJob(
       id_candidate,
       id_vaga,
       hora
@@ -160,7 +159,7 @@ export let registerCandidateToVaga = async (
   }
 };
 
-export let updateVaga = async (body: any, id: string): Promise<any> => {
+export let updateJob = async (body: any, id: string): Promise<any> => {
   console.log("[PUT / MODEL vaga]");
   try {
     let errorLog: string[] = [];
@@ -173,7 +172,7 @@ export let updateVaga = async (body: any, id: string): Promise<any> => {
     // Valida CPF se presente
     if (keys.includes("data_fim")) {
       const index = keys.indexOf("data_fim");
-      if (!validateDate(body.data_fim) === false) {
+      if (!validateAge(body.data_fim) === false) {
         errorLog.push("Data de fim inválida");
       }
     }

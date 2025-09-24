@@ -1,7 +1,7 @@
 import {
   validateCpf,
   validateCpfToDB,
-} from "../../../validation/validateData/validadeteCpf.js";
+} from "../../../validation/validateData/validateCpf.js";
 import { validateAge } from "../../../validation/validateData/validateAge.js";
 import { validateEmailToDB } from "../../../validation/validateData/validateEmail.js";
 import { validateId } from "../../../validation/validateId/validateId.js";
@@ -27,7 +27,7 @@ dotenv.config({ path: ".env.status" });
  * @param user Objeto contendo os dados do candidato.
  * @returns true se sucesso, array com erros de validação ou lança erro em caso de falha.
  */
-export let createCanditado = async (user: {
+export let createCandidate = async (user: {
   name: string;
   email: string;
   confirme_email: string;
@@ -113,7 +113,7 @@ export let createCanditado = async (user: {
       return [400, errorLog.map((e) => e).join(", ")];
     } else {
       console.log("[POST / MODEL Candidato Success]");
-      let [status, message] = await DB.insertIntoCandidate(newUser);
+      let [status, message] = await DB.insertCandidate(newUser);
       if (status === 201) {
         return [status, message];
       } else {
