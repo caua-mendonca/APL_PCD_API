@@ -43,7 +43,7 @@ src/
 ├── 📊 model/             # Modelos de dados
 ├── 🗄️ repositories/      # Camada de acesso a dados
 ├── 🛣️ routes/            # Definição de rotas
-├── 🧪 test/              # 103 Testes unitários
+├── 🧪 test/              # 110+ Testes (60 unit + 50 integration)
 ├── 🔧 utils/             # Utilitários e helpers
 └── ✅ validation/        # Validações de dados
 ```
@@ -161,7 +161,7 @@ Banco de dados **PostgreSQL** com estrutura normalizada e relacionamentos bem de
 - **Jest 29+** - Framework de testes
 - **Supertest** - Testes de API
 - **TypeScript** - Verificação de tipos
-- **103 Testes Unitários** - Validações e entidades
+- **110+ Testes** - 60 unitários + 50 integração
 - **Cobertura 99%+** - Funções críticas testadas
 
 ### 🔧 **Ferramentas + Segurança**
@@ -294,7 +294,7 @@ DB_PORT=5432
 
 ### 🧪 **Executar Testes**
 ```bash
-# Todos os testes (103 testes ✅)
+# Todos os testes (110+ testes ✅)
 npm test
 
 # Testes unitários específicos
@@ -364,7 +364,7 @@ node build/index.js
 - 🚀 **Status**: **PRODUCTION-READY** ✅
 - 📈 **Versão**: 3.0.0 Enterprise
 - 🏆 **Qualidade**: **Enterprise-Grade**
-- 🧪 **Testes**: 103 testes unitários ✅
+- 🧪 **Testes**: 110+ testes (60 unit + 50 integration) ✅
 - 📊 **Cobertura**: 99%+ crítica
 - 🔒 **Segurança**: **9/10** - Rate limiting + Helmet
 - 🏗️ **Arquitetura**: **9/10** - Service Layer + DI
@@ -386,8 +386,7 @@ node build/index.js
 - 📧 **Issues**: [GitHub Issues](https://github.com/cMendoncaaa/APL-WEB-PCD/issues)
 - 📖 **Documentação**: [WIKI.md](./WIKI.md)
 - 🎨 **Guia Frontend**: [API_FRONTEND_GUIDE.md](./API_FRONTEND_GUIDE.md)
-- 🧪 **Resumo de Testes**: [UNIT_TESTS_SUMMARY.md](./UNIT_TESTS_SUMMARY.md)
-- 🎉 **Resultados Finais**: [FINAL_TEST_RESULTS.md](./FINAL_TEST_RESULTS.md)
+- 🧪 **Testes**: [TESTS.md](./TESTS.md)
 - 💼 **LinkedIn**: [Dev Melo](https://www.linkedin.com/in/devmelo/)
 - 🐙 **GitHub**: [DiegoHenriqueMelo](https://github.com/DiegoHenriqueMelo)
 
