@@ -5,7 +5,7 @@ import * as Model from "../../model/user/candidate/candidateModel.js";
 dotenv.config({ path: ".env.status" });
 
 // Register service in container
-container.register('CandidateService', CandidateService, true);
+container.register("CandidateService", CandidateService, true);
 
 /**
  * Controlador para criação de candidato.
@@ -30,7 +30,8 @@ export const createCandidateController = async (body: {
   accessibility: string;
 }): Promise<[number, string]> => {
   try {
-    const candidateService = container.resolve<CandidateService>('CandidateService');
+    const candidateService =
+      container.resolve<CandidateService>("CandidateService");
     const mappedBody = {
       name: body.name,
       email: body.email,
@@ -58,11 +59,12 @@ export const createCandidateController = async (body: {
  * Busca os dados no banco, valida a resposta e retorna uma lista ou mensagem.
  * @returns array de candidatos ou mensagem de erro
  */
+
 export const getCandidatesController = async (): Promise<
-  [number, string[] | string]
-> => {
+  [number, string[] | string]> => {
   try {
-    const candidateService = container.resolve<CandidateService>('CandidateService');
+    const candidateService =
+      container.resolve<CandidateService>("CandidateService");
     return await candidateService.getAll();
   } catch (error) {
     return [400, String(error)];
@@ -77,7 +79,8 @@ export const getCandidatesController = async (): Promise<
  */
 export const getCandidateByNameController = async (name: string) => {
   try {
-    const candidateService = container.resolve<CandidateService>('CandidateService');
+    const candidateService =
+      container.resolve<CandidateService>("CandidateService");
     return await candidateService.getByName(name);
   } catch (error) {
     return [400, String(error)];
@@ -108,7 +111,10 @@ export const deleteCandidateController = async (id: string): Promise<any> => {
  * @param body - Dados para atualização
  * @returns resultado da atualização
  */
-export const updateCandidateController = async (id: string, body: object): Promise<any> => {
+export const updateCandidateController = async (
+  id: string,
+  body: object
+): Promise<any> => {
   console.log("[PUT / CONTROLLER Candidate]");
   try {
     const [status, message] = await Model.updateUser("tb_candidato", id, body);
@@ -125,23 +131,26 @@ export const updateCandidateController = async (id: string, body: object): Promi
  * @param id_vaga - ID da vaga
  * @returns resultado do registro da candidatura
  */
-export const applyToJobController = async (candidate_id: string, job_id: string):Promise<[number, string]> => {
+export const applyToJobController = async (
+  candidate_id: string,
+  job_id: string
+): Promise<[number, string]> => {
   try {
-    const candidateService = container.resolve<CandidateService>('CandidateService');
+    const candidateService =
+      container.resolve<CandidateService>("CandidateService");
     return await candidateService.applyToJob(candidate_id, job_id);
   } catch (error) {
     return [400, String(error)];
   }
 };
 
-
 export const getCandidateJobsController = async (id: string): Promise<any> => {
-  console.log("[GET / CONTROLLER Job]")
+  console.log("[GET / CONTROLLER Job]");
 
   try {
-    const [status, message] = await Model.getUserById(id)
-    return [status, message]
+    const [status, message] = await Model.getUserById(id);
+    return [status, message];
   } catch (error) {
-    return [400, error]
+    return [400, error];
   }
-}
+};
