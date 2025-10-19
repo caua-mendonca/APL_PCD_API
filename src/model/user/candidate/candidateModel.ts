@@ -5,7 +5,7 @@ import {
 import { validateAge } from "../../../validation/validateData/validateAge.js";
 import { validateEmailToDB } from "../../../validation/validateData/validateEmail.js";
 import { validateId } from "../../../validation/validateId/validateId.js";
-import { Candidate } from "../../entities/class/Candidate.js";
+import { Candidate } from "../../entities/class/candidate.js";
 import bcrypt from "bcrypt";
 import * as DB from "../../../repositories/user/candidateRepository.js";
 import dotenv from "dotenv";
@@ -121,7 +121,7 @@ export let createCandidate = async (user: {
       }
     }
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 
@@ -136,7 +136,7 @@ export let getUser = async (
     let [status, message] = await selectFromTable(table);
     return [status, message];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 
@@ -153,28 +153,28 @@ export let getUserByName = async (
     let [status, message] = await selectFromNameWhere(table, name);
     return [status, message];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 
 /**
  * Exclui um usuário pelo ID e tabela.
  */
-export let deleteUser = async (table: string, id: string) => {
+export let deleteUser = async (table: string, id: string): Promise<any> => {
   console.log("[DELETE / MODEL Candidato]");
 
   try {
     const [status, message] = await deleteFromTable(table, id);
     return [status, message];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 
 /**
  * Atualiza dados de um usuário.
  */
-export let updateUser = async (table: string, id: string, body: object) => {
+export let updateUser = async (table: string, id: string, body: object): Promise<any> => {
   console.log("[PUT / MODEL Candidato]");
   try {
     let errorlog: string[] = [];
@@ -207,7 +207,7 @@ export let updateUser = async (table: string, id: string, body: object) => {
     if (errorlog.length > 0) return [400, errorlog];
     return [status, message];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 
@@ -218,6 +218,6 @@ export let getUserById = async (id: string): Promise<any> => {
     let [status, message] = await selectFromIdWhere("tb_candidato_vaga", id);
     return [status, message];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };

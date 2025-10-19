@@ -20,7 +20,7 @@ export const insertCalendario = async (
     return [201, result];
   } catch (error) {
     console.error("[QUERY] Failed");
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 

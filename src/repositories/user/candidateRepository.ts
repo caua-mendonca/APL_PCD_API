@@ -49,7 +49,7 @@ export const insertCandidate = async (user: {
     return [201, String(process.env.STATUS_201)];
   } catch (error: any) {
     console.error(`[POST / QUERY] insertIntoCandidate -> failed:`, error?.message ?? error);
-    return [500, String(process.env.STATUS_500 ?? "Internal Server Error")];
+    return [500, String(error)];
   }
 };
 
@@ -66,6 +66,6 @@ export const insertCandidateJob = async (
 
     return [200, String(process.env.STATUS_200)];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };

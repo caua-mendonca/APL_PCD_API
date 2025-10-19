@@ -1,6 +1,5 @@
 import * as Model from "../../model/user/login/login.js";
 import dotenv from "dotenv";
-dotenv.config();
 
 /**
  * Controller de login de usuário
@@ -17,7 +16,7 @@ const loginController = async (body: any, table: string): Promise<[number, any]>
     return [status, message];
   } catch (error) {
     console.error(`[POST / CONTROLLER Login] Error during login:`, error);
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 

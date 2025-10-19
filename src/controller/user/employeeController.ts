@@ -30,7 +30,7 @@ export const createEmployeeController = async (
     const [status, message] = await Model.createEmployee(mappedUser, company_id);
     return [status, message];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 
@@ -46,7 +46,7 @@ export const getEmployeeController = async (table: string, id: string) => {
     const [status, message] = await Model.getEmployee(table, id);
     return [status, message];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 

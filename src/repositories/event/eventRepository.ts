@@ -52,7 +52,7 @@ export const insertIntoEventos = async (
     return [200, String(process.env.STATUS_200)];
   } catch (error) {
     console.error("[QUERY] Failed");
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 
@@ -67,6 +67,6 @@ export const getEventosByCalendario = async (
 
     return [200, result.rows];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };

@@ -43,7 +43,7 @@ export const insertCompany = async (user: {
     return [201, String(process.env.STATUS_201)];
   } catch (error: any) {
     console.error(`[POST / QUERY] insertIntoContratante -> failed:`, error?.message ?? error);
-    return [500, String(process.env.STATUS_500 ?? "Internal Server Error")];
+    return [500, String(error)];
   }
 };
 

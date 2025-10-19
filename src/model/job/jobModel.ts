@@ -120,7 +120,7 @@ export let createJob = async (
       return [status, message];
     }
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 
@@ -187,6 +187,6 @@ export let updateJob = async (body: any, id: string): Promise<any> => {
     if (errorLog.length > 0) return [400, errorLog];
     return [status, message];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };

@@ -79,7 +79,7 @@ export let getEvent = async (id: string) => {
     let [status, message] = await DB.getEventosByCalendario(id);
     return [status, message];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 

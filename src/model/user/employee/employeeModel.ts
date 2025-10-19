@@ -37,7 +37,7 @@ export let createEmployee = async (
     );
     return [status, message];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 
@@ -50,6 +50,6 @@ export let getEmployee = async (table: string, id: string): Promise<any> => {
     let [status, message] = await selectFromIdWhere(table, id);
     return [status, message];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };

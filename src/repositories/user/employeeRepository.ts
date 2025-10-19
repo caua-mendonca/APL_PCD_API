@@ -24,7 +24,7 @@ export const insertEmployee = async (
     return [201, String(process.env.STATUS_201)];
   } catch (error: any) {
     console.error(`[insertIntoColaborador] ERRO ao inserir colaborador ${id}:`, error?.message ?? error);
-    return [500, String(process.env.STATUS_500 ?? "Internal Server Error")];
+    return [500, String(error)];
   }
 };
 
@@ -61,7 +61,7 @@ export const insertCompanyEmployee = async (
     return [201, String(process.env.STATUS_201)];
   } catch (error: any) {
     console.error(`[insertEmpresaColaborador] ERRO ao inserir relação:`, error?.message ?? error);
-    return [500, String(process.env.STATUS_500 ?? "Internal Server Error")];
+    return [500, String(error)];
   }
 };
 
@@ -78,7 +78,7 @@ export const updateEmployeeCompany = async (
     return [200, String(process.env.STATUS_200 ?? "OK")];
   } catch (error: any) {
     console.error(`[updateColaboradorEmpresa] ERRO ao atualizar colaborador na empresa:`, error?.message ?? error);
-    return [500, String(process.env.STATUS_500 ?? "Internal Server Error")];
+    return [500, String(error)];
   }
 };
 

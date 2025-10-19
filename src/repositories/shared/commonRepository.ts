@@ -29,7 +29,7 @@ export const selectFromTable = async (
     return [200, result.rows];
   } catch (error: any) {
     console.error(`[selectFromTable] Failed:`, error?.message ?? error);
-    return [500, String(process.env.STATUS_500 ?? "Internal Server Error")];
+    return [500, String(error)];
   }
 };
 
@@ -47,7 +47,7 @@ export const selectFromNameWhere = async (
     return [200, result.rows];
   } catch (error: any) {
     console.error(`[selectFromNameWhere] Failed:`, error?.message ?? error);
-    return [500, String(process.env.STATUS_500 ?? "Internal Server Error")];
+    return [500, String(error)];
   }
 };
 

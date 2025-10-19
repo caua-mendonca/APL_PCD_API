@@ -104,7 +104,7 @@ export let createCompany = async (user: {
       return [status, message];
     }
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 
@@ -116,7 +116,7 @@ export let getUser = async (
     let [status, message] = await selectFromTable(table);
     return [status, message];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 
@@ -126,7 +126,7 @@ export let getUserByID = async (table: string, id: string): Promise<any> => {
     let [status, message] = await selectFromIdWhere(table, id);
     return [status, message];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 
@@ -140,7 +140,7 @@ export let deleteUser = async (table: string, id: string) => {
     const [status, message] = await deleteFromTable(table, id);
     return [status, message];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
 
@@ -179,6 +179,6 @@ export let updateUser = async (table: string, id: string, body: object) => {
     }
     return [status, message];
   } catch (error) {
-    return [500, String(process.env.STATUS_500)];
+    return [500, String(error)];
   }
 };
