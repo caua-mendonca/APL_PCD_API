@@ -1,5 +1,6 @@
-import * as Server from "./utils/logger.js";
+import * as Server from "./utils/server.js";
 import dotenv from 'dotenv';
+import {logger} from './utils/logger.js';
 
 dotenv.config();
 
@@ -22,4 +23,10 @@ let PORT: number = Number(process.env.PORT);
  * @param {number} PORT - Porta que o servidor deve escutar.
  * @returns {void} Não há retorno explícito, apenas inicialização e logs.
  */
-Server.conectServ(PORT);
+
+try {
+    Server.conectServ(PORT);
+    logger.info('Servidor iniciado com sucesso!');
+} catch (error) {
+    logger.error('Erro ao iniciar o servidor: ' + error);
+}

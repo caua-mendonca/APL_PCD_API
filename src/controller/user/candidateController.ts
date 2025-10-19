@@ -1,6 +1,7 @@
 import { CandidateService } from "../../services/CandidateService.js";
 import { container } from "../../container/DIContainer.js";
 import * as dotenv from "dotenv";
+import * as Model from "../../model/user/candidate/candidateModel.js";
 dotenv.config({ path: ".env.status" });
 
 // Register service in container
@@ -124,7 +125,7 @@ export const updateCandidateController = async (id: string, body: object): Promi
  * @param id_vaga - ID da vaga
  * @returns resultado do registro da candidatura
  */
-export const applyToJobController = async (candidate_id: string, job_id: string) => {
+export const applyToJobController = async (candidate_id: string, job_id: string):Promise<[number, string]> => {
   try {
     const candidateService = container.resolve<CandidateService>('CandidateService');
     return await candidateService.applyToJob(candidate_id, job_id);
