@@ -1,5 +1,4 @@
 .env
-.env.routes
 .env.status
 .env.test
 
