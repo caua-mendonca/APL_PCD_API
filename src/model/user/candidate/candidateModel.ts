@@ -4,10 +4,11 @@ import {
 } from "../../../validation/validateData/validateCpf.js";
 import { validateAge } from "../../../validation/validateData/validateAge.js";
 import { validateEmailToDB } from "../../../validation/validateData/validateEmail.js";
-import { validateId } from "../../../validation/validateId/validateId.js";
 import { Candidate } from "../../entities/class/candidate.js";
 import bcrypt from "bcrypt";
 import * as DB from "../../../repositories/user/candidateRepository.js";
+import { logger } from "../../../utils/logger.js";
+
 import dotenv from "dotenv";
 import {
   selectFromTable,
@@ -43,7 +44,7 @@ export let createCandidate = async (user: {
   barreira: string;
   acessbilidade: string;
 }): Promise<[number, string]> => {
-  console.log("[POST / MODEL Candidato]");
+  logger.info("[POST / MODEL Candidato]");
   try {
     let errorLog = [];
 
@@ -64,61 +65,62 @@ export let createCandidate = async (user: {
       user.acessbilidade
     );
 
-    console.log("[POST / VALIDATE CPF ]");
+    logger.info("[POST / VALIDATE CPF ]");
     let cpfIsValid: boolean = validateCpf(newUser.cpf);
 
     if (cpfIsValid === true) {
       cpfIsValid = await validateCpfToDB(newUser.cpf, "cpf", "tb_candidato");
-      console.log("[POST / VALIDATE CPF NO BANCO]");
+      logger.info("[POST / VALIDATE CPF NO BANCO]");
       if (!cpfIsValid) {
-        console.log("[POST / VALIDATE CPF NO BANCO]");
+        logger.info("[POST / VALIDATE CPF NO BANCO]");
         errorLog.push("CPF ja inserido no banco");
       }
     } else {
       errorLog.push("CPF inválido");
     }
 
-    console.log("[POST / VALIDATE DATA ANIVERSARIO]");
+    logger.info("[POST / VALIDATE DATA ANIVERSARIO]");
 
     let dateIsValid: boolean = validateAge(newUser.data_nascimento);
     if (!dateIsValid) {
       errorLog.push("Data de nascimento inválida");
     }
-    console.log("[POST / VALIDATE EMAIL]");
-    let emailIsValid: boolean = newUser.email === newUser.confirme_email;
+    logger.info("[POST / VALIDATE EMAIL]");
+    let emailIsValid: boolean = String(newUser.email) === String(newUser.confirme_email);
     if (emailIsValid === true) {
-      console.log("[POST / VALIDATE EMAIL NO BANCO]");
+      logger.info("[POST / VALIDATE EMAIL NO BANCO]");
       emailIsValid = await validateEmailToDB(
         newUser.email,
         "email",
         "tb_candidato"
-      );
+      )
       if (!emailIsValid) {
-        console.log("[POST / VALIDATE EMAIL]");
         errorLog.push("Email ja inserido no banco");
       }
     } else {
+      logger.debug('DEU RUIM NO EMAIL')
+
       errorLog.push("Email inválido");
     }
-    console.log("[POST / VALIDATE SENHA]");
+    logger.info("[POST / VALIDATE SENHA]");
     let passwordIsValid: boolean = newUser.senha === newUser.confirme_senha;
     if (passwordIsValid) {
-      console.log("[POST / CRIPTOGRAFANDO SENHA]");
+      logger.info("[POST / CRIPTOGRAFANDO SENHA]");
       const salt = await bcrypt.genSalt(12);
+      logger.debug("DEFININDO SALT:",salt)
       const passwordHash = await bcrypt.hash(user.senha, salt);
-      newUser.SetCryptPass(passwordHash);
+      logger.debug("DEFININDO HASH:",passwordHash)
+      await newUser.SetCryptPass(passwordHash);
+    }else{
+    logger.debug("DEU RUIM NA SENHA")
     }
     if (errorLog.length > 0) {
-      console.log("[POST / MODEL Candidato Failed]");
+      logger.info("[POST / MODEL Candidato Failed]");
       return [400, errorLog.map((e) => e).join(", ")];
     } else {
-      console.log("[POST / MODEL Candidato Success]");
+      logger.info("[POST / MODEL Candidato Success]");
       let [status, message] = await DB.insertCandidate(newUser);
-      if (status === 201) {
-        return [status, message];
-      } else {
-        return [status, message];
-      }
+      return [status, message];
     }
   } catch (error) {
     return [500, String(error)];
@@ -131,7 +133,7 @@ export let createCandidate = async (user: {
 export let getUser = async (
   table: string
 ): Promise<[number, string[] | string]> => {
-  console.log("[GET / MODEL Candidato]");
+  logger.info("[GET / MODEL Candidato]");
   try {
     let [status, message] = await selectFromTable(table);
     return [status, message];
@@ -147,7 +149,7 @@ export let getUserByName = async (
   table: string,
   name: string
 ): Promise<any> => {
-  console.log("[GET / MODEL Candidato]");
+  logger.info("[GET / MODEL Candidato]");
 
   try {
     let [status, message] = await selectFromNameWhere(table, name);
@@ -161,7 +163,7 @@ export let getUserByName = async (
  * Exclui um usuário pelo ID e tabela.
  */
 export let deleteUser = async (table: string, id: string): Promise<any> => {
-  console.log("[DELETE / MODEL Candidato]");
+  logger.info("[DELETE / MODEL Candidato]");
 
   try {
     const [status, message] = await deleteFromTable(table, id);
@@ -174,8 +176,12 @@ export let deleteUser = async (table: string, id: string): Promise<any> => {
 /**
  * Atualiza dados de um usuário.
  */
-export let updateUser = async (table: string, id: string, body: object): Promise<any> => {
-  console.log("[PUT / MODEL Candidato]");
+export let updateUser = async (
+  table: string,
+  id: string,
+  body: object
+): Promise<any> => {
+  logger.info("[PUT / MODEL Candidato]");
   try {
     let errorlog: string[] = [];
     // Monta os pares chave = valor para o UPDATE
@@ -212,10 +218,23 @@ export let updateUser = async (table: string, id: string, body: object): Promise
 };
 
 export let getUserById = async (id: string): Promise<any> => {
-  console.log("[GET / MODEL Candidato]");
+  logger.info("[GET / MODEL Candidato]");
 
   try {
-    let [status, message] = await selectFromIdWhere("tb_candidato_vaga", id);
+    let [status, message] = await DB.selectFromIdWhere("tb_candidato_vaga", id);
+    return [status, message];
+  } catch (error) {
+    return [500, String(error)];
+  }
+};
+
+export let applyToJob = async (
+  candidateId: string,
+  jobId: string
+): Promise<any> => {
+  logger.info("[POST / MODEL Candidato Aplicar Vaga]");
+  try {
+    const [status, message] = await DB.insertCandidateJob(candidateId, jobId, new Date());
     return [status, message];
   } catch (error) {
     return [500, String(error)];

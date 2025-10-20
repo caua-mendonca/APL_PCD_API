@@ -1,17 +1,18 @@
 import * as DB from "../../../repositories/shared/commonRepository.js";
+import { logger } from "../../../utils/logger.js";
+
 import bcrypt from "bcrypt";
-import dotenv from "dotenv";
 
 /**
  * login
  * Realiza a autenticação do usuário comparando senha fornecida com hash do banco.
- * 
+ *
  * @param body - Objeto com `email` e `senha`
  * @param table - Nome da tabela no banco (ex: "tb_candidato", "tb_empresa")
  * @returns [status, message] - Status HTTP e mensagem
  */
 export let login = async (body: any, table: string): Promise<[number, any]> => {
-  console.log(`[MODEL Login]`);
+  logger.info(`[MODEL Login]`);
 
   try {
     // Busca usuário pelo email
@@ -33,7 +34,7 @@ export let login = async (body: any, table: string): Promise<[number, any]> => {
     // Aqui você poderia gerar e retornar um token JWT, caso use autenticação baseada em token
     return [200, "Login efetuado com sucesso!"];
   } catch (error) {
-    console.error(`[MODEL Login] Erro ao autenticar:`, error);
+    logger.error(`[MODEL Login] Erro ao autenticar:`, error);
     return [500, "Erro interno ao tentar efetuar login"];
   }
 };

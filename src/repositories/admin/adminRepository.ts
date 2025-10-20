@@ -1,6 +1,8 @@
 import * as DB from "../../config/connect.js";
 import { safeIdentifier } from "../shared/security.js";
 import dotenv from "dotenv";
+import {logger} from "../../utils/logger.js";
+
 dotenv.config({ path: ".env.status" });
 
 export const createBarreira = async (
@@ -8,17 +10,17 @@ export const createBarreira = async (
   desc: string,
   hora: Date
 ): Promise<any> => {
-  console.log("[QUERY]");
+  logger.info("[QUERY]");
 
   try {
     const safeTable = safeIdentifier("tb_barreira");
     const query = `INSERT INTO ${safeTable} (id, descricao, created_at, updated_at) VALUES ($1, $2, $3, $4);`;
     const result = await DB.pool.query(query, [id, desc, hora, hora]);
 
-    console.log(`[QUERY] Success`);
+    logger.info(`[QUERY] Success`);
     return [201, String(process.env.STATUS_201)];
   } catch (error) {
-    console.log(`[QUERY] Failed`);
+    logger.info(`[QUERY] Failed`);
     return [500, String(error)];
   }
 };
@@ -28,17 +30,17 @@ export const createAcess = async (
   desc: string,
   hora: Date
 ): Promise<any> => {
-  console.log("[QUERY]");
+  logger.info("[QUERY]");
 
   try {
     const safeTable = safeIdentifier("tb_acessibilidade");
     const query = `INSERT INTO ${safeTable} (id, descricao, created_at, updated_at) VALUES ($1, $2, $3, $4);`;
     const result = await DB.pool.query(query, [id, desc, hora, hora]);
 
-    console.log(`[QUERY] Success`);
+    logger.info(`[QUERY] Success`);
     return [201, String(process.env.STATUS_201)];
   } catch (error) {
-    console.log(`[QUERY] Failed`);
+    logger.info(`[QUERY] Failed`);
     return [500, String(error)];
   }
 };
@@ -51,7 +53,7 @@ export const createSubTipo = async (
   barreira: string,
   acessibilidade: string
 ) => {
-  console.log("[QUERY]");
+  logger.info("[QUERY]");
 
   try {
     // Inserção do subtipo
@@ -90,10 +92,10 @@ export const createSubTipo = async (
       return [400, String(`Erro ao relacionar barreira com acessibilidade.`)];
     }
 
-    console.log(`[QUERY] Success`);
+    logger.info(`[QUERY] Success`);
     return [201, String(process.env.STATUS_201)];
   } catch (error) {
-    console.log(`[QUERY] Failed`);
+    logger.info(`[QUERY] Failed`);
     return [500, String(error)];
   }
 };

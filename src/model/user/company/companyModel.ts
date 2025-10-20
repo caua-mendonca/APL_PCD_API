@@ -7,6 +7,8 @@ import {
 } from "../../../validation/validateData/validateCNPJ.js";
 import { validateAge } from "../../../validation/validateData/validateAge.js";
 import * as DB from "../../../repositories/user/companyRepository.js";
+import {logger} from "../../../utils/logger.js";
+
 import {
   selectFromTable,
   selectFromNameWhere,
@@ -36,7 +38,7 @@ export let createCompany = async (user: {
   telefone: string;
   acessibilidade: string;
 }): Promise<any> => {
-  console.log("[POST / MODEL Contratante]");
+  logger.info("[POST / MODEL Contratante]");
 
   try {
     let errorLog = [];
@@ -111,7 +113,7 @@ export let createCompany = async (user: {
 export let getUser = async (
   table: string
 ): Promise<[number, string[] | string]> => {
-  console.log("[POST / MODEL Candidato]");
+  logger.info("[POST / MODEL Candidato]");
   try {
     let [status, message] = await selectFromTable(table);
     return [status, message];
@@ -121,7 +123,7 @@ export let getUser = async (
 };
 
 export let getUserByID = async (table: string, id: string): Promise<any> => {
-  console.log(`[GET / MODEL Contratante]`);
+  logger.info(`[GET / MODEL Contratante]`);
   try {
     let [status, message] = await selectFromIdWhere(table, id);
     return [status, message];
@@ -134,7 +136,7 @@ export let getUserByID = async (table: string, id: string): Promise<any> => {
  * Exclui um usuário pelo ID e tabela.
  */
 export let deleteUser = async (table: string, id: string) => {
-  console.log("[DELETE / MODEL Contratante]");
+  logger.info("[DELETE / MODEL Contratante]");
 
   try {
     const [status, message] = await deleteFromTable(table, id);
@@ -148,7 +150,7 @@ export let deleteUser = async (table: string, id: string) => {
  * Atualiza dados de um usuário.
  */
 export let updateUser = async (table: string, id: string, body: object) => {
-  console.log("[UPDATE / MODEL Contratante]");
+  logger.info("[UPDATE / MODEL Contratante]");
   try {
     let errorLog: string[] = [];
     const keys = Object.keys(body);

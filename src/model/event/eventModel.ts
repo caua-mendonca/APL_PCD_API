@@ -1,6 +1,7 @@
 import * as Validation from "../../validation/validateId/validateId.js";
 import * as DB from "../../repositories/event/eventRepository.js";
 import { Event } from "../entities/class/Event.js";
+import {logger} from "../../utils/logger.js";
 import {deleteFromTable} from "../../repositories/shared/commonRepository.js";
 
 /**
@@ -22,7 +23,7 @@ export let createEvent = async (
   },
   id_calendario: string
 ) => {
-  console.log("[POST / CONTROLLER Evento]");
+  logger.info("[POST / CONTROLLER Evento]");
   let errorLog: string[] = [];
   try {
     // Instancia um novo objeto Event com os dados fornecidos.
@@ -74,7 +75,7 @@ export let createEvent = async (
  * @returns Retorna a lista de eventos encontrados no banco.
  */
 export let getEvent = async (id: string) => {
-  console.log("[GET / MODEL Evento");
+  logger.info("[GET / MODEL Evento]");
   try {
     let [status, message] = await DB.getEventosByCalendario(id);
     return [status, message];
@@ -91,7 +92,7 @@ export let getEvent = async (id: string) => {
  * @throws Lança um erro caso o ID seja inválido ou a exclusão falhe.
  */
 export let deleteEvent = async (id: string) => {
-  console.log("[DELETE / MODEL Evento]");
+  logger.info("[DELETE / MODEL Evento]");
 
   try {
     let response = await deleteFromTable("tb_evento", id);

@@ -1,4 +1,6 @@
 import * as DB from "../../repositories/shared/commonRepository.js";
+import {logger} from "../../utils/logger.js";
+
 
 /**
  * Valida um CNPJ verificando formato, repetição e dígitos verificadores.
@@ -59,7 +61,7 @@ export let validateCNPJToDB = async (
   // Se encontrar registros, retorna false para impedir cadastro duplicado
   result > 0 ? (result = false) : (result = true);
 
-  console.log("RESULTADO DA FUNÇÃO validateCNPJToDB");
+  logger.info("RESULTADO DA FUNÇÃO validateCNPJToDB");
 
   return result;
 };

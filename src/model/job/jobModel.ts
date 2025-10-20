@@ -13,10 +13,11 @@ import {
   selectFromIdWhere,
   updateUserColumn,
 } from "../../repositories/shared/commonRepository.js";
+import {logger} from "../../utils/logger.js";
 dotevn.config();
 
 export let getJobsModel = async (): Promise<any> => {
-  console.log("[GET / CONTROLLER Vaga]");
+  logger.info("[GET / CONTROLLER Vaga]");
   try {
     let [status, message] = await selectFromTable("tb_vaga");
 
@@ -27,7 +28,7 @@ export let getJobsModel = async (): Promise<any> => {
 };
 
 export let getJobById = async (id: string) => {
-  console.log("[GET / MODEL Vaga]");
+  logger.info("[GET / MODEL Vaga]");
   try {
     let [status, message] = await selectFromIdWhere("tb_vaga", id);
     return [status, message];
@@ -37,7 +38,7 @@ export let getJobById = async (id: string) => {
 };
 
 export let deleteJob = async (id: string) => {
-  console.log("[DELETE / MODEL Vaga]");
+  logger.info("[DELETE / MODEL Vaga]");
   try {
     let [status, message] = await deleteFromTable("tb_vaga", id);
     return [status, message];
@@ -66,7 +67,7 @@ export let createJob = async (
   },
   id_empresa: string
 ): Promise<any> => {
-  console.log("[POST / MODEL Vaga]");
+  logger.info("[POST / MODEL Vaga]");
 
   try {
     let errorLog: string[] = [];
@@ -135,7 +136,7 @@ export let registerCandidateToVaga = async (
   id_candidate: string,
   id_vaga: string
 ): Promise<any> => {
-  console.log("[POST / MODEL Vaga]");
+  logger.info("[POST / MODEL Vaga]");
 
   let errorLog: string[] = [];
   try {
@@ -160,7 +161,7 @@ export let registerCandidateToVaga = async (
 };
 
 export let updateJob = async (body: any, id: string): Promise<any> => {
-  console.log("[PUT / MODEL vaga]");
+  logger.info("[PUT / MODEL vaga]");
   try {
     let errorLog: string[] = [];
     // Monta os pares chave = valor para o UPDATE

@@ -1,5 +1,6 @@
 import * as Validations from "../../validation/validateId/validateId.js";
 import { Calendar } from "../entities/class/calendar.js";
+import {logger} from "../../utils/logger.js";
 import * as DB from "../../repositories/calendar/calendarRepository.js";
 /**
  * Cria um calendário para uma empresa específica.
@@ -8,7 +9,7 @@ import * as DB from "../../repositories/calendar/calendarRepository.js";
  * @throws Lança erro se o ID for inválido ou se houver falha na criação do calendário.
  */
 export let createCalendar = async (id: string): Promise<any> => {
-  console.log(`[POST / MODEL Calendario]`);
+  logger.info(`[POST / MODEL Calendario]`);
   let errorLog: string[] = [];
   try {
     if (!Validations.validateId(id, "tb_empresa")) {
@@ -43,7 +44,7 @@ export let getCalendar = (
   year: number,
   events: any[]
 ): Promise<any> => {
-  console.log(`[GET / MODEL Calendario]`);
+  logger.info(`[GET / MODEL Calendario]`);
   let errorLog: string[] = [];
 
   try {

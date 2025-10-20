@@ -10,10 +10,6 @@ export const logger = createLogger({
     format.json()
   ),
 transports: [
-  new transports.File({ filename: 'error.log', level: 'error' }),
-  new transports.File({ filename: 'warn.log', level: 'warn' }),
-  new transports.File({ filename: 'info.log', level: 'info' }),
-  new transports.File({ filename: 'debug.log', level: 'debug' }),
   new transports.File({ filename: 'combined.log' })
 ]
 });

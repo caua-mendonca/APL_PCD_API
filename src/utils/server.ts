@@ -8,6 +8,7 @@ import cors from "cors";
 import * as Login from "../controller/login/login.js";
 import { changePassword } from "../controller/login/changePass.js";
 import * as adminController from "../controller/admin/adminController.js";
+import { logger } from "../utils/logger.js";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
 
@@ -22,11 +23,12 @@ APP.use(cors());
 export let conectServ = (PORT: number) => {
   // Inicializa servidor HTTP na porta especificada
   APP.listen(PORT, () => {
-    try {
-      console.log(`Servidor iniciado e escutando na porta ${PORT}`);
-    } catch (error) {
-      console.error("Erro ao iniciar o servidor:", error);
-    }
+    logger.info(`Servidor iniciado e escutando na porta ${PORT}`);
+  });
+
+  APP.get("/", (req, res) => {
+    logger.info("Rota inicial chamada");
+    res.send("API APL PCD funcionando!");
   });
 
   // -----------------------------------
@@ -34,14 +36,19 @@ export let conectServ = (PORT: number) => {
   // -----------------------------------
 
   APP.post(Routes.createCandidate, async (req, res) => {
+    logger.http(`rota: ${Routes.createCandidate}. Operação: Create Candidate`);
     try {
       let body = req.body;
-
       let [status, message] =
         await candidateController.createCandidateController(body);
       res.status(status).send({ message: message });
+      logger.info("Rota completa com sucesso.", {
+        message: message,
+        status: status,
+      });
     } catch (error) {
       res.status(500).send({ message: String(process.env.STATUS_500) });
+      logger.error("Erro na rota: " + error);
     }
   });
 
@@ -49,12 +56,18 @@ export let conectServ = (PORT: number) => {
     Routes.getCandidate,
     Middleware.authenticateTokenCand,
     async (req, res) => {
+      logger.http(`rota: ${Routes.getCandidate}. Operação: Get Candidate`);
       try {
         let [status, message] =
           await candidateController.getCandidatesController();
         res.status(status).send({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
       }
     }
   );
@@ -63,13 +76,21 @@ export let conectServ = (PORT: number) => {
     Routes.deleteCandidate,
     Middleware.authenticateTokenCand,
     async (req, res) => {
+      logger.http(
+        `rota: ${Routes.deleteCandidate}. Operação: Delete Candidate`
+      );
       try {
         const id = String(req.params.id);
         let [status, message] =
           await candidateController.deleteCandidateController(id);
         res.status(status).send({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
       }
     }
   );
@@ -80,13 +101,20 @@ export let conectServ = (PORT: number) => {
     async (req, res) => {
       const id = String(req.params.id);
       const body = req.body;
-
+      logger.http(
+        `rota: ${Routes.updateCandidate}. Operação: Update Candidate`
+      );
       try {
         const [status, message] =
           await candidateController.updateCandidateController(id, body);
         res.status(status).json({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).json({ error: error });
+        logger.error("Erro na rota: " + error);
       }
     }
   );
@@ -97,26 +125,38 @@ export let conectServ = (PORT: number) => {
 
   APP.post(Routes.createCompany, async (req, res) => {
     let body = req.body;
+    logger.http(`rota: ${Routes.createCompany}. Operação: Create Company`);
     try {
       let [status, message] = await companyController.createCompanyController(
         body
       );
       res.status(status).send({ message: message });
+      logger.info("Rota completa com sucesso.", {
+        message: message,
+        status: status,
+      });
     } catch (error) {
       res.status(500).send({ message: String(process.env.STATUS_500) });
+      logger.error("Erro na rota: " + error);
     }
   });
 
   APP.get(
     Routes.getCompany,
-    Middleware.authenticateTokenEmp,
+    Middleware.authenticateTokenCand,
     async (req, res) => {
+      logger.http(`rota: ${Routes.getCompany}. Operação: Get Company`);
       try {
         let [status, message] =
           await companyController.getCompaniesController();
         res.status(status).send({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
       }
     }
   );
@@ -126,13 +166,21 @@ export let conectServ = (PORT: number) => {
     Middleware.authenticateTokenEmp,
     async (req, res) => {
       const id = String(req.params.id);
+      logger.http(
+        `rota: ${Routes.getCompanyById}. Operação: Get Company By Id`
+      );
 
       try {
         let [status, message] =
           await companyController.getCompanyByIdController(id);
         res.status(status).send({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
       }
     }
   );
@@ -142,13 +190,19 @@ export let conectServ = (PORT: number) => {
     Middleware.authenticateTokenEmp,
     async (req, res) => {
       const id = String(req.params.id);
+      logger.http(`rota: ${Routes.deleteCompany}. Operação: Delete Company`);
       try {
         let [status, message] = await companyController.deleteCompanyController(
           id
         );
         res.status(status).send({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
       }
     }
   );
@@ -159,14 +213,20 @@ export let conectServ = (PORT: number) => {
     async (req, res) => {
       const id = String(req.params.id);
       const body = req.body;
+      logger.http(`rota: ${Routes.updateCompany}. Operação: Update Company`);
       try {
         let [status, message] = await companyController.updateCompanyController(
           id,
           body
         );
         res.status(status).send({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
       }
     }
   );
@@ -178,6 +238,8 @@ export let conectServ = (PORT: number) => {
     Routes.createEmployee,
     Middleware.authenticateTokenEmp,
     async (req, res) => {
+      logger.http(`rota: ${Routes.createEmployee}. Operação: Create Employee`);
+
       try {
         let body = req.body;
         let id = req.params.id;
@@ -185,8 +247,13 @@ export let conectServ = (PORT: number) => {
         let [status, message] =
           await employeeController.createEmployeeController(body, id);
         res.status(status).send({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
       }
     }
   );
@@ -196,15 +263,21 @@ export let conectServ = (PORT: number) => {
     Middleware.authenticateTokenEmp,
     async (req, res) => {
       const id = String(req.params.id);
+      logger.http(`rota: ${Routes.getEmployee}. Operação: Get Employee`);
 
       try {
         let [status, message] = await employeeController.getEmployeeController(
-          "tb_empresa",
+          "tb_colaborador",
           id
         );
         res.status(status).send({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
       }
     }
   );
@@ -219,6 +292,7 @@ export let conectServ = (PORT: number) => {
     async (req, res) => {
       let body = req.body;
       let id = req.params.id;
+      logger.http(`rota: ${Routes.createJob}. Operação: Create Job`);
 
       try {
         let [status, message] = await employeeController.createJobController(
@@ -226,8 +300,13 @@ export let conectServ = (PORT: number) => {
           id
         );
         res.status(status).send({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
       }
     }
   );
@@ -250,27 +329,45 @@ export let conectServ = (PORT: number) => {
     }
   );
 
-  APP.get(Routes.getJobs, Middleware.authenticateTokenEmp, async (req, res) => {
-    try {
-      let [status, message] = await employeeController.getJobsController();
-      res.status(status).send({ message: message });
-    } catch (error) {
-      res.status(500).send({ message: String(process.env.STATUS_500) });
+  APP.get(
+    Routes.getJobs,
+    Middleware.authenticateTokenCand,
+    async (req, res) => {
+      logger.http(`rota: ${Routes.getJobs}. Operação: Get Jobs`);
+
+      try {
+        let [status, message] = await employeeController.getJobsController();
+        res.status(status).send({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
+      }
     }
-  });
+  );
 
   APP.get(
     Routes.getJobById,
     Middleware.authenticateTokenEmp,
     async (req, res) => {
       let id = String(req.params.id);
+      logger.http(`rota: ${Routes.getJobById}. Operação: Get Job By Id`);
+
       try {
         let [status, message] = await employeeController.getJobByIdController(
           id
         );
         res.status(status).send({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
       }
     }
   );
@@ -280,16 +377,22 @@ export let conectServ = (PORT: number) => {
     Middleware.authenticateTokenCand,
     async (req, res) => {
       let id = String(req.params.id);
-
-      console.log(`[GET / vaga] Requisição recebida`);
-
+      logger.http(
+        `rota: ${Routes.getJobsByCandidate}. Operação: Get Jobs By Candidate`
+      );
       try {
+        logger.info(`[GET / vaga] Requisição recebida`);
         let [status, message] =
           await candidateController.getCandidateJobsController(id);
 
         res.status(status).json(message);
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).json(error);
+        logger.error("Erro na rota: " + error);
       }
     }
   );
@@ -298,14 +401,21 @@ export let conectServ = (PORT: number) => {
     Routes.deleteJob,
     Middleware.authenticateTokenEmp,
     async (req, res) => {
+      logger.http(`rota: ${Routes.deleteJob}. Operação: Delete Job`);
+
       try {
         let id = String(req.params.id);
         let [status, message] = await employeeController.deleteJobController(
           id
         );
         res.status(status).send({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
       }
     }
   );
@@ -314,6 +424,7 @@ export let conectServ = (PORT: number) => {
     Routes.updateJob,
     Middleware.authenticateTokenEmp,
     async (req, res) => {
+      logger.http(`rota: ${Routes.updateJob}. Operação: Update Job`);
       try {
         let body = req.body;
         let id = String(req.params.id);
@@ -322,8 +433,13 @@ export let conectServ = (PORT: number) => {
           id
         );
         res.status(status).send({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
       }
     }
   );
@@ -336,21 +452,25 @@ export let conectServ = (PORT: number) => {
     Routes.createEvent,
     Middleware.authenticateTokenEmp,
     async (req, res) => {
-      const body = req.body;
-      const id = req.params.id;
+      res.status(503).send({ message: "Serviço indisponível" });
 
-      console.log(`[POST / Evento] Iniciando criação de evento...`, {
-        payload: body,
-      });
+      // const body = req.body;
+      // const id = req.params.id;
+      // logger.http(`rota: ${Routes.createEvent}. Operação: Create Event`);
+      // try {
+      //   logger.info(`[POST / Evento] Iniciando criação de evento...`);
+      //   const [status, message] =
+      //     await employeeController.createEventController(body, id);
 
-      try {
-        const [status, message] =
-          await employeeController.createEventController(body, id);
-
-        res.status(status).json({ message: message });
-      } catch (error) {
-        res.status(500).send({ message: String(process.env.STATUS_500) });
-      }
+      //   res.status(status).json({ message: message });
+      //   logger.info("Rota completa com sucesso.", {
+      //     message: message,
+      //     status: status,
+      //   });
+      // } catch (error) {
+      //   res.status(500).send({ message: String(process.env.STATUS_500) });
+      //   logger.error("Erro na rota: " + error);
+      // }
     }
   );
 
@@ -358,17 +478,25 @@ export let conectServ = (PORT: number) => {
     Routes.getEvent,
     Middleware.authenticateTokenEmp,
     async (req, res) => {
-      const id = String(req.params.id);
+      res.status(503).send({ message: "Serviço indisponível" });
 
-      try {
-        const [status, message] = await employeeController.getEventController(
-          id
-        );
+      // const id = String(req.params.id);
+      // logger.http(`rota: ${Routes.getEvent}. Operação: Get Event`);
 
-        res.status(status).json({ message: message });
-      } catch (error) {
-        res.status(500).send({ message: String(process.env.STATUS_500) });
-      }
+      // try {
+      //   const [status, message] = await employeeController.getEventController(
+      //     id
+      //   );
+
+      //   res.status(status).json({ message: message });
+      //   logger.info("Rota completa com sucesso.", {
+      //     message: message,
+      //     status: status,
+      //   });
+      // } catch (error) {
+      //   res.status(500).send({ message: String(process.env.STATUS_500) });
+      //   logger.error("Erro na rota: " + error);
+      // }
     }
   );
 
@@ -376,17 +504,25 @@ export let conectServ = (PORT: number) => {
     Routes.deleteEvent,
     Middleware.authenticateTokenEmp,
     async (req, res) => {
-      const id = String(req.params.id);
-      console.log(`[DELETE / Evento] Solicitando exclusão de evento...`);
+      res.status(503).send({ message: "Serviço indisponível" });
 
-      try {
-        const [status, message] =
-          await employeeController.deleteEventController(id);
+      // const id = String(req.params.id);
+      // logger.http(`rota: ${Routes.deleteEvent}. Operação: Delete Event`);
 
-        res.status(status).json({ message: message });
-      } catch (error) {
-        res.status(500).send({ message: String(process.env.STATUS_500) });
-      }
+      // try {
+      //   logger.info(`[DELETE / Evento] Solicitando exclusão de evento...`);
+      //   const [status, message] =
+      //     await employeeController.deleteEventController(id);
+
+      //   res.status(status).json({ message: message });
+      //   logger.info("Rota completa com sucesso.", {
+      //     message: message,
+      //     status: status,
+      //   });
+      // } catch (error) {
+      //   res.status(500).send({ message: String(process.env.STATUS_500) });
+      //   logger.error("Erro na rota: " + error);
+      // }
     }
   );
 
@@ -398,31 +534,47 @@ export let conectServ = (PORT: number) => {
     Routes.createCalendar,
     Middleware.authenticateTokenEmp,
     async (req, res) => {
-      const id = req.params.id;
+      res.status(503).send({ message: "Serviço indisponível" });
 
-      try {
-        const [status, message] =
-          await employeeController.createCalendarController(id);
+      // const id = req.params.id;
+      // logger.http(`rota: ${Routes.createCalendar}. Operação: Create Calendar`);
 
-        res.status(status).json({ message: message });
-      } catch (error) {
-        res.status(500).send({ message: String(process.env.STATUS_500) });
-      }
+      // try {
+      //   const [status, message] =
+      //     await employeeController.createCalendarController(id);
+
+      //   res.status(status).json({ message: message });
+      //   logger.info("Rota completa com sucesso.", {
+      //     message: message,
+      //     status: status,
+      //   });
+      // } catch (error) {
+      //   res.status(500).send({ message: String(process.env.STATUS_500) });
+      //   logger.error("Erro na rota: " + error);
+      // }
     }
   );
 
   APP.get(Routes.getCalendar, async (req, res) => {
-    const id = String(req.params.id);
-    console.log(`[GET / calendario] Solicitando calendários...`);
+    res.status(503).send({ message: "Serviço indisponível" });
 
-    try {
-      const result = (await employeeController.getCalendarController(id)) ?? [];
-      const [status, message] = result;
+    // const id = String(req.params.id);
+    // logger.http(`rota: ${Routes.getCalendar}. Operação: Get Calendar`);
 
-      res.status(status).json({ message: message });
-    } catch (error) {
-      res.status(500).send({ message: String(process.env.STATUS_500) });
-    }
+    // try {
+    //   logger.info(`[GET / calendario] Solicitando calendários...`);
+    //   const result = (await employeeController.getCalendarController(id)) ?? [];
+    //   const [status, message] = result;
+
+    //   res.status(status).json({ message: message });
+    //   logger.info("Rota completa com sucesso.", {
+    //     message: message,
+    //     status: status,
+    //   });
+    // } catch (error) {
+    //   res.status(500).send({ message: String(process.env.STATUS_500) });
+    //   logger.error("Erro na rota: " + error);
+    // }
   });
 
   // -----------------------------------
@@ -431,31 +583,51 @@ export let conectServ = (PORT: number) => {
 
   APP.post(Routes.loginCompany, async (req, res) => {
     const body = req.body;
+    logger.http(`rota: ${Routes.loginCompany}. Operação: Login Company`);
+
     try {
       const [status, message] = await Login.loginCompany(body);
       res.status(status).json({ message: message });
+      logger.info("Rota completa com sucesso.", {
+        message: message,
+        status: status,
+      });
     } catch (error) {
       res.status(500).send({ message: String(process.env.STATUS_500) });
+      logger.error("Erro na rota: " + error);
     }
   });
 
   APP.post(Routes.loginCandidate, async (req, res) => {
     const body = req.body;
+    logger.http(`rota: ${Routes.loginCandidate}. Operação: Login Candidate`);
     try {
       const [status, message] = await Login.loginCandidate(body);
       res.status(status).json({ message: message });
+      logger.info("Rota completa com sucesso.", {
+        message: message,
+        status: status,
+      });
     } catch (error) {
       res.status(500).send({ message: String(process.env.STATUS_500) });
+      logger.error("Erro na rota: " + error);
     }
   });
 
   APP.post(Routes.loginAdmin, async (req, res) => {
     const body = req.body;
+    logger.http(`rota: ${Routes.loginAdmin}. Operação: Login Admin`);
+
     try {
       const [status, message] = await Login.loginAdmin(body);
       res.status(status).json({ message: message });
+      logger.info("Rota completa com sucesso.", {
+        message: message,
+        status: status,
+      });
     } catch (error) {
       res.status(500).send({ message: String(process.env.STATUS_500) });
+      logger.error("Erro na rota: " + error);
     }
   });
 
@@ -464,15 +636,22 @@ export let conectServ = (PORT: number) => {
   // -----------------------------------
 
   APP.post(Routes.changePassword, async (req, res) => {
-    console.log(`[POST / changePassword] Solicitando troca de senha...`);
+    logger.http(`rota: ${Routes.changePassword}. Operação: Change Password`);
+
     try {
+      logger.info(`[POST / changePassword] Solicitando troca de senha...`);
       const body = req.body;
       const id = req.params.id;
 
       const [status, message] = await changePassword(body, id);
       res.status(status).json({ message: message });
+      logger.info("Rota completa com sucesso.", {
+        message: message,
+        status: status,
+      });
     } catch (error) {
       res.status(500).send({ message: String(process.env.STATUS_500) });
+      logger.error("Erro na rota: " + error);
     }
   });
 
@@ -484,6 +663,8 @@ export let conectServ = (PORT: number) => {
     Routes.createBarrier,
     Middleware.authenticateTokenADM,
     async (req, res) => {
+      logger.http(`rota: ${Routes.createBarrier}. Operação: Create Barrier`);
+
       try {
         const body = req.body;
 
@@ -491,8 +672,13 @@ export let conectServ = (PORT: number) => {
           body
         );
         res.status(status).json({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
       }
     }
   );
@@ -501,14 +687,23 @@ export let conectServ = (PORT: number) => {
     Routes.createAccessibility,
     Middleware.authenticateTokenADM,
     async (req, res) => {
+      logger.http(
+        `rota: ${Routes.createAccessibility}. Operação: Create Accessibility`
+      );
+
       try {
         const body = req.body;
 
         const [status, message] =
           await adminController.createAccessibilityController(body);
         res.status(status).json({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
       }
     }
   );
@@ -517,6 +712,8 @@ export let conectServ = (PORT: number) => {
     Routes.createSubType,
     Middleware.authenticateTokenADM,
     async (req, res) => {
+      logger.http(`rota: ${Routes.createSubType}. Operação: Create Sub Type`);
+
       try {
         const body = req.body;
 
@@ -524,8 +721,13 @@ export let conectServ = (PORT: number) => {
           body
         );
         res.status(status).json({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
       } catch (error) {
         res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
       }
     }
   );

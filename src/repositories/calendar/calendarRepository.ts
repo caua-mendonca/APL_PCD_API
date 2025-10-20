@@ -1,5 +1,7 @@
 import * as DB from "../../config/connect.js";
 import { safeIdentifier } from "../shared/security.js";
+import {logger} from "../../utils/logger.js";
+
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
 
@@ -8,7 +10,7 @@ export const insertCalendario = async (
   nome: string,
   id_empresa: string
 ): Promise<any> => {
-  console.log("[QUERY] Inserindo calendário...");
+  logger.info("[QUERY] Inserindo calendário...");
   try {
     const safeTable = safeIdentifier("tb_calendario");
     const query = `
@@ -16,10 +18,10 @@ export const insertCalendario = async (
     `;
     let result = await DB.pool.query(query, [id_calendar, nome, id_empresa]);
 
-    console.log(`[QUERY] Success`);
+    logger.info(`[QUERY] Success`);
     return [201, result];
   } catch (error) {
-    console.error("[QUERY] Failed");
+    logger.error("[QUERY] Failed");
     return [500, String(error)];
   }
 };
@@ -32,7 +34,7 @@ export const selectEmpbyCalendar = async (id_empresa: string): Promise<any> => {
 
     return result.rows;
   } catch (error) {
-    console.error(
+    logger.error(
       `❌ [selectEmpbyCalendar] Erro ao buscar empresa vinculada ao calendário.`,
       { calendarioId: id_empresa, error }
     );

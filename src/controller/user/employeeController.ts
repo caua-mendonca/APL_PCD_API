@@ -2,6 +2,8 @@ import * as Model from "../../model/user/employee/employeeModel.js";
 import * as modelJob from "../../model/job/jobModel.js";
 import * as modelEvent from "../../model/event/eventModel.js";
 import * as modelCalendar from "../../model/calendar/calendarModel.js";
+import {logger} from "../../utils/logger.js";
+
 
 /**
  * Controller para criação de um novo colaborador.
@@ -19,7 +21,7 @@ export const createEmployeeController = async (
   },
   company_id: string
 ) => {
-  console.log("[POST / CONTROLLER Employee]");
+  logger.info("[POST / CONTROLLER Employee]");
   try {
     const mappedUser = {
       name: user.name,
@@ -27,6 +29,8 @@ export const createEmployeeController = async (
       senha: user.password,
       setor: user.department,
     };
+    logger.debug("Mapped User:", {mappedUser: mappedUser});
+    logger.debug("Company ID:", {companyId: company_id});
     const [status, message] = await Model.createEmployee(mappedUser, company_id);
     return [status, message];
   } catch (error) {
@@ -41,7 +45,7 @@ export const createEmployeeController = async (
  * @returns lista de colaboradores encontrados
  */
 export const getEmployeeController = async (table: string, id: string) => {
-  console.log("[GET / CONTROLLER Employee]");
+  logger.info("[GET / CONTROLLER Employee]");
   try {
     const [status, message] = await Model.getEmployee(table, id);
     return [status, message];
@@ -73,7 +77,7 @@ export const createJobController = async (
   },
   company_id: string
 ): Promise<any> => {
-  console.log("[POST / CONTROLLER Job]");
+  logger.info("[POST / CONTROLLER Job]");
   try {
     const mappedJob = {
       data_fim: job.end_date,
@@ -96,7 +100,7 @@ export const createJobController = async (
  * @throws Erro caso a consulta falhe.
  */
 export const getJobsController = async () => {
-  console.log("[GET / CONTROLLER Job]");
+  logger.info("[GET / CONTROLLER Job]");
   try {
     const [status, message] = await modelJob.getJobsModel();
     return [status, message];
@@ -112,7 +116,7 @@ export const getJobsController = async () => {
  * @throws Erro caso a consulta falhe.
  */
 export const getJobByIdController = async (id: string): Promise<any> => {
-  console.log("[GET / CONTROLLER Job]");
+  logger.info("[GET / CONTROLLER Job]");
   try {
     const [status, message] = await modelJob.getJobById(id);
     return [status, message];
@@ -128,7 +132,7 @@ export const getJobByIdController = async (id: string): Promise<any> => {
  * @throws Erro caso a deleção falhe.
  */
 export const deleteJobController = async (id: string): Promise<any> => {
-  console.log("[DELETE / CONTROLLER Job]");
+  logger.info("[DELETE / CONTROLLER Job]");
   try {
     const [status, message] = await modelJob.deleteJob(id);
     return [status, message];
@@ -138,7 +142,7 @@ export const deleteJobController = async (id: string): Promise<any> => {
 };
 
 export const updateJobController = async (body: any, id: string): Promise<any> => {
-  console.log("[UPDATE / CONTROLLER Job]");
+  logger.info("[UPDATE / CONTROLLER Job]");
   try {
     const [status, message] = await modelJob.updateJob(body, id);
     return [status, message];
@@ -164,7 +168,7 @@ export const createEventController = async (
   },
   calendar_id: string
 ): Promise<any> => {
-  console.log("[POST / CONTROLLER Event]");
+  logger.info("[POST / CONTROLLER Event]");
   try {
     const mappedEvent = {
       titulo: event.title,
@@ -190,7 +194,7 @@ export const createEventController = async (
  * @throws Erro caso a consulta falhe.
  */
 export const getEventController = async (id: string) => {
-  console.log("[GET / CONTROLLER Event]");
+  logger.info("[GET / CONTROLLER Event]");
   try {
     const [status, message] = await modelEvent.getEvent(id);
     return [status, message];
@@ -212,7 +216,7 @@ export const getEventController = async (id: string) => {
  */
 export const deleteEventController = async (id: string): Promise<any> => {
   try {
-    console.log(`[DELETE / CONTROLLER Event]`, {
+    logger.info(`[DELETE / CONTROLLER Event]`, {
       eventId: id,
     });
 
@@ -230,7 +234,7 @@ export const deleteEventController = async (id: string): Promise<any> => {
  * @returns Retorna a resposta da criação do calendário.
  */
 export const createCalendarController = async (id: string): Promise<any> => {
-  console.log(`[POST / CONTROLLER Calendar]`);
+  logger.info(`[POST / CONTROLLER Calendar]`);
 
   try {
     const [status, message] = await modelCalendar.createCalendar(id);
@@ -246,7 +250,7 @@ export const createCalendarController = async (id: string): Promise<any> => {
  * @returns Retorna a lista de calendários e eventos encontrados.
  */
 export const getCalendarController = async (id: string) => {
-  console.log(`[GET / CONTROLLER Calendar]`);
+  logger.info(`[GET / CONTROLLER Calendar]`);
   try {
 
     const events = await modelEvent.getEvent(id);

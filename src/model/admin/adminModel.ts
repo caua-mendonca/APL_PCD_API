@@ -11,6 +11,8 @@ import * as DB from "../../repositories/admin/adminRepository.js";
 import { Acessibilidade } from "../entities/class/Accessibility.js";
 import { Barreira } from "../entities/class/Barrier.js";
 import { SubTipo } from "../entities/class/SubType.js";
+import {logger} from "../../utils/logger.js";
+
 
 /**
  * createBarreira
@@ -19,7 +21,7 @@ import { SubTipo } from "../entities/class/SubType.js";
  * @returns [status, message] - 201 se sucesso, 400 se erro
  */
 export let createBarrier = async (body: any): Promise<any> => {
-  console.log("[POST / MODEL ADM]");
+  logger.info("[POST / MODEL ADM]");
 
   try {
     // Instancia objeto Barreira
@@ -35,7 +37,7 @@ export let createBarrier = async (body: any): Promise<any> => {
 
     return [status, message];
   } catch (error) {
-    console.error("[MODEL] Erro ao criar barreira:", error);
+    logger.error("[MODEL] Erro ao criar barreira:", error);
     return [400, String(error)];
   }
 };
@@ -47,7 +49,7 @@ export let createBarrier = async (body: any): Promise<any> => {
  * @returns [status, message] - 201 se sucesso, 400 se erro
  */
 export let createAccessibility = async (body: any): Promise<any> => {
-  console.log("[POST / MODEL ADM]");
+  logger.info("[POST / MODEL ADM]");
 
   try {
     let acess = new Acessibilidade(body.descricao, new Date());
@@ -61,7 +63,7 @@ export let createAccessibility = async (body: any): Promise<any> => {
 
     return [status, message];
   } catch (error) {
-    console.error("[MODEL] Erro ao criar acessibilidade:", error);
+    logger.error("[MODEL] Erro ao criar acessibilidade:", error);
     return [400, String(error)];
   }
 };
@@ -73,7 +75,7 @@ export let createAccessibility = async (body: any): Promise<any> => {
  * @returns [status, message] - 201 se sucesso, 400 se erro
  */
 export let createSubType = async (body: any): Promise<any> => {
-  console.log("[POST / MODEL ADM]");
+  logger.info("[POST / MODEL ADM]");
 
   try {
     // Cria instância do SubTipo
@@ -92,7 +94,7 @@ export let createSubType = async (body: any): Promise<any> => {
 
     return [status, message];
   } catch (error) {
-    console.error("[MODEL] Erro ao criar subtipo:", error);
+    logger.error("[MODEL] Erro ao criar subtipo:", error);
     return [400, String(error)];
   }
 };

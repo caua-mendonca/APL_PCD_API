@@ -1,14 +1,13 @@
 import { validateIdByRelation } from "../../../validation/validateId/validateId.js";
 import { Colaborador } from "../../entities/class/Employee.js";
 import * as DB from "../../../repositories/user/employeeRepository.js";
-import { selectFromIdWhere } from "../../../repositories/shared/commonRepository.js";
-import { error } from "console";
+import {logger} from "../../../utils/logger.js";
 
 export let createEmployee = async (
   user: { name: string; email: string; senha: string; setor: string },
   id_empresa: string
 ): Promise<[number, any]> => {
-  console.log("[POST / MODEL Colaborador]");
+  logger.info("[POST / MODEL Colaborador]");
   try {
     let errorLog: string[] = [];
 
@@ -45,9 +44,9 @@ export let createEmployee = async (
  * Busca um colaborador específico.
  */
 export let getEmployee = async (table: string, id: string): Promise<any> => {
-  console.log("[GET / MODEL Colaborador]");
+  logger.info("[GET / MODEL Colaborador]");
   try {
-    let [status, message] = await selectFromIdWhere(table, id);
+    let [status, message] = await DB.getEmployee(id);
     return [status, message];
   } catch (error) {
     return [500, String(error)];

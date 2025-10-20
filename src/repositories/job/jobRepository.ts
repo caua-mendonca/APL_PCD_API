@@ -1,5 +1,7 @@
 import * as DB from "../../config/connect.js";
 import { safeIdentifier, validateColumnsForTable, extractColumnsFromSets } from "../shared/security.js";
+import {logger} from "../../utils/logger.js";
+
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
 
@@ -50,10 +52,10 @@ export const insertVaga = async (
       id_creator,
     ]);
 
-    console.log(`[${func}] Vaga ${id} inserida com sucesso`);
+    logger.info(`[${func}] Vaga ${id} inserida com sucesso`);
     return [201, { success: true, message: "Vaga inserida", data: { id } }];
   } catch (err: any) {
-    console.error(`[${func}] Error ao inserir vaga ${id}:`, err?.message ?? err);
+    logger.error(`[${func}] Error ao inserir vaga ${id}:`, err?.message ?? err);
     return [500, { success: false, message: "Erro ao inserir vaga", data: null }];
   }
 };
@@ -93,10 +95,10 @@ export const insertEmpVaga = async (
       data_inicio,
     ]);
 
-    console.log(`[${func}] Relação vaga-empresa inserida (empresa=${id_empresa}, vaga=${id})`);
+    logger.info(`[${func}] Relação vaga-empresa inserida (empresa=${id_empresa}, vaga=${id})`);
     return [201, { success: true, message: "Relação vaga-empresa criada", data: { rowCount: result.rowCount } }];
   } catch (err: any) {
-    console.error(`[${func}] Error:`, err?.message ?? err);
+    logger.error(`[${func}] Error:`, err?.message ?? err);
     return [500, { success: false, message: "Erro ao inserir relação vaga-empresa", data: null }];
   }
 };
@@ -118,10 +120,11 @@ export const updateVaga = async (
 
     const result = await DB.pool.query(query, values);
 
-    console.log(`[QUERY] Success`);
+    logger.info(`[QUERY] Success`);
     return [200, result];
   } catch (error) {
-    console.log(`[QUERY] Failed`);
+    logger.info(`[QUERY] Failed`);
     return [500, String(error)];
   }
 };
+
