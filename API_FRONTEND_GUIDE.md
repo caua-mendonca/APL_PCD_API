@@ -17,6 +17,8 @@
 - [💼 Rotas de Vagas](#-rotas-de-vagas)
 - [📅 Rotas de Eventos](#-rotas-de-eventos)
 - [📆 Rotas de Calendário](#-rotas-de-calendário)
+- [👨‍💼 Rotas de Administrador](#-rotas-de-administrador)
+- [🔑 Rota de Alteração de Senha](#-rota-de-alteração-de-senha)
 - [⚠️ Códigos de Status](#️-códigos-de-status)
 - [🔍 Exemplos de Uso](#-exemplos-de-uso)
 
@@ -62,7 +64,7 @@ A API utiliza **JWT (JSON Web Tokens)** para autenticação. Existem dois tipos 
 
 #### Login de Candidato
 ```http
-POST /loginCandidato
+POST /login/candidato
 ```
 
 **Body**:
@@ -76,18 +78,20 @@ POST /loginCandidato
 **Resposta**:
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "CAND-123456",
-    "name": "João Silva",
-    "email": "candidato@email.com"
+  "message": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+      "id": "CAND-123456",
+      "name": "João Silva",
+      "email": "candidato@email.com"
+    }
   }
 }
 ```
 
 #### Login de Empresa
 ```http
-POST /loginEmpresa
+POST /login/empresa
 ```
 
 **Body**:
@@ -101,11 +105,39 @@ POST /loginEmpresa
 **Resposta**:
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "EMP-123456",
-    "nome_fantasia": "Tech Solutions",
-    "email": "empresa@email.com"
+  "message": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+      "id": "EMP-123456",
+      "nome_fantasia": "Tech Solutions",
+      "email": "empresa@email.com"
+    }
+  }
+}
+```
+
+#### Login de Administrador
+```http
+POST /login/administrador
+```
+
+**Body**:
+```json
+{
+  "email": "admin@email.com",
+  "senha": "senha123"
+}
+```
+
+**Resposta**:
+```json
+{
+  "message": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+      "id": "ADM-123456",
+      "email": "admin@email.com"
+    }
   }
 }
 ```
@@ -116,7 +148,7 @@ POST /loginEmpresa
 
 ### 📝 Criar Candidato
 ```http
-POST /createCanditado
+POST /create/canditado
 ```
 
 **Autenticação**: ❌ Não requerida
@@ -167,7 +199,7 @@ POST /createCanditado
 
 ### 📋 Listar Todos os Candidatos
 ```http
-GET /getCanditado
+GET /get/canditado
 ```
 
 **Autenticação**: ✅ Token de Candidato
@@ -203,7 +235,7 @@ GET /getCanditado
 
 ### 🔍 Buscar Candidato por ID
 ```http
-GET /getCanditadoById/:id
+GET /get/canditado/byName/:id
 ```
 
 **Autenticação**: ✅ Token de Candidato
@@ -213,7 +245,7 @@ GET /getCanditadoById/:id
 
 **Exemplo**:
 ```http
-GET /getCanditadoById/CAND-123456
+GET /get/canditado/byName/CAND-123456
 ```
 
 **Resposta de Sucesso** (200):
@@ -245,7 +277,7 @@ GET /getCanditadoById/CAND-123456
 
 ### ✏️ Atualizar Candidato
 ```http
-PUT /updateCanditado/:id
+PUT /update/canditado/:id
 ```
 
 **Autenticação**: ✅ Token de Candidato
@@ -276,7 +308,7 @@ PUT /updateCanditado/:id
 
 ### 🗑️ Deletar Candidato
 ```http
-DELETE /deleteCanditado/:id
+DELETE /delete/canditado/:id
 ```
 
 **Autenticação**: ✅ Token de Candidato
@@ -295,7 +327,7 @@ DELETE /deleteCanditado/:id
 
 ### 🎯 Candidatar-se a Vaga
 ```http
-POST /registerVaga/:id
+POST /register/vaga/:id
 ```
 
 **Autenticação**: ✅ Token de Candidato
@@ -323,7 +355,7 @@ POST /registerVaga/:id
 
 ### 🏭 Criar Contratante
 ```http
-POST /createContratante
+POST /create/contratante
 ```
 
 **Autenticação**: ❌ Não requerida
@@ -360,7 +392,7 @@ POST /createContratante
 
 ### 📋 Listar Contratantes
 ```http
-GET /getContratante
+GET /get/contratante
 ```
 
 **Autenticação**: ✅ Token de Empresa
@@ -386,7 +418,7 @@ GET /getContratante
 
 ### 🔍 Buscar Contratante por ID
 ```http
-GET /getContratanteById/:id
+GET /get/contratante/byId/:id
 ```
 
 **Autenticação**: ✅ Token de Empresa
@@ -411,7 +443,7 @@ GET /getContratanteById/:id
 
 ### ✏️ Atualizar Contratante
 ```http
-PUT /updateContratante/:id
+PUT /update/contratante/:id
 ```
 
 **Autenticação**: ✅ Token de Empresa
@@ -436,7 +468,7 @@ PUT /updateContratante/:id
 
 ### 🗑️ Deletar Contratante
 ```http
-DELETE /deleteContratante/:id
+DELETE /delete/contratante/:id
 ```
 
 **Autenticação**: ✅ Token de Empresa
@@ -454,7 +486,7 @@ DELETE /deleteContratante/:id
 
 ### 👤 Criar Colaborador
 ```http
-POST /createColaborador/:id
+POST /create/colaborador/:id
 ```
 
 **Autenticação**: ✅ Token de Empresa
@@ -483,7 +515,7 @@ POST /createColaborador/:id
 
 ### 📋 Listar Colaboradores da Empresa
 ```http
-GET /getColaborador/:id
+GET /get/colaborador/:id
 ```
 
 **Autenticação**: ✅ Token de Empresa
@@ -510,7 +542,7 @@ GET /getColaborador/:id
 
 ### 📝 Criar Vaga
 ```http
-POST /createVaga/:id
+POST /create/vaga/:id
 ```
 
 **Autenticação**: ✅ Token de Empresa
@@ -541,7 +573,7 @@ POST /createVaga/:id
 
 ### 📋 Listar Todas as Vagas
 ```http
-GET /getVagas
+GET /get/vagas
 ```
 
 **Autenticação**: ✅ Token de Empresa
@@ -567,7 +599,7 @@ GET /getVagas
 
 ### 🔍 Buscar Vaga por ID
 ```http
-GET /getVagasById/:id
+GET /get/vagas/byId/:id
 ```
 
 **Autenticação**: ✅ Token de Empresa
@@ -594,7 +626,7 @@ GET /getVagasById/:id
 
 ### ✏️ Atualizar Vaga
 ```http
-PUT /updateVaga/:id
+PUT /update/vaga/:id
 ```
 
 **Autenticação**: ✅ Token de Empresa
@@ -622,7 +654,7 @@ PUT /updateVaga/:id
 
 ### 🗑️ Deletar Vaga
 ```http
-DELETE /deleteVaga/:id
+DELETE /delete/vaga/:id
 ```
 
 **Autenticação**: ✅ Token de Empresa
@@ -641,7 +673,7 @@ DELETE /deleteVaga/:id
 
 ### 📋 Listar Vagas do Candidato
 ```http
-GET /getVagasByCandidato/:id
+GET /get/vagas/byCandidato/:id
 ```
 
 **Autenticação**: ✅ Token de Candidato
@@ -667,10 +699,14 @@ GET /getVagasByCandidato/:id
 
 ## 📅 Rotas de Eventos
 
+⚠️ **ATENÇÃO**: As rotas de eventos estão temporariamente **indisponíveis** (Status 503 - Service Unavailable).
+
 ### 📝 Criar Evento
 ```http
-POST /createEvento/:id
+POST /create/evento/:id
 ```
+
+**Status**: 🔴 Indisponível
 
 **Autenticação**: ✅ Token de Empresa
 
@@ -689,28 +725,10 @@ POST /createEvento/:id
 }
 ```
 
-**Resposta de Sucesso** (201):
+**Resposta Atual** (503):
 ```json
 {
-  "success": true,
-  "message": "Evento criado com sucesso.",
-  "data": {
-    "eventoId": "CALENDAR-123456",
-    "titulo": "Entrevista - João Silva",
-    "descricao": "Entrevista para vaga de desenvolvedor",
-    "data": "2024-02-15",
-    "hora_inicio": "14:00",
-    "hora_fim": "15:00",
-    "id_candidato": "CAND-123456"
-  }
-}
-```
-
-**Resposta de Erro** (400):
-```json
-{
-  "success": false,
-  "message": "Erro ao criar evento."
+  "message": "Serviço indisponível"
 }
 ```
 
@@ -718,40 +736,20 @@ POST /createEvento/:id
 
 ### 📋 Listar Eventos
 ```http
-GET /getEvento/:id
+GET /get/evento/:id
 ```
+
+**Status**: 🔴 Indisponível
 
 **Autenticação**: ✅ Token de Empresa
 
 **Parâmetros**:
 - `id` (string): ID do calendário
 
-**Resposta de Sucesso** (200):
+**Resposta Atual** (503):
 ```json
 {
-  "success": true,
-  "message": "Foram encontrados 2 evento(s) para o calendário CALENDAR-123456.",
-  "data": [
-    {
-      "id": "EVENT-123456",
-      "titulo": "Entrevista - João Silva",
-      "descricao": "Entrevista para vaga de desenvolvedor",
-      "data": "2024-02-15T00:00:00.000Z",
-      "hora_inicio": "14:00",
-      "hora_fim": "15:00",
-      "id_candidato": "CAND-123456",
-      "id_calendario": "CALENDAR-123456"
-    }
-  ]
-}
-```
-
-**Resposta Sem Eventos** (404):
-```json
-{
-  "success": false,
-  "message": "Nenhum evento encontrado para o calendário CALENDAR-123456.",
-  "data": []
+  "message": "Serviço indisponível"
 }
 ```
 
@@ -759,31 +757,20 @@ GET /getEvento/:id
 
 ### 🗑️ Deletar Evento
 ```http
-DELETE /deleteEvento/:id
+DELETE /delete/evento/:id
 ```
+
+**Status**: 🔴 Indisponível
 
 **Autenticação**: ✅ Token de Empresa
 
 **Parâmetros**:
 - `id` (string): ID do evento
 
-**Resposta de Sucesso** (200):
+**Resposta Atual** (503):
 ```json
 {
-  "success": true,
-  "message": "Evento EVENT-123456 deletado com sucesso.",
-  "data": {
-    "eventoId": "EVENT-123456"
-  }
-}
-```
-
-**Resposta de Erro** (404):
-```json
-{
-  "success": false,
-  "message": "Nenhum evento encontrado com o ID EVENT-123456.",
-  "data": []
+  "message": "Serviço indisponível"
 }
 ```
 
@@ -791,32 +778,24 @@ DELETE /deleteEvento/:id
 
 ## 📆 Rotas de Calendário
 
+⚠️ **ATENÇÃO**: As rotas de calendário estão temporariamente **indisponíveis** (Status 503 - Service Unavailable).
+
 ### 📝 Criar Calendário
 ```http
-POST /createCalendario/:id
+POST /create/calendario/:id
 ```
+
+**Status**: 🔴 Indisponível
 
 **Autenticação**: ✅ Token de Empresa
 
 **Parâmetros**:
 - `id` (string): ID da empresa
 
-**Resposta de Sucesso** (201):
+**Resposta Atual** (503):
 ```json
 {
-  "success": true,
-  "message": "Calendário criado com sucesso para a empresa EMP-123456.",
-  "data": {
-    "empresaId": "EMP-123456"
-  }
-}
-```
-
-**Resposta de Erro** (400):
-```json
-{
-  "success": false,
-  "message": "Não foi possível criar o calendário para a empresa EMP-123456."
+  "message": "Serviço indisponível"
 }
 ```
 
@@ -824,45 +803,128 @@ POST /createCalendario/:id
 
 ### 📋 Buscar Calendário
 ```http
-GET /getCalendario/:id
+GET /get/calendario/:id
 ```
+
+**Status**: 🔴 Indisponível
 
 **Autenticação**: ❌ Não requerida
 
 **Parâmetros**:
 - `id` (string): ID da empresa
 
-**Resposta de Sucesso** (200):
+**Resposta Atual** (503):
 ```json
 {
-  "success": true,
-  "message": "Foram encontrados 1 calendário(s) para a empresa EMP-123456.",
-  "data": [
-    {
-      "id": "CALENDAR-123456",
-      "mes": 2,
-      "ano": 2024,
-      "id_empresa": "EMP-123456",
-      "eventos": [
-        {
-          "id": "EVENT-123456",
-          "titulo": "Entrevista - João Silva",
-          "data": "2024-02-15T00:00:00.000Z",
-          "hora_inicio": "14:00",
-          "hora_fim": "15:00"
-        }
-      ]
-    }
-  ]
+  "message": "Serviço indisponível"
 }
 ```
 
-**Resposta Sem Calendários** (404):
+---
+
+## 👨‍💼 Rotas de Administrador
+
+### 🚧 Criar Barreira
+```http
+POST /adm/create/barreira
+```
+
+**Autenticação**: ✅ Token de Administrador
+
+**Body**:
 ```json
 {
-  "success": false,
-  "message": "Nenhum calendário encontrado para a empresa EMP-123456.",
-  "data": []
+  "descricao": "Barreira de acesso físico"
+}
+```
+
+**Resposta de Sucesso** (201):
+```json
+{
+  "message": "Barreira criada com sucesso"
+}
+```
+
+---
+
+### ♿ Criar Acessibilidade
+```http
+POST /adm/create/acessibilidade
+```
+
+**Autenticação**: ✅ Token de Administrador
+
+**Body**:
+```json
+{
+  "descricao": "Rampa de acesso"
+}
+```
+
+**Resposta de Sucesso** (201):
+```json
+{
+  "message": "Acessibilidade criada com sucesso"
+}
+```
+
+---
+
+### 📑 Criar Subtipo
+```http
+POST /adm/create/subtipo
+```
+
+**Autenticação**: ✅ Token de Administrador
+
+**Body**:
+```json
+{
+  "descricao": "Deficiência visual parcial"
+}
+```
+
+**Resposta de Sucesso** (201):
+```json
+{
+  "message": "Subtipo criado com sucesso"
+}
+```
+
+---
+
+## 🔑 Rota de Alteração de Senha
+
+### 🔐 Mudar Senha
+```http
+POST /mudarSenha/:id
+```
+
+**Autenticação**: ❌ Não requerida
+
+**Parâmetros**:
+- `id` (string): ID do usuário (candidato, empresa ou admin)
+
+**Body**:
+```json
+{
+  "senha_antiga": "senha123",
+  "senha_nova": "novaSenha123",
+  "confirme_senha_nova": "novaSenha123"
+}
+```
+
+**Resposta de Sucesso** (200):
+```json
+{
+  "message": "Senha alterada com sucesso"
+}
+```
+
+**Resposta de Erro** (400):
+```json
+{
+  "message": "Senha antiga incorreta"
 }
 ```
 
@@ -894,7 +956,7 @@ GET /getCalendario/:id
 ```javascript
 const criarCandidato = async () => {
   try {
-    const response = await fetch('http://localhost:3000/createCanditado', {
+    const response = await fetch('http://localhost:3000/create/canditado', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -929,7 +991,7 @@ const criarCandidato = async () => {
 ```javascript
 const buscarCandidatos = async (token) => {
   try {
-    const response = await fetch('http://localhost:3000/getCanditado', {
+    const response = await fetch('http://localhost:3000/get/canditado', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -972,27 +1034,53 @@ const useAPI = () => {
 
   return {
     // Candidatos
-    criarCandidato: (data) => api.post('/createCanditado', data),
-    buscarCandidatos: () => api.get('/getCanditado'),
-    buscarCandidatoPorId: (id) => api.get(`/getCanditadoById/${id}`),
-    atualizarCandidato: (id, data) => api.put(`/updateCanditado/${id}`, data),
-    deletarCandidato: (id) => api.delete(`/deleteCanditado/${id}`),
+    criarCandidato: (data) => api.post('/create/canditado', data),
+    buscarCandidatos: () => api.get('/get/canditado'),
+    buscarCandidatoPorId: (id) => api.get(`/get/canditado/byName/${id}`),
+    atualizarCandidato: (id, data) => api.put(`/update/canditado/${id}`, data),
+    deletarCandidato: (id) => api.delete(`/delete/canditado/${id}`),
+    
+    // Contratantes
+    criarContratante: (data) => api.post('/create/contratante', data),
+    buscarContratantes: () => api.get('/get/contratante'),
+    buscarContratantePorId: (id) => api.get(`/get/contratante/byId/${id}`),
+    atualizarContratante: (id, data) => api.put(`/update/contratante/${id}`, data),
+    deletarContratante: (id) => api.delete(`/delete/contratante/${id}`),
+    
+    // Colaboradores
+    criarColaborador: (empresaId, data) => api.post(`/create/colaborador/${empresaId}`, data),
+    buscarColaboradores: (empresaId) => api.get(`/get/colaborador/${empresaId}`),
     
     // Autenticação
-    loginCandidato: (data) => api.post('/loginCandidato', data),
-    loginEmpresa: (data) => api.post('/loginEmpresa', data),
+    loginCandidato: (data) => api.post('/login/candidato', data),
+    loginEmpresa: (data) => api.post('/login/empresa', data),
+    loginAdmin: (data) => api.post('/login/administrador', data),
     
     // Vagas
-    criarVaga: (empresaId, data) => api.post(`/createVaga/${empresaId}`, data),
-    buscarVagas: () => api.get('/getVagas'),
-    buscarVagasPorCandidato: (candidatoId) => api.get(`/getVagasByCandidato/${candidatoId}`),
-    atualizarVaga: (vagaId, data) => api.put(`/updateVaga/${vagaId}`, data),
-    candidatarVaga: (candidatoId, data) => api.post(`/registerVaga/${candidatoId}`, data),
+    criarVaga: (empresaId, data) => api.post(`/create/vaga/${empresaId}`, data),
+    buscarVagas: () => api.get('/get/vagas'),
+    buscarVagaPorId: (id) => api.get(`/get/vagas/byId/${id}`),
+    buscarVagasPorCandidato: (candidatoId) => api.get(`/get/vagas/byCandidato/${candidatoId}`),
+    atualizarVaga: (vagaId, data) => api.put(`/update/vaga/${vagaId}`, data),
+    deletarVaga: (vagaId) => api.delete(`/delete/vaga/${vagaId}`),
+    candidatarVaga: (candidatoId, data) => api.post(`/register/vaga/${candidatoId}`, data),
     
-    // Eventos
-    criarEvento: (calendarioId, data) => api.post(`/createEvento/${calendarioId}`, data),
-    buscarEventos: (calendarioId) => api.get(`/getEvento/${calendarioId}`),
-    deletarEvento: (eventoId) => api.delete(`/deleteEvento/${eventoId}`)
+    // Administrador
+    criarBarreira: (data) => api.post('/adm/create/barreira', data),
+    criarAcessibilidade: (data) => api.post('/adm/create/acessibilidade', data),
+    criarSubtipo: (data) => api.post('/adm/create/subtipo', data),
+    
+    // Senha
+    mudarSenha: (userId, data) => api.post(`/mudarSenha/${userId}`, data),
+    
+    // Eventos (Indisponíveis)
+    // criarEvento: (calendarioId, data) => api.post(`/create/evento/${calendarioId}`, data),
+    // buscarEventos: (calendarioId) => api.get(`/get/evento/${calendarioId}`),
+    // deletarEvento: (eventoId) => api.delete(`/delete/evento/${eventoId}`),
+    
+    // Calendário (Indisponível)
+    // criarCalendario: (empresaId) => api.post(`/create/calendario/${empresaId}`),
+    // buscarCalendario: (empresaId) => api.get(`/get/calendario/${empresaId}`)
   };
 };
 
@@ -1015,7 +1103,7 @@ const CandidatosList = () => {
         const response = await api.buscarCandidatos();
         setCandidatos(response.data.message);
       } catch (error) {
-        console.error('Erro ao buscar candidatos:', error);
+        logger.error('Erro ao buscar candidatos:', error);
       } finally {
         setLoading(false);
       }
