@@ -221,7 +221,7 @@ export let getUserById = async (id: string): Promise<any> => {
   logger.info("[GET / MODEL Candidato]");
 
   try {
-    let [status, message] = await DB.selectFromIdWhere("tb_candidato_vaga", id);
+    let [status, message] = await DB.selectJobFromID("tb_candidato_vaga", id);
     return [status, message];
   } catch (error) {
     return [500, String(error)];
@@ -235,6 +235,19 @@ export let applyToJob = async (
   logger.info("[POST / MODEL Candidato Aplicar Vaga]");
   try {
     const [status, message] = await DB.insertCandidateJob(candidateId, jobId, new Date());
+    return [status, message];
+  } catch (error) {
+    return [500, String(error)];
+  }
+};
+
+export let getUserByEmail = async (
+  table: string,
+  email: string
+): Promise<any> => {
+  logger.info("[GET / MODEL Candidato]");
+  try {
+    let [status, message] = await DB.selectFromEmailWhere(table, email);
     return [status, message];
   } catch (error) {
     return [500, String(error)];

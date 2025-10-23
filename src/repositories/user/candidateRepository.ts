@@ -96,3 +96,55 @@ export const selectFromIdWhere = async (
     ];
   }
 };
+
+export let selectFromEmailWhere = async (
+  table: string,
+  email: string 
+): Promise<any> => {
+  logger.info("[GET / MODEL Candidato Email]");
+  try {
+    const safeTable = safeIdentifier(table);
+    const sql = `SELECT * FROM ${safeTable} WHERE email = $1;`;
+    const result = await DB.pool.query(sql, [email]);
+
+    logger.info(`[GET / MODEL Candidato Email] Success: ${result.rowCount} rows (table=${safeTable}, email=${email})`);
+    return [
+      200,
+      { success: true, message: "Registros encontrados", data: result.rows },
+    ];
+  } catch (error) {
+    return [500, String(error)];
+  }
+};
+
+export const selectJobFromID = async (
+  table: string,
+  id: string
+): Promise<[number, { success: boolean; message: string; data: any }]> => {
+  const func = "selectJobFromID";
+  try {
+    const safeTable = safeIdentifier(table);
+    const sql = `SELECT *
+    FROM tb_vaga v
+    INNER JOIN tb_candidato_vaga cv
+    ON v.id = cv.tb_vaga_id
+    INNER JOIN tb_candidato c
+    ON c.id = cv.tb_candidato_id
+    WHERE c.id = $1;`;
+    const result = await DB.pool.query(sql, [id]);
+
+    logger.info(
+      `[${func}] Success: ${result.rowCount} rows (table=${safeTable}, tb_candidato_id=${id})`
+    );
+    return [
+      200,
+      { success: true, message: "Registros encontrados", data: result.rows },
+    ];
+  } catch (err: any) {
+    logger.error(`[${func}] Error:`, err);
+    return [
+      500,
+      { success: false, message: "Erro ao executar consulta", data: null },
+    ];
+  }
+};

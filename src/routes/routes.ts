@@ -13,9 +13,10 @@ dotenv.config({ path: ".env.routes" });
  * ================================
  * CRUD completo para gerenciar candidatos.
  */
+ 
 export const createCandidate: string = String(process.env.CREATE_CANDIDATO);
 export const getCandidate: string = String(process.env.GET_CANDIDATO);
-export const getCandidateByName: string = String(process.env.GET_CANDIDATO_BY_ID);
+export const getCandidateByEmail: string = String(process.env.GET_CANDIDATO_BY_EMAIL);
 export const deleteCandidate: string = String(process.env.DELETE_CANDIDATO);
 export const updateCandidate: string = String(process.env.UPDATE_CANDIDATO);
 
@@ -27,7 +28,7 @@ export const updateCandidate: string = String(process.env.UPDATE_CANDIDATO);
  */
 export const createCompany: string = String(process.env.CREATE_CONTRATANTE);
 export const getCompany: string = String(process.env.GET_CONTRATANTE);
-export const getCompanyById: string = String(process.env.GET_CONTRATANTE_BY_ID);
+export const getCompanyByEmail: string = String(process.env.GET_CONTRATANTE_BY_EMAIL);
 export const deleteCompany: string = String(process.env.DELETE_CONTRATANTE);
 export const updateCompany: string = String(process.env.UPDATE_CONTRATANTE);
 
@@ -99,3 +100,4 @@ export const changePassword: string = String(process.env.CHANGE_PASSWORD);
 export const createBarrier: string = String(process.env.CREATE_BARREIRA);
 export const createAccessibility: string = String(process.env.CREATE_ACESSIBILIDADE);
 export const createSubType: string = String(process.env.CREATE_SUBTIPO);
+export const getAnalyticData: string = String(process.env.GET_DADOS_ANALITICOS);

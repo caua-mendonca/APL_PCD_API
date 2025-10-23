@@ -122,10 +122,10 @@ export let getUser = async (
   }
 };
 
-export let getUserByID = async (table: string, id: string): Promise<any> => {
+export let getUserByEmail = async (table: string, email: string): Promise<any> => {
   logger.info(`[GET / MODEL Contratante]`);
   try {
-    let [status, message] = await selectFromIdWhere(table, id);
+    let [status, message] = await DB.selectFromEmailWhere(table, email);
     return [status, message];
   } catch (error) {
     return [500, String(error)];

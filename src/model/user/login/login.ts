@@ -17,6 +17,7 @@ export let login = async (body: any, table: string): Promise<[number, any]> => {
   try {
     // Busca usuário pelo email
     let [status, result] = await DB.login(body.email, table);
+    console.log(result);
 
     if (status !== 200) {
       // Retorna erro caso usuário não exista
@@ -32,7 +33,7 @@ export let login = async (body: any, table: string): Promise<[number, any]> => {
     }
 
     // Aqui você poderia gerar e retornar um token JWT, caso use autenticação baseada em token
-    return [200, "Login efetuado com sucesso!"];
+    return [200, user];
   } catch (error) {
     logger.error(`[MODEL Login] Erro ao autenticar:`, error);
     return [500, "Erro interno ao tentar efetuar login"];

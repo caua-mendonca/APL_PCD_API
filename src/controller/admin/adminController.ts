@@ -6,7 +6,9 @@ import { logger } from "../../utils/logger.js";
  * @param body - Objeto contendo os dados da barreira
  * @returns [status, message] - Status HTTP e mensagem de resultado
  */
-export const createBarrierController = async (body: any): Promise<[number, any]> => {
+export const createBarrierController = async (
+  body: any
+): Promise<[number, any]> => {
   logger.info("[POST / CONTROLLER ADMIN]");
 
   try {
@@ -24,7 +26,9 @@ export const createBarrierController = async (body: any): Promise<[number, any]>
  * @param body - Objeto contendo os dados da acessibilidade
  * @returns [status, message] - Status HTTP e mensagem de resultado
  */
-export const createAccessibilityController = async (body: any): Promise<[number, any]> => {
+export const createAccessibilityController = async (
+  body: any
+): Promise<[number, any]> => {
   logger.info("[POST / CONTROLLER ADMIN]");
 
   try {
@@ -32,7 +36,10 @@ export const createAccessibilityController = async (body: any): Promise<[number,
     logger.info(`[POST / CONTROLLER ADMIN]`);
     return [status, message];
   } catch (error) {
-    logger.error("[POST / CONTROLLER ADMIN] Error creating accessibility:", error);
+    logger.error(
+      "[POST / CONTROLLER ADMIN] Error creating accessibility:",
+      error
+    );
     return [500, String(error)];
   }
 };
@@ -42,7 +49,9 @@ export const createAccessibilityController = async (body: any): Promise<[number,
  * @param body - Objeto contendo os dados do subtipo
  * @returns [status, message] - Status HTTP e mensagem de resultado
  */
-export const createSubTypeController = async (body: any): Promise<[number, any]> => {
+export const createSubTypeController = async (
+  body: any
+): Promise<[number, any]> => {
   logger.info("[POST / CONTROLLER ADMIN]");
 
   try {
@@ -51,6 +60,21 @@ export const createSubTypeController = async (body: any): Promise<[number, any]>
     return [status, message];
   } catch (error) {
     logger.error("[POST / CONTROLLER ADMIN] Error creating subtype:", error);
+    return [500, String(error)];
+  }
+};
+
+export let getAnalyticDataController = async (): Promise<[number, any]> => {
+  logger.info("[GET / CONTROLLER ADMIN]");
+  try {
+    const [status, message] = await Model.getAnalyticData();
+    logger.info(`[GET / CONTROLLER ADMIN]`);
+    return [status, message];
+  } catch (error) {
+    logger.error(
+      "[GET / CONTROLLER ADMIN] Error getting analytic data:",
+      error
+    );
     return [500, String(error)];
   }
 };

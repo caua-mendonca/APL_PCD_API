@@ -62,11 +62,11 @@ export const getCompaniesController = async (): Promise<
  * @param id - ID do contratante
  * @returns objeto contratante ou mensagem de não encontrado
  */
-export const getCompanyByIdController = async (id: string) => {
+export const getCompanyByEmailController = async (email: string) => {
   logger.info("[GET / CONTROLLER Company]");
 
   try {
-    const [status, result] = await Model.getUserByID("tb_empresa", id);
+    const [status, result] = await Model.getUserByEmail("tb_empresa", email);
     return [status, result];
   } catch (error) {
     return [400, String(error)];

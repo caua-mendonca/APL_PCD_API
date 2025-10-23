@@ -13,13 +13,13 @@ import {
   selectFromIdWhere,
   updateUserColumn,
 } from "../../repositories/shared/commonRepository.js";
-import {logger} from "../../utils/logger.js";
+import { logger } from "../../utils/logger.js";
 dotevn.config();
 
 export let getJobsModel = async (): Promise<any> => {
   logger.info("[GET / CONTROLLER Vaga]");
   try {
-    let [status, message] = await selectFromTable("tb_vaga");
+    let [status, message] = await DB.getJobsByCompany("tb_vaga");
 
     return [status, message];
   } catch (error) {
@@ -179,12 +179,7 @@ export let updateJob = async (body: any, id: string): Promise<any> => {
     }
 
     // Executa atualização
-    const [status, message] = await updateUserColumn(
-      "tb_vaga",
-      id,
-      sets,
-      values
-    );
+    const [status, message] = await DB.updateJob("tb_vaga", id, sets, values);
     if (errorLog.length > 0) return [400, errorLog];
     return [status, message];
   } catch (error) {

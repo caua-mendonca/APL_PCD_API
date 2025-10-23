@@ -71,7 +71,7 @@ export const selectFromIdWhere = async (
   const func = "selectFromIdWhere";
   try {
     const safeTable = safeIdentifier(table);
-    const sql = `SELECT * FROM ${safeTable} WHERE ${safeTable}.id = $1;`;
+    const sql = `SELECT * FROM ${safeTable} WHERE ${safeTable}.id_creator = $1;`;
     const result = await DB.pool.query(sql, [id]);
 
     logger.info(
@@ -212,6 +212,7 @@ export const login = async (email: string, table: string): Promise<any> => {
       `SELECT * FROM ${safeTable} WHERE email = $1`,
       [email]
     );
+    logger.debug(result.rows)
     if (result.rows.length > 0) {
       return [200, result];
     } else {

@@ -14,7 +14,7 @@ dotenv.config({ path: ".env.status" });
 
 const APP = express();
 APP.use(express.json());
-APP.use(cors());
+APP.use(cors({ origin: 'http://localhost:3000' }));
 
 /**
  * Inicia o servidor e configura as rotas principais da aplicação
@@ -24,6 +24,13 @@ export let conectServ = (PORT: number) => {
   // Inicializa servidor HTTP na porta especificada
   APP.listen(PORT, () => {
     logger.info(`Servidor iniciado e escutando na porta ${PORT}`);
+  });
+
+  APP.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    res.header("Access-Control-Allow-Headers", "Content-Type");
+    next();
   });
 
   APP.get("/", (req, res) => {
@@ -60,6 +67,26 @@ export let conectServ = (PORT: number) => {
       try {
         let [status, message] =
           await candidateController.getCandidatesController();
+        res.status(status).send({ message: message });
+        logger.info("Rota completa com sucesso.", {
+          message: message,
+          status: status,
+        });
+      } catch (error) {
+        res.status(500).send({ message: String(process.env.STATUS_500) });
+        logger.error("Erro na rota: " + error);
+      }
+    }
+  );
+
+APP.get(
+    Routes.getCandidateByEmail,
+    async (req, res) => {
+      const email = String(req.params.email);
+      logger.http(`rota: ${Routes.getCandidateByEmail}. Operação: Get Candidate By Email`);
+      try {
+        let [status, message] =
+          await candidateController.getCandidateByEmailController(email);
         res.status(status).send({ message: message });
         logger.info("Rota completa com sucesso.", {
           message: message,
@@ -162,17 +189,16 @@ export let conectServ = (PORT: number) => {
   );
 
   APP.get(
-    Routes.getCompanyById,
-    Middleware.authenticateTokenEmp,
+    Routes.getCompanyByEmail,
     async (req, res) => {
-      const id = String(req.params.id);
+      const email = String(req.params.email);
       logger.http(
-        `rota: ${Routes.getCompanyById}. Operação: Get Company By Id`
+        `rota: ${Routes.getCompanyByEmail}. Operação: Get Company By Email`
       );
 
       try {
         let [status, message] =
-          await companyController.getCompanyByIdController(id);
+          await companyController.getCompanyByEmailController(email);
         res.status(status).send({ message: message });
         logger.info("Rota completa com sucesso.", {
           message: message,
@@ -635,7 +661,7 @@ export let conectServ = (PORT: number) => {
   // Rotas Change Password
   // -----------------------------------
 
-  APP.post(Routes.changePassword, async (req, res) => {
+  APP.put(Routes.changePassword, async (req, res) => {
     logger.http(`rota: ${Routes.changePassword}. Operação: Change Password`);
 
     try {
@@ -731,4 +757,21 @@ export let conectServ = (PORT: number) => {
       }
     }
   );
+
+  APP.get(Routes.getAnalyticData, async (req, res) => {
+    logger.http(`rota: ${Routes.getAnalyticData}. Operação: Get Analytic Data`);
+
+    try {
+      const [status, message] =
+        await adminController.getAnalyticDataController();
+      res.status(status).json({ message: message });
+      logger.info("Rota completa com sucesso.", {
+        message: message,
+        status: status,
+      });
+    } catch (error) {
+      res.status(500).send({ message: String(process.env.STATUS_500) });
+      logger.error("Erro na rota: " + error);
+    }
+  });
 };

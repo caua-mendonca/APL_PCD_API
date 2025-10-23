@@ -98,3 +98,17 @@ export let createSubType = async (body: any): Promise<any> => {
     return [400, String(error)];
   }
 };
+
+
+export let getAnalyticData = async (): Promise<any> => {
+  logger.info("[GET / MODEL ADM]");
+  try {
+    // Chamada à camada de query para obter dados analíticos
+    let [status, message] = await DB.getAnalyticData();
+    logger.info(`[GET / MODEL ADM]`);
+    return [status, message];
+  } catch (error) {
+    logger.error("[GET / MODEL ADM] Error getting analytic data:", error);
+    return [500, String(error)];
+  }
+};

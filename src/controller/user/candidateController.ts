@@ -141,3 +141,11 @@ export const applyToJobController = async (
     return [400, String(error)];
   }
 };
+
+export let getCandidateByEmailController = async (email: string) => {
+  try {
+    return await Model.getUserByEmail("tb_candidato", email);
+  } catch (error) {
+    return [400, String(error)];
+  }
+};

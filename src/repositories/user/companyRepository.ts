@@ -69,3 +69,24 @@ export const getAccessibility = async (id: string): Promise<any> => {
     return [500, String(error)];
   }
 };
+
+export let selectFromEmailWhere = async (
+  table: string,
+  email: string
+): Promise<any> => {
+  logger.info("[GET / MODEL Candidato Email]");
+  try {
+    const safeTable = safeIdentifier(table);
+    const sql = `SELECT * 
+      FROM ${safeTable} e
+      WHERE e.email = $1;`;
+    const result = await DB.pool.query(sql, [email]);
+
+    logger.info(
+      `[GET / MODEL Candidato Email] Success: ${result.rowCount} rows (table=${safeTable}, email=${email})`
+    );
+    return [200, result.rows];
+  } catch (error) {
+    return [500, String(error)];
+  }
+};
