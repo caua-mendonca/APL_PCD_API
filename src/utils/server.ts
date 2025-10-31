@@ -14,7 +14,7 @@ dotenv.config({ path: ".env.status" });
 
 const APP = express();
 APP.use(express.json());
-APP.use(cors({ origin: 'http://localhost:3000' }));
+APP.use(cors({ origin: "http://localhost:3000" }));
 
 /**
  * Inicia o servidor e configura as rotas principais da aplicação
@@ -79,25 +79,24 @@ export let conectServ = (PORT: number) => {
     }
   );
 
-APP.get(
-    Routes.getCandidateByEmail,
-    async (req, res) => {
-      const email = String(req.params.email);
-      logger.http(`rota: ${Routes.getCandidateByEmail}. Operação: Get Candidate By Email`);
-      try {
-        let [status, message] =
-          await candidateController.getCandidateByEmailController(email);
-        res.status(status).send({ message: message });
-        logger.info("Rota completa com sucesso.", {
-          message: message,
-          status: status,
-        });
-      } catch (error) {
-        res.status(500).send({ message: String(process.env.STATUS_500) });
-        logger.error("Erro na rota: " + error);
-      }
+  APP.get(Routes.getCandidateByEmail, async (req, res) => {
+    const email = String(req.params.email);
+    logger.http(
+      `rota: ${Routes.getCandidateByEmail}. Operação: Get Candidate By Email`
+    );
+    try {
+      let [status, message] =
+        await candidateController.getCandidateByEmailController(email);
+      res.status(status).send({ message: message });
+      logger.info("Rota completa com sucesso.", {
+        message: message,
+        status: status,
+      });
+    } catch (error) {
+      res.status(500).send({ message: String(process.env.STATUS_500) });
+      logger.error("Erro na rota: " + error);
     }
-  );
+  });
 
   APP.delete(
     Routes.deleteCandidate,
@@ -188,28 +187,25 @@ APP.get(
     }
   );
 
-  APP.get(
-    Routes.getCompanyByEmail,
-    async (req, res) => {
-      const email = String(req.params.email);
-      logger.http(
-        `rota: ${Routes.getCompanyByEmail}. Operação: Get Company By Email`
-      );
+  APP.get(Routes.getCompanyByEmail, async (req, res) => {
+    const email = String(req.params.email);
+    logger.http(
+      `rota: ${Routes.getCompanyByEmail}. Operação: Get Company By Email`
+    );
 
-      try {
-        let [status, message] =
-          await companyController.getCompanyByEmailController(email);
-        res.status(status).send({ message: message });
-        logger.info("Rota completa com sucesso.", {
-          message: message,
-          status: status,
-        });
-      } catch (error) {
-        res.status(500).send({ message: String(process.env.STATUS_500) });
-        logger.error("Erro na rota: " + error);
-      }
+    try {
+      let [status, message] =
+        await companyController.getCompanyByEmailController(email);
+      res.status(status).send({ message: message });
+      logger.info("Rota completa com sucesso.", {
+        message: message,
+        status: status,
+      });
+    } catch (error) {
+      res.status(500).send({ message: String(process.env.STATUS_500) });
+      logger.error("Erro na rota: " + error);
     }
-  );
+  });
 
   APP.delete(
     Routes.deleteCompany,

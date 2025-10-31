@@ -1,5 +1,7 @@
 import * as DB from "../../../repositories/shared/commonRepository.js";
 import { logger } from "../../../utils/logger.js";
+import { createJWT } from "../../../middleware/middleware.js";
+import redisClient from "../../../utils/redisClient.js";
 
 import bcrypt from "bcrypt";
 
@@ -32,8 +34,13 @@ export let login = async (body: any, table: string): Promise<[number, any]> => {
       return [401, "Senha incorreta!"];
     }
 
+    let role: string = table.split("_")[1]; // extrai o papel do nome da tabela
+
+    const token = await createJWT(role, user.id, 3600);
     // Aqui você poderia gerar e retornar um token JWT, caso use autenticação baseada em token
-    return [200, user];
+    await redisClient.set(`token:${user.id}`, token, { EX: 3600 });
+
+    return [200, { user, token }];
   } catch (error) {
     logger.error(`[MODEL Login] Erro ao autenticar:`, error);
     return [500, "Erro interno ao tentar efetuar login"];

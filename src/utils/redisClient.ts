@@ -24,10 +24,6 @@ redisClient.on("error", (err) => {
 (async () => {
   try {
     await redisClient.connect();
-
-    await redisClient.set("foo", "bar");
-    const result = await redisClient.get("foo");
-    logger.info(result);
   } catch (error) {
     logger.error("Error connecting or using Redis", error);
   }
