@@ -5,7 +5,7 @@ import {
   extractColumnsFromSets,
 } from "../shared/security.js";
 import { logger } from "../../utils/logger.js";
-
+import * as Redis from "../../utils/redisClient.js"
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
 
@@ -163,15 +163,17 @@ export const getJobsByCompany = async (
   try {
     const safeTable = safeIdentifier(table);
     const query = `
-    
     SELECT v.*, e.nome_fantasia
-FROM tb_vaga v
-LEFT JOIN tb_empresa e ON v.id_creator = e.id;
+    FROM ${safeTable} v
+    LEFT JOIN tb_empresa e ON v.id_creator = e.id
+    WHERE v.status = true
+    ORDER BY v.data_inicio DESC;
 
   `;
     const result = await DB.pool.query(query);
 
     logger.info(`[selectFromTable] Success (${result.rowCount} registros)`);
+    await Redis.updateCache(`jobs_company`, JSON.stringify(result.rows), 3600);
     return [200, result.rows];
   } catch (error: any) {
     logger.error(`[selectFromTable] Failed:`, error?.message ?? error);
