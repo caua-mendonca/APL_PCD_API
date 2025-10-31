@@ -1,6 +1,6 @@
 import * as Validation from "../../validation/validateId/validateId.js";
 import * as DB from "../../repositories/event/eventRepository.js";
-import { Event } from "../entities/class/Event.js";
+import { Event } from "../entities/class/event.js";
 import {logger} from "../../utils/logger.js";
 import {deleteFromTable} from "../../repositories/shared/commonRepository.js";
 
