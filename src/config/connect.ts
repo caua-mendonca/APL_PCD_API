@@ -1,5 +1,6 @@
 import { Pool } from "pg";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
+import { logger } from "../utils/logger.js";
 dotenv.config();
 
 /**
@@ -7,7 +8,7 @@ dotenv.config();
  * utilizando variáveis de ambiente para dados sensíveis.
  */
 export const pool = new Pool({
-  user: process.env.DB_USER,        
+  user: process.env.DB_USER,
   host: process.env.DB_HOST,
   database: process.env.DB_DATABASE,
   password: process.env.DB_PASSWORD,
@@ -18,11 +19,15 @@ export const pool = new Pool({
   maxUses: 7500, // close (and replace) a connection after it has been used 7500 times
 });
 
+logger.debug("Configurações do pool de conexões PostgreSQL", {
+  pool: pool.options,
+});
+
 /**
  * Evento disparado quando a conexão com o banco é estabelecida com sucesso.
  */
 pool.on("connect", () => {
-  console.log("Conectado ao PostgreSQL via Pool!");
+  logger.info("Conectado ao PostgreSQL via Pool!");
 });
 
 /**
@@ -31,5 +36,5 @@ pool.on("connect", () => {
  * @param err - Objeto de erro retornado pelo pool
  */
 pool.on("error", (err) => {
-  console.error("Erro inesperado no pool de conexões:", err);
+  logger.error("Erro inesperado no pool de conexões:", err);
 });

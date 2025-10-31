@@ -1,4 +1,6 @@
 import * as Model from "../../model/user/company/companyModel.js";
+import {logger} from "../../utils/logger.js";
+
 
 /**
  * Controller responsável por criar um novo contratante.
@@ -17,7 +19,7 @@ export const createCompanyController = async (user: {
   phone: string;
   accessibility: string;
 }) => {
-  console.log("[POST / CONTROLLER Company]");
+  logger.info("[POST / CONTROLLER Company]");
 
   try {
     const mappedUser = {
@@ -45,7 +47,7 @@ export const createCompanyController = async (user: {
 export const getCompaniesController = async (): Promise<
   [number, string[] | string]
 > => {
-  console.log("[GET / CONTROLLER Company]");
+  logger.info("[GET / CONTROLLER Company]");
 
   try {
     const [status, message] = await Model.getUser("tb_empresa");
@@ -60,11 +62,11 @@ export const getCompaniesController = async (): Promise<
  * @param id - ID do contratante
  * @returns objeto contratante ou mensagem de não encontrado
  */
-export const getCompanyByIdController = async (id: string) => {
-  console.log("[GET / CONTROLLER Company]");
+export const getCompanyByEmailController = async (email: string) => {
+  logger.info("[GET / CONTROLLER Company]");
 
   try {
-    const [status, result] = await Model.getUserByID("tb_empresa", id);
+    const [status, result] = await Model.getUserByEmail("tb_empresa", email);
     return [status, result];
   } catch (error) {
     return [400, String(error)];
@@ -77,7 +79,7 @@ export const getCompanyByIdController = async (id: string) => {
  * @returns true se deletado, false caso contrário
  */
 export const deleteCompanyController = async (id: string): Promise<any> => {
-  console.log("[DELETE / CONTROLLER Company]");
+  logger.info("[DELETE / CONTROLLER Company]");
 
   try {
     const [status, message] = await Model.deleteUser("tb_empresa", id);
@@ -94,7 +96,7 @@ export const deleteCompanyController = async (id: string): Promise<any> => {
  * @returns resultado da atualização ou false em caso de falha
  */
 export const updateCompanyController = async (id: string, body: object): Promise<any> => {
-  console.log("[PUT / CONTROLLER Company]");
+  logger.info("[PUT / CONTROLLER Company]");
 
   try {
     const [status, message] = await Model.updateUser("tb_empresa", id, body);

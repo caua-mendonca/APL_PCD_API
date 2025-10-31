@@ -1,5 +1,6 @@
 import * as DB from "../../config/connect.js";
 import { safeIdentifier } from "../shared/security.js";
+import { logger } from "../../utils/logger.js";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
 
@@ -17,7 +18,7 @@ export const insertCompany = async (user: {
   status: boolean;
 }): Promise<[number, string]> => {
   const table = safeIdentifier("tb_empresa");
-  console.log(`[QUERY] Inserindo contratante -> tabela ${table}`);
+  logger.info(`[QUERY] Inserindo contratante -> tabela ${table}`);
   try {
     const sql = `
       INSERT INTO ${table} (
@@ -39,16 +40,19 @@ export const insertCompany = async (user: {
       user.acessibilidade,
     ]);
 
-    console.log(`[POST / QUERY] insertIntoContratante -> success`);
+    logger.info(`[POST / QUERY] insertIntoContratante -> success`);
     return [201, String(process.env.STATUS_201)];
   } catch (error: any) {
-    console.error(`[POST / QUERY] insertIntoContratante -> failed:`, error?.message ?? error);
-    return [500, String(process.env.STATUS_500 ?? "Internal Server Error")];
+    logger.error(
+      `[POST / QUERY] insertIntoContratante -> failed:`,
+      error?.message ?? error
+    );
+    return [500, String(error)];
   }
 };
 
 export const getAccessibility = async (id: string): Promise<any> => {
-  console.log("[QUERY] Buscando dados de acesso...");
+  logger.info("[QUERY] Buscando dados de acesso...");
   try {
     const safeTable = safeIdentifier("tb_empresa");
     const result = await DB.pool.query(
@@ -61,7 +65,28 @@ export const getAccessibility = async (id: string): Promise<any> => {
       return [400, { message: "Dados invalidos" }];
     }
   } catch (error) {
-    console.error("[QUERY] Failed");
+    logger.error("[QUERY] Failed");
+    return [500, String(error)];
+  }
+};
+
+export let selectFromEmailWhere = async (
+  table: string,
+  email: string
+): Promise<any> => {
+  logger.info("[GET / MODEL Candidato Email]");
+  try {
+    const safeTable = safeIdentifier(table);
+    const sql = `SELECT * 
+      FROM ${safeTable} e
+      WHERE e.email = $1;`;
+    const result = await DB.pool.query(sql, [email]);
+
+    logger.info(
+      `[GET / MODEL Candidato Email] Success: ${result.rowCount} rows (table=${safeTable}, email=${email})`
+    );
+    return [200, result.rows];
+  } catch (error) {
     return [500, String(error)];
   }
 };

@@ -1,6 +1,8 @@
 import * as DB from "../../config/connect.js";
 import { safeIdentifier } from "../shared/security.js";
 import dotenv from "dotenv";
+import { logger } from "../../utils/logger.js";
+
 dotenv.config({ path: ".env.status" });
 
 export const createBarreira = async (
@@ -8,17 +10,17 @@ export const createBarreira = async (
   desc: string,
   hora: Date
 ): Promise<any> => {
-  console.log("[QUERY]");
+  logger.info("[QUERY]");
 
   try {
     const safeTable = safeIdentifier("tb_barreira");
     const query = `INSERT INTO ${safeTable} (id, descricao, created_at, updated_at) VALUES ($1, $2, $3, $4);`;
     const result = await DB.pool.query(query, [id, desc, hora, hora]);
 
-    console.log(`[QUERY] Success`);
+    logger.info(`[QUERY] Success`);
     return [201, String(process.env.STATUS_201)];
   } catch (error) {
-    console.log(`[QUERY] Failed`);
+    logger.info(`[QUERY] Failed`);
     return [500, String(error)];
   }
 };
@@ -28,17 +30,17 @@ export const createAcess = async (
   desc: string,
   hora: Date
 ): Promise<any> => {
-  console.log("[QUERY]");
+  logger.info("[QUERY]");
 
   try {
     const safeTable = safeIdentifier("tb_acessibilidade");
     const query = `INSERT INTO ${safeTable} (id, descricao, created_at, updated_at) VALUES ($1, $2, $3, $4);`;
     const result = await DB.pool.query(query, [id, desc, hora, hora]);
 
-    console.log(`[QUERY] Success`);
+    logger.info(`[QUERY] Success`);
     return [201, String(process.env.STATUS_201)];
   } catch (error) {
-    console.log(`[QUERY] Failed`);
+    logger.info(`[QUERY] Failed`);
     return [500, String(error)];
   }
 };
@@ -51,7 +53,7 @@ export const createSubTipo = async (
   barreira: string,
   acessibilidade: string
 ) => {
-  console.log("[QUERY]");
+  logger.info("[QUERY]");
 
   try {
     // Inserção do subtipo
@@ -90,10 +92,40 @@ export const createSubTipo = async (
       return [400, String(`Erro ao relacionar barreira com acessibilidade.`)];
     }
 
-    console.log(`[QUERY] Success`);
+    logger.info(`[QUERY] Success`);
     return [201, String(process.env.STATUS_201)];
   } catch (error) {
-    console.log(`[QUERY] Failed`);
+    logger.info(`[QUERY] Failed`);
+    return [500, String(error)];
+  }
+};
+
+export let getAnalyticData = async (): Promise<any> => {
+  logger.info("[QUERY]");
+
+  try {
+    const query = `SELECT 
+    d.nome AS "tipo_deficiencia",
+    d.id AS "id_deficiencia",
+    s.nome AS "subtipo_deficiencia",
+    s.id AS "id_subtipo_deficiencia",
+    b.descricao AS "descricao_barreira",
+    b.id AS "id_barreira",
+    a.descricao AS "descricao_acessibilidade",
+    a.id AS "id_acessibilidade"
+    FROM tb_tipo_deficiencia d
+    JOIN tb_sub_tipo_deficiencia s ON d.id = s.tipo_id
+    JOIN tb_sub_tipo_barreira sb ON s.id = sb.sub_tipo_id
+    JOIN tb_barreira b ON sb.barreira_id = b.id
+    JOIN tb_barreira_acessibilidade ba ON b.id = ba.barreira_id
+    JOIN tb_acessibilidade a ON ba.acessibilidade_id = a.id
+      ;`;
+    const result = await DB.pool.query(query);
+
+    logger.info(`[QUERY] Success`);
+    return [200, result.rows];
+  } catch (error) {
+    logger.info(`[QUERY] Failed`);
     return [500, String(error)];
   }
 };

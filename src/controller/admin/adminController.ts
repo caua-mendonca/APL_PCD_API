@@ -1,19 +1,22 @@
 import * as Model from "../../model/admin/adminModel.js";
+import { logger } from "../../utils/logger.js";
 
 /**
  * Controller para criação de uma nova barreira
  * @param body - Objeto contendo os dados da barreira
  * @returns [status, message] - Status HTTP e mensagem de resultado
  */
-export const createBarrierController = async (body: any): Promise<[number, any]> => {
-  console.log("[POST / CONTROLLER ADMIN]");
+export const createBarrierController = async (
+  body: any
+): Promise<[number, any]> => {
+  logger.info("[POST / CONTROLLER ADMIN]");
 
   try {
     const [status, message] = await Model.createBarrier(body);
-    console.log(`[POST / CONTROLLER ADMIN]`);
+    logger.info(`[POST / CONTROLLER ADMIN]`);
     return [status, message];
   } catch (error) {
-    console.error("[POST / CONTROLLER ADMIN] Error creating barrier:", error);
+    logger.error("[POST / CONTROLLER ADMIN] Error creating barrier:", error);
     return [500, String(error)];
   }
 };
@@ -23,15 +26,20 @@ export const createBarrierController = async (body: any): Promise<[number, any]>
  * @param body - Objeto contendo os dados da acessibilidade
  * @returns [status, message] - Status HTTP e mensagem de resultado
  */
-export const createAccessibilityController = async (body: any): Promise<[number, any]> => {
-  console.log("[POST / CONTROLLER ADMIN]");
+export const createAccessibilityController = async (
+  body: any
+): Promise<[number, any]> => {
+  logger.info("[POST / CONTROLLER ADMIN]");
 
   try {
     const [status, message] = await Model.createAccessibility(body);
-    console.log(`[POST / CONTROLLER ADMIN]`);
+    logger.info(`[POST / CONTROLLER ADMIN]`);
     return [status, message];
   } catch (error) {
-    console.error("[POST / CONTROLLER ADMIN] Error creating accessibility:", error);
+    logger.error(
+      "[POST / CONTROLLER ADMIN] Error creating accessibility:",
+      error
+    );
     return [500, String(error)];
   }
 };
@@ -41,15 +49,32 @@ export const createAccessibilityController = async (body: any): Promise<[number,
  * @param body - Objeto contendo os dados do subtipo
  * @returns [status, message] - Status HTTP e mensagem de resultado
  */
-export const createSubTypeController = async (body: any): Promise<[number, any]> => {
-  console.log("[POST / CONTROLLER ADMIN]");
+export const createSubTypeController = async (
+  body: any
+): Promise<[number, any]> => {
+  logger.info("[POST / CONTROLLER ADMIN]");
 
   try {
     const [status, message] = await Model.createSubType(body);
-    console.log(`[POST / CONTROLLER ADMIN]`);
+    logger.info(`[POST / CONTROLLER ADMIN]`);
     return [status, message];
   } catch (error) {
-    console.error("[POST / CONTROLLER ADMIN] Error creating subtype:", error);
+    logger.error("[POST / CONTROLLER ADMIN] Error creating subtype:", error);
+    return [500, String(error)];
+  }
+};
+
+export let getAnalyticDataController = async (): Promise<[number, any]> => {
+  logger.info("[GET / CONTROLLER ADMIN]");
+  try {
+    const [status, message] = await Model.getAnalyticData();
+    logger.info(`[GET / CONTROLLER ADMIN]`);
+    return [status, message];
+  } catch (error) {
+    logger.error(
+      "[GET / CONTROLLER ADMIN] Error getting analytic data:",
+      error
+    );
     return [500, String(error)];
   }
 };

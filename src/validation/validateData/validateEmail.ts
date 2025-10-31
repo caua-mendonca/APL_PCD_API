@@ -1,4 +1,6 @@
 import * as DB from "../../repositories/shared/commonRepository.js";
+import {logger} from "../../utils/logger.js";
+
 
 
 /**
@@ -15,7 +17,7 @@ export let validateEmailToDB = async (value: string, data: string, table: string
   let result: any = Number(await DB.validateData(value, data, table));
   result > 0 ? result = false : result = true;
 
-  console.log("RESULTADO DA FUNÇÃO validateEmailToDB:");
+  logger.info("RESULTADO DA FUNÇÃO validateEmailToDB:");
 
   return result;
 };

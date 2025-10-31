@@ -1,6 +1,5 @@
 import * as Model from "../../model/user/login/login.js";
-import dotenv from "dotenv";
-dotenv.config();
+import {logger} from "../../utils/logger.js";
 
 /**
  * Controller de login de usuário
@@ -9,15 +8,15 @@ dotenv.config();
  * @returns [status, message] - Status HTTP e mensagem de resultado
  */
 const loginController = async (body: any, table: string): Promise<[number, any]> => {
-  console.log(`[POST / CONTROLLER Login]`);
+  logger.info(`[POST / CONTROLLER Login]`);
 
   try {
     const [status, message] = await Model.login(body, table);
-    console.log(`[POST / CONTROLLER Login]`);
+    logger.info(`[POST / CONTROLLER Login]`);
     return [status, message];
   } catch (error) {
-    console.error(`[POST / CONTROLLER Login] Error during login:`, error);
-    return [500, String(process.env.STATUS_500)];
+    logger.error(`[POST / CONTROLLER Login] Error during login:`, error);
+    return [500, String(error)];
   }
 };
 
