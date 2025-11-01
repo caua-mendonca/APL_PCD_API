@@ -671,11 +671,7 @@ export function VagasList() {
 ## 📞 Suporte e Contato
 
 ### 🧠 **Equipe de Desenvolvimento**
-- **Diego Melo** - Full Stack Developer & Architect
-- **Cauã Mendonça** - Frontend Developer
-- **Guilherme Souza** - Colaborador
-- **Luis Ferracini** - Colaborador
-- **Rodolfo Zukulo** - Colaborador
+- **Diego Melo** - 
 
 ### 🔗 **Links Úteis**
 - 📧 **Issues**: [GitHub Issues](https://github.com/cMendoncaaa/APL-WEB-PCD/issues)
