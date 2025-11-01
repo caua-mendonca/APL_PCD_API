@@ -12,6 +12,7 @@ export class Vaga {
   public localidade: string; // Localidade onde a vaga está disponível
   public acessibilidade: string; // Informações sobre acessibilidade na vaga
   public tipo: string;
+  public tipo_acessibilidade: string;
 
   /**
    * Construtor para inicializar uma nova vaga com os dados básicos.
@@ -29,7 +30,8 @@ export class Vaga {
     salario: number,
     localidade: string,
     acessibilidade: string,
-    tipo: string
+    tipo: string,
+    tipo_acessibilidade: string
   ) {
     this.id = ""; // Inicialmente vazio, será definido via setId()
     this.data_inicio = new Date(); // Define data de criação da vaga como momento atual
@@ -41,6 +43,7 @@ export class Vaga {
     this.localidade = localidade;
     this.acessibilidade = acessibilidade;
     this.tipo = tipo;
+    this.tipo_acessibilidade = tipo_acessibilidade;
   }
 
   /**

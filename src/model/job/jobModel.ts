@@ -7,11 +7,8 @@ import { getAccessibility } from "../../repositories/user/companyRepository.js";
 import { getCompanyByEmployee } from "../../repositories/user/employeeRepository.js";
 import { insertCandidateJob } from "../../repositories/user/candidateRepository.js";
 import {
-  selectFromTable,
-  selectFromNameWhere,
   deleteFromTable,
   selectFromIdWhere,
-  updateUserColumn,
 } from "../../repositories/shared/commonRepository.js";
 import { logger } from "../../utils/logger.js";
 dotevn.config();
@@ -64,6 +61,7 @@ export let createJob = async (
     salario: number;
     localidade: string;
     tipo: string;
+    tipo_acess: string;
   },
   id_empresa: string
 ): Promise<any> => {
@@ -80,7 +78,8 @@ export let createJob = async (
       vaga.salario,
       vaga.localidade,
       acessibilidade[1][0].acessibilidade,
-      vaga.tipo
+      vaga.tipo,
+      vaga.tipo_acess
     );
 
     // Geração do ID da vaga, com retry para garantir não ser vazio
@@ -95,7 +94,7 @@ export let createJob = async (
     }
 
     // Insere a vaga na tabela principal
-    await DB.insertVaga(
+    let vagaIsInserted = await DB.insertVaga(
       newVaga.id,
       newVaga.data_inicio,
       newVaga.data_fim,
@@ -106,9 +105,15 @@ export let createJob = async (
       newVaga.localidade,
       newVaga.acessibilidade,
       newVaga.tipo,
+      newVaga.tipo_acessibilidade,
       id_empresa
     );
     // Verifica se o id_empresa refere-se a um colaborador para obter a empresa mãe
+
+    if (vagaIsInserted[0] === 500) {
+      return vagaIsInserted;
+    }
+
 
     if (id_empresa.toUpperCase().startsWith("COLAB")) {
       let empresaId = await getCompanyByEmployee(id_empresa);
@@ -121,7 +126,7 @@ export let createJob = async (
       return [status, message];
     }
   } catch (error) {
-    return [500, String(error)];
+    return [400, String(error)];
   }
 };
 

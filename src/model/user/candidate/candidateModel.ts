@@ -57,9 +57,9 @@ export let createCandidate = async (user: {
       user.telefone,
       user.cpf,
       user.data_nascimento,
-      user.def_visual,
-      user.def_auditiva,
       user.def_motora,
+      user.def_auditiva,
+      user.def_visual,
       user.sub_tipo,
       user.barreira,
       user.acessbilidade

@@ -360,7 +360,7 @@ export let conectServ = (PORT: number) => {
 
       try {
         let cacheData = await getCache(`jobs_company`);
-        const parsedCache = JSON.parse(cacheData);
+        const parsedCache = cacheData;
         if (cacheData !== null) {
           logger.info("Cache HIT");
           res.status(200).send({

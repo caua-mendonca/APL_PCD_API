@@ -71,14 +71,17 @@ export class Candidate {
     this.barreira = barreira;
     this.acessbilidade = acessbilidade;
 
-    if (def_auditiva === true) {
-      this.setDef("DAUDI-");
-    } else if (def_motora === true) {
-      this.setDef("DMOTO-");
-    } else if (def_visual === true) {
-      this.setDef("DVISU-");
-    } else {
-      this.setDef("");
+    if(def_auditiva === true){
+      this.def = "DAUDI-0001";
+      console.log("Deficiência Auditiva atribuída");
+    }
+    if(def_motora === true){
+      this.def = "DMOTO-0001";
+      console.log("Deficiência Motora atribuída");
+    }
+    if(def_visual === true){
+      this.def = "DVISU-0001";
+      console.log("Deficiência Visual atribuída");
     }
     this.setId();
   }

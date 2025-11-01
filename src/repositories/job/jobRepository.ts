@@ -5,7 +5,7 @@ import {
   extractColumnsFromSets,
 } from "../shared/security.js";
 import { logger } from "../../utils/logger.js";
-import * as Redis from "../../utils/redisClient.js"
+import * as Redis from "../../utils/redisClient.js";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
 
@@ -20,6 +20,7 @@ export const insertVaga = async (
   localidade: string,
   acess: string,
   tipo: string,
+  tipo_acessibilidade: string,
   id_creator: string
 ): Promise<[number, { success: boolean; message: string; data: any }]> => {
   const func = "insertVaga";
@@ -36,9 +37,10 @@ export const insertVaga = async (
         localidade,
         acess,
         tipo,
+        tipo_acess,
         id_creator
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
       );
     `;
 
@@ -53,6 +55,7 @@ export const insertVaga = async (
       localidade,
       acess,
       tipo,
+      tipo_acessibilidade,
       id_creator,
     ]);
 
@@ -62,7 +65,7 @@ export const insertVaga = async (
     logger.error(`[${func}] Error ao inserir vaga ${id}:`, err?.message ?? err);
     return [
       500,
-      { success: false, message: "Erro ao inserir vaga", data: null },
+      { success: false, message: String(err?.message ?? err), data: null },
     ];
   }
 };

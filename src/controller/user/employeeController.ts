@@ -73,7 +73,8 @@ export const createJobController = async (
     description: string;
     salary: number;
     location: string;
-    type: string
+    type: string,
+    type_acessibility: string;
   },
   company_id: string
 ): Promise<any> => {
@@ -85,7 +86,8 @@ export const createJobController = async (
       descricao: job.description,
       salario: job.salary,
       localidade: job.location,
-      tipo: job.type
+      tipo: job.type,
+      tipo_acess: job.type_acessibility,
     };
     const [status, message] = await modelJob.createJob(mappedJob, company_id);
     return [status, message];
