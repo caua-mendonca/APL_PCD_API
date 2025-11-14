@@ -62,6 +62,7 @@ export let createJob = async (
     localidade: string;
     tipo: string;
     tipo_acess: string;
+    acessibility: string;
   },
   id_empresa: string
 ): Promise<any> => {
@@ -70,14 +71,13 @@ export let createJob = async (
   try {
     let errorLog: string[] = [];
     // Instancia um novo objeto Vaga com os dados recebidos
-    let acessibilidade = await getAccessibility(id_empresa);
     let newVaga = new Vaga(
       new Date(vaga.data_fim),
       vaga.titulo,
       vaga.descricao,
       vaga.salario,
       vaga.localidade,
-      acessibilidade[1][0].acessibilidade,
+      vaga.acessibility,
       vaga.tipo,
       vaga.tipo_acess
     );
@@ -113,7 +113,6 @@ export let createJob = async (
     if (vagaIsInserted[0] === 500) {
       return vagaIsInserted;
     }
-
 
     if (id_empresa.toUpperCase().startsWith("COLAB")) {
       let empresaId = await getCompanyByEmployee(id_empresa);
