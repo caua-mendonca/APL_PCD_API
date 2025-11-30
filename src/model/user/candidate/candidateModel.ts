@@ -65,6 +65,8 @@ export let createCandidate = async (user: {
       user.acessbilidade
     );
 
+    logger.info("Novo candidato criado (antes da validação):", newUser);
+
     logger.info("[POST / VALIDATE CPF ]");
     let cpfIsValid: boolean = validateCpf(newUser.cpf);
 
@@ -107,12 +109,12 @@ export let createCandidate = async (user: {
     if (passwordIsValid) {
       logger.info("[POST / CRIPTOGRAFANDO SENHA]");
       const salt = await bcrypt.genSalt(12);
-      logger.debug("DEFININDO SALT:",salt)
+      logger.debug("DEFININDO SALT:", salt)
       const passwordHash = await bcrypt.hash(user.senha, salt);
-      logger.debug("DEFININDO HASH:",passwordHash)
+      logger.debug("DEFININDO HASH:", passwordHash)
       await newUser.SetCryptPass(passwordHash);
-    }else{
-    logger.debug("DEU RUIM NA SENHA")
+    } else {
+      logger.debug("DEU RUIM NA SENHA")
     }
     if (errorLog.length > 0) {
       logger.info("[POST / MODEL Candidato Failed]");

@@ -359,18 +359,18 @@ export let conectServ = (PORT: number) => {
       logger.http(`rota: ${Routes.getJobs}. Operação: Get Jobs`);
 
       try {
-        let cacheData = await getCache(`jobs_company`);
-        const parsedCache = cacheData;
-        if (cacheData !== null) {
-          logger.info("Cache HIT");
-          res.status(200).send({
-            source: "cache",
-            total: parsedCache.length,
-            data: parsedCache,
-          });
-          return;
-        }
-        logger.info("Cache MISS");
+        // let cacheData = await getCache(`jobs_company`);
+        // const parsedCache = cacheData;
+        // if (cacheData !== null) {
+        //   logger.info("Cache HIT");
+        //   res.status(200).send({
+        //     source: "cache",
+        //     total: parsedCache.length,
+        //     data: parsedCache,
+        //   });
+        //   return;
+        // }
+        // logger.info("Cache MISS");
 
         let [status, message] = await employeeController.getJobsController();
         res.status(status).send({ message: message });

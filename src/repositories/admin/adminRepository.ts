@@ -125,8 +125,13 @@ export let getAnalyticData = async (): Promise<any> => {
 
     logger.info(`[QUERY] Success`);
     return [200, result.rows];
-  } catch (error) {
-    logger.info(`[QUERY] Failed`);
+  } catch (error: any) {
+    logger.error(`[QUERY] Failed - getAnalyticData:`, {
+      message: error?.message,
+      detail: error?.detail,
+      code: error?.code,
+      fullError: error
+    });
     return [500, String(error)];
   }
 };
