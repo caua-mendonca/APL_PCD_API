@@ -372,7 +372,8 @@ export let conectServ = (PORT: number) => {
         // }
         // logger.info("Cache MISS");
 
-        let [status, message] = await employeeController.getJobsController();
+        const barrierId = req.query.barrierId as string;
+        let [status, message] = await employeeController.getJobsController(barrierId);
         res.status(status).send({ message: message });
         logger.info("Rota completa com sucesso.", {
           message: message,

@@ -13,10 +13,10 @@ import {
 import { logger } from "../../utils/logger.js";
 dotevn.config();
 
-export let getJobsModel = async (): Promise<any> => {
+export let getJobsModel = async (barrierId: string): Promise<any> => {
   logger.info("[GET / CONTROLLER Vaga]");
   try {
-    let [status, message] = await DB.getJobsByCompany("tb_vaga");
+    let [status, message] = await DB.getJobsByCompany("tb_vaga", barrierId);
 
     return [status, message];
   } catch (error) {

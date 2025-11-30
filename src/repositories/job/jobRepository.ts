@@ -143,9 +143,8 @@ export const updateVaga = async (
     const normalizedSets = columns
       .map((col, idx) => `${col} = $${idx + 1}`)
       .join(", ");
-    const query = `UPDATE ${safeTable} SET ${normalizedSets} WHERE id = $${
-      values.length + 1
-    }`;
+    const query = `UPDATE ${safeTable} SET ${normalizedSets} WHERE id = $${values.length + 1
+      }`;
     values.push(id);
 
     const result = await DB.pool.query(query, values);
@@ -159,21 +158,26 @@ export const updateVaga = async (
 };
 
 export const getJobsByCompany = async (
-  table: string
+  table: string,
+  barrierId: string
 ): Promise<[number, any]> => {
   logger.info(`[selectFromTable] Executando SELECT ALL em ${table}`);
 
   try {
     const safeTable = safeIdentifier(table);
     const query = `
-    SELECT v.*, e.nome_fantasia
-    FROM ${safeTable} v
-    LEFT JOIN tb_empresa e ON v.id_creator = e.id
-    WHERE v.status = true
-    ORDER BY v.data_inicio DESC;
+SELECT DISTINCT v.*
+FROM tb_vaga v
+INNER JOIN tb_acessibilidade a
+ON a.descricao = v.acess
+INNER JOIN tb_barreira_acessibilidade ba
+ON a.id = ba.acessibilidade_id
+INNER JOIN tb_barreira b
+ON b.id = ba.barreira_id
+WHERE b.id = $1;
 
   `;
-    const result = await DB.pool.query(query);
+    const result = await DB.pool.query(query, [barrierId]);
 
     logger.info(`[selectFromTable] Success (${result.rowCount} registros)`);
     await Redis.updateCache(`jobs_company`, JSON.stringify(result.rows), 3600);
@@ -206,9 +210,8 @@ export const updateJob = async (
     const normalizedSets = columns
       .map((col, idx) => `${col} = $${idx + 1}`)
       .join(", ");
-    const finalQuery = `UPDATE ${safeTable} SET ${normalizedSets} WHERE id = $${
-      values.length + 1
-    };`;
+    const finalQuery = `UPDATE ${safeTable} SET ${normalizedSets} WHERE id = $${values.length + 1
+      };`;
     const finalValues = [...values, id];
 
     const result = await DB.pool.query(finalQuery, finalValues);
