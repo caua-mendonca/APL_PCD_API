@@ -75,12 +75,13 @@ export const createJobController = async (
     location: string;
     type: string,
     type_acessibility: string;
-    acessibility: string;
+    acessibilidade: string;
   },
   company_id: string
 ): Promise<any> => {
   logger.info("[POST / CONTROLLER Job]");
   try {
+    console.log('JOB recebido no controller:', JSON.stringify(job, null, 2));
     const mappedJob = {
       data_fim: job.end_date,
       titulo: job.title,
@@ -89,8 +90,10 @@ export const createJobController = async (
       localidade: job.location,
       tipo: job.type,
       tipo_acess: job.type_acessibility,
-      acessibility: job.acessibility
+      acessibilidade: job.acessibilidade
     };
+
+    console.log(mappedJob);
     const [status, message] = await modelJob.createJob(mappedJob, company_id);
     return [status, message];
   } catch (error) {

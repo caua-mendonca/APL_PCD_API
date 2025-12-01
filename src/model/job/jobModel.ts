@@ -62,7 +62,7 @@ export let createJob = async (
     localidade: string;
     tipo: string;
     tipo_acess: string;
-    acessibility: string;
+    acessibilidade: string;
   },
   id_empresa: string
 ): Promise<any> => {
@@ -77,7 +77,7 @@ export let createJob = async (
       vaga.descricao,
       vaga.salario,
       vaga.localidade,
-      vaga.acessibility,
+      vaga.acessibilidade,
       vaga.tipo,
       vaga.tipo_acess
     );

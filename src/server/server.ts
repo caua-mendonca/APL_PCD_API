@@ -316,6 +316,7 @@ export let conectServ = (PORT: number) => {
       let body = req.body;
       let id = req.params.id;
       logger.http(`rota: ${Routes.createJob}. Operação: Create Job`);
+      console.log('Corpo da requisição recebido:', JSON.stringify(body, null, 2))
 
       try {
         let [status, message] = await employeeController.createJobController(
