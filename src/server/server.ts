@@ -9,6 +9,7 @@ import * as Login from "../controller/login/login.js";
 import { changePassword } from "../controller/login/changePass.js";
 import * as adminController from "../controller/admin/adminController.js";
 import { logger } from "../utils/logger.js";
+import { getCache } from "../utils/redisClient.js";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
 
@@ -315,6 +316,7 @@ export let conectServ = (PORT: number) => {
       let body = req.body;
       let id = req.params.id;
       logger.http(`rota: ${Routes.createJob}. Operação: Create Job`);
+      console.log('Corpo da requisição recebido:', JSON.stringify(body, null, 2))
 
       try {
         let [status, message] = await employeeController.createJobController(
@@ -358,7 +360,21 @@ export let conectServ = (PORT: number) => {
       logger.http(`rota: ${Routes.getJobs}. Operação: Get Jobs`);
 
       try {
-        let [status, message] = await employeeController.getJobsController();
+        // let cacheData = await getCache(`jobs_company`);
+        // const parsedCache = cacheData;
+        // if (cacheData !== null) {
+        //   logger.info("Cache HIT");
+        //   res.status(200).send({
+        //     source: "cache",
+        //     total: parsedCache.length,
+        //     data: parsedCache,
+        //   });
+        //   return;
+        // }
+        // logger.info("Cache MISS");
+
+        const barrierId = req.query.barrierId as string;
+        let [status, message] = await employeeController.getJobsController(barrierId);
         res.status(status).send({ message: message });
         logger.info("Rota completa com sucesso.", {
           message: message,
@@ -403,6 +419,20 @@ export let conectServ = (PORT: number) => {
         `rota: ${Routes.getJobsByCandidate}. Operação: Get Jobs By Candidate`
       );
       try {
+        let cacheData = await getCache(`candidate_jobs_${id}`);
+        const parsedCache = cacheData;
+        if (cacheData !== null) {
+          logger.info("Cache HIT");
+          res.status(200).send({
+            source: "cache",
+            total: parsedCache.length,
+            data: parsedCache,
+          });
+          return;
+        }
+        logger.info("Cache MISS");
+
+
         logger.info(`[GET / vaga] Requisição recebida`);
         let [status, message] =
           await candidateController.getCandidateJobsController(id);

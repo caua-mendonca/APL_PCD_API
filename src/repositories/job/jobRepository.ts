@@ -5,7 +5,7 @@ import {
   extractColumnsFromSets,
 } from "../shared/security.js";
 import { logger } from "../../utils/logger.js";
-
+import * as Redis from "../../utils/redisClient.js";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
 
@@ -20,6 +20,7 @@ export const insertVaga = async (
   localidade: string,
   acess: string,
   tipo: string,
+  tipo_acessibilidade: string,
   id_creator: string
 ): Promise<[number, { success: boolean; message: string; data: any }]> => {
   const func = "insertVaga";
@@ -36,9 +37,10 @@ export const insertVaga = async (
         localidade,
         acess,
         tipo,
+        tipo_acess,
         id_creator
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
       );
     `;
 
@@ -53,6 +55,7 @@ export const insertVaga = async (
       localidade,
       acess,
       tipo,
+      tipo_acessibilidade,
       id_creator,
     ]);
 
@@ -62,7 +65,7 @@ export const insertVaga = async (
     logger.error(`[${func}] Error ao inserir vaga ${id}:`, err?.message ?? err);
     return [
       500,
-      { success: false, message: "Erro ao inserir vaga", data: null },
+      { success: false, message: String(err?.message ?? err), data: null },
     ];
   }
 };
@@ -140,9 +143,8 @@ export const updateVaga = async (
     const normalizedSets = columns
       .map((col, idx) => `${col} = $${idx + 1}`)
       .join(", ");
-    const query = `UPDATE ${safeTable} SET ${normalizedSets} WHERE id = $${
-      values.length + 1
-    }`;
+    const query = `UPDATE ${safeTable} SET ${normalizedSets} WHERE id = $${values.length + 1
+      }`;
     values.push(id);
 
     const result = await DB.pool.query(query, values);
@@ -156,22 +158,29 @@ export const updateVaga = async (
 };
 
 export const getJobsByCompany = async (
-  table: string
+  table: string,
+  barrierId: string
 ): Promise<[number, any]> => {
   logger.info(`[selectFromTable] Executando SELECT ALL em ${table}`);
 
   try {
     const safeTable = safeIdentifier(table);
     const query = `
-    
-    SELECT v.*, e.nome_fantasia
+SELECT DISTINCT v.*
 FROM tb_vaga v
-LEFT JOIN tb_empresa e ON v.id_creator = e.id;
+INNER JOIN tb_acessibilidade a
+ON a.descricao = v.acess
+INNER JOIN tb_barreira_acessibilidade ba
+ON a.id = ba.acessibilidade_id
+INNER JOIN tb_barreira b
+ON b.id = ba.barreira_id
+WHERE b.id = $1;
 
   `;
-    const result = await DB.pool.query(query);
+    const result = await DB.pool.query(query, [barrierId]);
 
     logger.info(`[selectFromTable] Success (${result.rowCount} registros)`);
+    await Redis.updateCache(`jobs_company`, JSON.stringify(result.rows), 3600);
     return [200, result.rows];
   } catch (error: any) {
     logger.error(`[selectFromTable] Failed:`, error?.message ?? error);
@@ -201,9 +210,8 @@ export const updateJob = async (
     const normalizedSets = columns
       .map((col, idx) => `${col} = $${idx + 1}`)
       .join(", ");
-    const finalQuery = `UPDATE ${safeTable} SET ${normalizedSets} WHERE id = $${
-      values.length + 1
-    };`;
+    const finalQuery = `UPDATE ${safeTable} SET ${normalizedSets} WHERE id = $${values.length + 1
+      };`;
     const finalValues = [...values, id];
 
     const result = await DB.pool.query(finalQuery, finalValues);

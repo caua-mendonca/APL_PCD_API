@@ -25,7 +25,7 @@ export const ALLOWED_COLUMNS: Record<string, Set<string>> = {
   tb_empresa: new Set(["id", "nome_fantasia", "razao_social", "email", "senha", "cnpj", "telefone", "status", "acessibilidade", "id_colaborador"]),
   tb_empresa_colaborador: new Set(["tb_empresa_id", "tb_colaborador_id_colaborador"]),
   tb_candidato: new Set(["id", "nome", "email", "senha", "telefone", "cpf", "data_nascimento", "status", "deficiencia", "tipo_deficiencia", "barreira", "acessibilidade", "id_ifbr", "tb_candidato_id", "cep", "endereco", "num_casa"]),
-  tb_vaga: new Set(["id", "data_inicio", "data_fim", "status", "titulo", "descricao", "salario", "localidade", "acess", "tipo", "id_creator"]),
+  tb_vaga: new Set(["id", "data_inicio", "data_fim", "status", "titulo", "descricao", "salario", "localidade", "acess", "tipo", "id_creator", "tipo_acess"]),
   tb_empresa_vaga: new Set(["tb_empresa_id", "tb_vaga_id", "tb_vaga_status_vaga", "tb_vaga_data_fim", "tb_vaga_data_inicio"]),
   tb_calendario: new Set(["id", "nome_calendario", "id_empresa"]),
   tb_evento: new Set(["id", "nome", "descricao", "data_evento", "hora_ini", "hora_fim", "id_candidato", "id_calendario", "status"]),

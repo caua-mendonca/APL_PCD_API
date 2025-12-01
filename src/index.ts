@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as Server from "./utils/server.js";
+import * as Server from "./server/server.js";
 import { logger } from "./utils/logger.js";
 
 /**

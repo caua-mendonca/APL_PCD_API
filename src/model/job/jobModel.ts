@@ -7,19 +7,16 @@ import { getAccessibility } from "../../repositories/user/companyRepository.js";
 import { getCompanyByEmployee } from "../../repositories/user/employeeRepository.js";
 import { insertCandidateJob } from "../../repositories/user/candidateRepository.js";
 import {
-  selectFromTable,
-  selectFromNameWhere,
   deleteFromTable,
   selectFromIdWhere,
-  updateUserColumn,
 } from "../../repositories/shared/commonRepository.js";
 import { logger } from "../../utils/logger.js";
 dotevn.config();
 
-export let getJobsModel = async (): Promise<any> => {
+export let getJobsModel = async (barrierId: string): Promise<any> => {
   logger.info("[GET / CONTROLLER Vaga]");
   try {
-    let [status, message] = await DB.getJobsByCompany("tb_vaga");
+    let [status, message] = await DB.getJobsByCompany("tb_vaga", barrierId);
 
     return [status, message];
   } catch (error) {
@@ -64,6 +61,8 @@ export let createJob = async (
     salario: number;
     localidade: string;
     tipo: string;
+    tipo_acess: string;
+    acessibilidade: string;
   },
   id_empresa: string
 ): Promise<any> => {
@@ -72,15 +71,15 @@ export let createJob = async (
   try {
     let errorLog: string[] = [];
     // Instancia um novo objeto Vaga com os dados recebidos
-    let acessibilidade = await getAccessibility(id_empresa);
     let newVaga = new Vaga(
       new Date(vaga.data_fim),
       vaga.titulo,
       vaga.descricao,
       vaga.salario,
       vaga.localidade,
-      acessibilidade[1][0].acessibilidade,
-      vaga.tipo
+      vaga.acessibilidade,
+      vaga.tipo,
+      vaga.tipo_acess
     );
 
     // Geração do ID da vaga, com retry para garantir não ser vazio
@@ -95,7 +94,7 @@ export let createJob = async (
     }
 
     // Insere a vaga na tabela principal
-    await DB.insertVaga(
+    let vagaIsInserted = await DB.insertVaga(
       newVaga.id,
       newVaga.data_inicio,
       newVaga.data_fim,
@@ -106,9 +105,14 @@ export let createJob = async (
       newVaga.localidade,
       newVaga.acessibilidade,
       newVaga.tipo,
+      newVaga.tipo_acessibilidade,
       id_empresa
     );
     // Verifica se o id_empresa refere-se a um colaborador para obter a empresa mãe
+
+    if (vagaIsInserted[0] === 500) {
+      return vagaIsInserted;
+    }
 
     if (id_empresa.toUpperCase().startsWith("COLAB")) {
       let empresaId = await getCompanyByEmployee(id_empresa);
@@ -121,7 +125,7 @@ export let createJob = async (
       return [status, message];
     }
   } catch (error) {
-    return [500, String(error)];
+    return [400, String(error)];
   }
 };
 

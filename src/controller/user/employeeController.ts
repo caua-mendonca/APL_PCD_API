@@ -2,7 +2,7 @@ import * as Model from "../../model/user/employee/employeeModel.js";
 import * as modelJob from "../../model/job/jobModel.js";
 import * as modelEvent from "../../model/event/eventModel.js";
 import * as modelCalendar from "../../model/calendar/calendarModel.js";
-import {logger} from "../../utils/logger.js";
+import { logger } from "../../utils/logger.js";
 
 
 /**
@@ -29,8 +29,8 @@ export const createEmployeeController = async (
       senha: user.password,
       setor: user.department,
     };
-    logger.debug("Mapped User:", {mappedUser: mappedUser});
-    logger.debug("Company ID:", {companyId: company_id});
+    logger.debug("Mapped User:", { mappedUser: mappedUser });
+    logger.debug("Company ID:", { companyId: company_id });
     const [status, message] = await Model.createEmployee(mappedUser, company_id);
     return [status, message];
   } catch (error) {
@@ -73,20 +73,27 @@ export const createJobController = async (
     description: string;
     salary: number;
     location: string;
-    type: string
+    type: string,
+    type_acessibility: string;
+    acessibilidade: string;
   },
   company_id: string
 ): Promise<any> => {
   logger.info("[POST / CONTROLLER Job]");
   try {
+    console.log('JOB recebido no controller:', JSON.stringify(job, null, 2));
     const mappedJob = {
       data_fim: job.end_date,
       titulo: job.title,
       descricao: job.description,
       salario: job.salary,
       localidade: job.location,
-      tipo: job.type
+      tipo: job.type,
+      tipo_acess: job.type_acessibility,
+      acessibilidade: job.acessibilidade
     };
+
+    console.log(mappedJob);
     const [status, message] = await modelJob.createJob(mappedJob, company_id);
     return [status, message];
   } catch (error) {
@@ -99,10 +106,10 @@ export const createJobController = async (
  * @returns Array com as vagas encontradas.
  * @throws Erro caso a consulta falhe.
  */
-export const getJobsController = async () => {
+export const getJobsController = async (barrierId: string) => {
   logger.info("[GET / CONTROLLER Job]");
   try {
-    const [status, message] = await modelJob.getJobsModel();
+    const [status, message] = await modelJob.getJobsModel(barrierId);
     return [status, message];
   } catch (error) {
     return [400, String(error)];

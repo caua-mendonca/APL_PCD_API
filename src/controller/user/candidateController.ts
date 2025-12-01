@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 import * as Model from "../../model/user/candidate/candidateModel.js";
-import {logger} from "../../utils/logger.js";
+import { logger } from "../../utils/logger.js";
 dotenv.config({ path: ".env.status" });
 
 
@@ -23,10 +23,11 @@ export const createCandidateController = async (body: {
   hearing_disability: boolean;
   visual_disability: boolean;
   sub_type: string;
-  barrier: string;
-  accessibility: string;
+  barreira: string;
+  acessbilidade: string;
 }): Promise<[number, string]> => {
   try {
+    logger.info("Body recebido no controller:", body);
     // const candidateService =
     //   container.resolve<CandidateService>("CandidateService");
     const mappedBody = {
@@ -42,8 +43,8 @@ export const createCandidateController = async (body: {
       def_auditiva: body.hearing_disability,
       def_visual: body.visual_disability,
       sub_tipo: body.sub_type,
-      barreira: body.barrier,
-      acessbilidade: body.accessibility,
+      barreira: body.barreira,
+      acessbilidade: body.acessbilidade,
     };
     return await Model.createCandidate(mappedBody);
   } catch (error) {
@@ -133,7 +134,7 @@ export const applyToJobController = async (
   candidateId: string,
   jobId: string
 ): Promise<any> => {
-  logger.info("[POST / CONTROLLER Apply to Job]"); 
+  logger.info("[POST / CONTROLLER Apply to Job]");
   try {
     const [status, message] = await Model.applyToJob(candidateId, jobId);
     return [status, message];

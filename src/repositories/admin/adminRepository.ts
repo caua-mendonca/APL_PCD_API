@@ -114,18 +114,24 @@ export let getAnalyticData = async (): Promise<any> => {
     a.descricao AS "descricao_acessibilidade",
     a.id AS "id_acessibilidade"
     FROM tb_tipo_deficiencia d
-    JOIN tb_sub_tipo_deficiencia s ON d.id = s.tipo_id
-    JOIN tb_sub_tipo_barreira sb ON s.id = sb.sub_tipo_id
-    JOIN tb_barreira b ON sb.barreira_id = b.id
-    JOIN tb_barreira_acessibilidade ba ON b.id = ba.barreira_id
-    JOIN tb_acessibilidade a ON ba.acessibilidade_id = a.id
+    FULL JOIN tb_sub_tipo_deficiencia s ON d.id = s.tipo_id
+    FULL JOIN tb_sub_tipo_barreira sb ON s.id = sb.sub_tipo_id
+    FULL JOIN tb_barreira b ON sb.barreira_id = b.id
+    FULL JOIN tb_barreira_acessibilidade ba ON b.id = ba.barreira_id
+    FULL JOIN tb_acessibilidade a ON ba.acessibilidade_id = a.id
+    ORDER BY b.created_at DESC
       ;`;
     const result = await DB.pool.query(query);
 
     logger.info(`[QUERY] Success`);
     return [200, result.rows];
-  } catch (error) {
-    logger.info(`[QUERY] Failed`);
+  } catch (error: any) {
+    logger.error(`[QUERY] Failed - getAnalyticData:`, {
+      message: error?.message,
+      detail: error?.detail,
+      code: error?.code,
+      fullError: error
+    });
     return [500, String(error)];
   }
 };

@@ -1,6 +1,11 @@
 import * as DB from "../../config/connect.js";
-import { safeIdentifier, validateColumnsForTable, extractColumnsFromSets } from "../shared/security.js";
-import {logger} from "../../utils/logger.js";
+import {
+  safeIdentifier,
+  validateColumnsForTable,
+  extractColumnsFromSets,
+} from "../shared/security.js";
+import { logger } from "../../utils/logger.js";
+import { updateCache } from "../../utils/redisClient.js";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.status" });
 
@@ -20,7 +25,9 @@ export const insertCandidate = async (user: {
 }): Promise<[number, string]> => {
   const table = safeIdentifier("tb_candidato");
   try {
-    logger.info(`[POST / QUERY] insertIntoCandidate -> iniciando inserção em ${table}`);
+    logger.info(
+      `[POST / QUERY] insertIntoCandidate -> iniciando inserção em ${table}`
+    );
 
     const sql = `
       INSERT INTO ${table} (
@@ -99,7 +106,7 @@ export const selectFromIdWhere = async (
 
 export let selectFromEmailWhere = async (
   table: string,
-  email: string 
+  email: string
 ): Promise<any> => {
   logger.info("[GET / MODEL Candidato Email]");
   try {
@@ -107,7 +114,9 @@ export let selectFromEmailWhere = async (
     const sql = `SELECT * FROM ${safeTable} WHERE email = $1;`;
     const result = await DB.pool.query(sql, [email]);
 
-    logger.info(`[GET / MODEL Candidato Email] Success: ${result.rowCount} rows (table=${safeTable}, email=${email})`);
+    logger.info(
+      `[GET / MODEL Candidato Email] Success: ${result.rowCount} rows (table=${safeTable}, email=${email})`
+    );
     return [
       200,
       { success: true, message: "Registros encontrados", data: result.rows },
@@ -135,6 +144,11 @@ export const selectJobFromID = async (
 
     logger.info(
       `[${func}] Success: ${result.rowCount} rows (table=${safeTable}, tb_candidato_id=${id})`
+    );
+    await updateCache(
+      `candidate_jobs_${id}`,
+      JSON.stringify(result.rows),
+      3600
     );
     return [
       200,
